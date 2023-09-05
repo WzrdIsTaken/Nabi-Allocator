@@ -1,12 +1,17 @@
 This project is my dissertation! (hopefully...)
 
 Tasks:
+
 *Long Term
 - Make NabiAllocator a single header (or single .h+.inl+.cpp...) library once it's finished. This will make it easier to export / other people to benchmark.
 - Bump the version to 1.0! (Core/Inc/Version.h)
 
+- Profile the use of __forceinline on: (i have never used forceinline before, so it will be interesting to see)
+	- BitOperations
+
 *General
-- 
+- Should we have the "Memory" folders/filters? Or should it be called something else
+	- Because the whole project is just for the allocator, we dont have to bury things all inside a 'memory' folder...
 
 Archive:
 - 

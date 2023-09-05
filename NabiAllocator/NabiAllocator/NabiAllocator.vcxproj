@@ -20,8 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Tests\Src\Fixtures\BitOperationsTests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Operations\Inl\BitOperations.inl" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -32,6 +34,7 @@
     <ClInclude Include="Config\Inc\Version.h" />
     <ClInclude Include="Core\Inc\CharacterConstants.h" />
     <ClInclude Include="Core\Inc\IntegerTypes.h" />
+    <ClInclude Include="Operations\Inc\BitOperations.h" />
     <ClInclude Include="Utils\Inc\DebugUtils.h" />
     <ClInclude Include="Utils\Inc\MacroUtils.h" />
     <ClInclude Include="Utils\Inc\TypeUtils.h" />
@@ -115,7 +118,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)NabiAllocator;$(SolutionDir)NabiAllocator\Config\Inc;$(SolutionDir)NabiAllocator\Core\Inc;$(SolutionDir)NabiAllocator\Memory\Inc;$(SolutionDir)NabiAllocator\Memory\Inl;$(SolutionDir)NabiAllocator\Utils\Inc;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NabiAllocator;$(SolutionDir)NabiAllocator\Config\Inc;$(SolutionDir)NabiAllocator\Core\Inc;$(SolutionDir)NabiAllocator\Memory\Inc;$(SolutionDir)NabiAllocator\Memory\Inl;$(SolutionDir)NabiAllocator\Operations\Inc;$(SolutionDir)NabiAllocator\Operations\Inl;$(SolutionDir)NabiAllocator\Utils\Inc;</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -132,7 +135,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)NabiAllocator;$(SolutionDir)NabiAllocator\Config\Inc;$(SolutionDir)NabiAllocator\Core\Inc;$(SolutionDir)NabiAllocator\Memory\Inc;$(SolutionDir)NabiAllocator\Memory\Inl;$(SolutionDir)NabiAllocator\Utils\Inc;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NabiAllocator;$(SolutionDir)NabiAllocator\Config\Inc;$(SolutionDir)NabiAllocator\Core\Inc;$(SolutionDir)NabiAllocator\Memory\Inc;$(SolutionDir)NabiAllocator\Memory\Inl;$(SolutionDir)NabiAllocator\Operations\Inc;$(SolutionDir)NabiAllocator\Operations\Inl;$(SolutionDir)NabiAllocator\Utils\Inc;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,7 +151,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)NabiAllocator;$(SolutionDir)NabiAllocator\Config\Inc;$(SolutionDir)NabiAllocator\Core\Inc;$(SolutionDir)NabiAllocator\Memory\Inc;$(SolutionDir)NabiAllocator\Memory\Inl;$(SolutionDir)NabiAllocator\Utils\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NabiAllocator;$(SolutionDir)NabiAllocator\Config\Inc;$(SolutionDir)NabiAllocator\Core\Inc;$(SolutionDir)NabiAllocator\Memory\Inc;$(SolutionDir)NabiAllocator\Memory\Inl;$(SolutionDir)NabiAllocator\Operations\Inc;$(SolutionDir)NabiAllocator\Operations\Inl;$(SolutionDir)NabiAllocator\Utils\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -165,7 +168,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)NabiAllocator;$(SolutionDir)NabiAllocator\Config\Inc;$(SolutionDir)NabiAllocator\Core\Inc;$(SolutionDir)NabiAllocator\Memory\Inc;$(SolutionDir)NabiAllocator\Memory\Inl;$(SolutionDir)NabiAllocator\Utils\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NabiAllocator;$(SolutionDir)NabiAllocator\Config\Inc;$(SolutionDir)NabiAllocator\Core\Inc;$(SolutionDir)NabiAllocator\Memory\Inc;$(SolutionDir)NabiAllocator\Memory\Inl;$(SolutionDir)NabiAllocator\Operations\Inc;$(SolutionDir)NabiAllocator\Operations\Inl;$(SolutionDir)NabiAllocator\Utils\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

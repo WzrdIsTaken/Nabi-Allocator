@@ -2,6 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Tests\Src\Fixtures\BitOperationsTests.cpp">
+      <Filter>Tests\Src\Fixtures</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tests">
@@ -46,9 +49,21 @@
     <Filter Include="Tests\Src\Fixtures">
       <UniqueIdentifier>{3b3d7ec7-f79c-4b32-adf5-603c24e980f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Operations">
+      <UniqueIdentifier>{a516ea91-bf41-4b41-925b-9ce9de47d480}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Operations\Inc">
+      <UniqueIdentifier>{c05fcece-2d4a-495b-9812-aac9d2925c55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Operations\Inl">
+      <UniqueIdentifier>{c972b031-bc1c-4b92-b941-3382a5ceafc2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Operations\Inl\BitOperations.inl">
+      <Filter>Operations\Inl</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Todo.txt" />
@@ -74,6 +89,9 @@
     </ClInclude>
     <ClInclude Include="Core\Inc\CharacterConstants.h">
       <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Operations\Inc\BitOperations.h">
+      <Filter>Operations\Inc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
