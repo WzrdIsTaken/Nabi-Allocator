@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{0d9f41cf-d11d-4807-9b22-31b478704aee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Inc">
+      <UniqueIdentifier>{3a912592-1377-460d-8835-4785cfeadeaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Src">
+      <UniqueIdentifier>{0b6bdcb4-3013-4afe-92e3-3db54f49cb65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory">
+      <UniqueIdentifier>{377129ce-6888-4388-85dc-b23bba2d50d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory\Inc">
+      <UniqueIdentifier>{8a5296c7-72fe-4e06-bebd-7dcf882c4873}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory\Src">
+      <UniqueIdentifier>{c29e7914-f15a-46a8-b899-20b572b09368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory\Inl">
+      <UniqueIdentifier>{942e712a-4844-4a02-8656-8048171526f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{c571a525-9040-4b4e-a526-fcbc1a7c8cd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Inc">
+      <UniqueIdentifier>{502c7e23-038d-4940-9d75-345856007cc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{2564592c-af2c-421f-8ae1-94222658ec4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\Inc">
+      <UniqueIdentifier>{5328bb04-5a23-40f7-a47c-d5df7a384e2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config">
+      <UniqueIdentifier>{692f8928-fa6c-480b-8829-6fb2cbf37e39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config\Inc">
+      <UniqueIdentifier>{5f11468d-0535-461d-9ce1-e38c87a12999}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Src\Fixtures">
+      <UniqueIdentifier>{3b3d7ec7-f79c-4b32-adf5-603c24e980f8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Todo.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Utils\Inc\DebugUtils.h">
+      <Filter>Utils\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Inc\MacroUtils.h">
+      <Filter>Utils\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Inc\TypeUtils.h">
+      <Filter>Utils\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\Inc\Config.h">
+      <Filter>Config\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\Inc\Version.h">
+      <Filter>Config\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\IntegerTypes.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\CharacterConstants.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
