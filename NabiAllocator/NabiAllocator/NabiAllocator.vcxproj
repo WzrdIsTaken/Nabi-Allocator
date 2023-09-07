@@ -20,10 +20,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Memory\Src\HeapZoneBase.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\BitOperationsTests.cpp" />
+    <ClCompile Include="Tests\Src\Fixtures\HeapZoneTests.cpp" />
+    <ClCompile Include="Tests\Src\Fixtures\MemoryOperationsTests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Memory\Inl\HeapZone.inl" />
+    <None Include="Memory\Inl\HeapZoneBase.inl" />
     <None Include="Operations\Inl\BitOperations.inl" />
+    <None Include="Operations\Inl\MemoryOperations.inl" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -34,7 +40,15 @@
     <ClInclude Include="Config\Inc\Version.h" />
     <ClInclude Include="Core\Inc\CharacterConstants.h" />
     <ClInclude Include="Core\Inc\IntegerTypes.h" />
+    <ClInclude Include="Core\Inc\TemplateConcepts.h" />
+    <ClInclude Include="Memory\Inc\AllocatorBase.h" />
+    <ClInclude Include="Memory\Inc\HeapZone.h" />
+    <ClInclude Include="Memory\Inc\HeapZoneBase.h" />
+    <ClInclude Include="Memory\Inc\HeapZoneInfo.h" />
+    <ClInclude Include="Memory\Inc\MemoryConstants.h" />
+    <ClInclude Include="Memory\Inc\MemoryOperators.h" />
     <ClInclude Include="Operations\Inc\BitOperations.h" />
+    <ClInclude Include="Operations\Inc\MemoryOperations.h" />
     <ClInclude Include="Utils\Inc\DebugUtils.h" />
     <ClInclude Include="Utils\Inc\MacroUtils.h" />
     <ClInclude Include="Utils\Inc\TypeUtils.h" />

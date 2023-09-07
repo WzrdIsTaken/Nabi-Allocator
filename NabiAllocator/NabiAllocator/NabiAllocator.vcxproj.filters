@@ -5,6 +5,15 @@
     <ClCompile Include="Tests\Src\Fixtures\BitOperationsTests.cpp">
       <Filter>Tests\Src\Fixtures</Filter>
     </ClCompile>
+    <ClCompile Include="Memory\Src\HeapZoneBase.cpp">
+      <Filter>Memory\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\Src\Fixtures\MemoryOperationsTests.cpp">
+      <Filter>Tests\Src\Fixtures</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\Src\Fixtures\HeapZoneTests.cpp">
+      <Filter>Tests\Src\Fixtures</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tests">
@@ -64,6 +73,15 @@
     <None Include="Operations\Inl\BitOperations.inl">
       <Filter>Operations\Inl</Filter>
     </None>
+    <None Include="Memory\Inl\HeapZoneBase.inl">
+      <Filter>Memory\Inl</Filter>
+    </None>
+    <None Include="Operations\Inl\MemoryOperations.inl">
+      <Filter>Operations\Inl</Filter>
+    </None>
+    <None Include="Memory\Inl\HeapZone.inl">
+      <Filter>Memory\Inl</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Todo.txt" />
@@ -92,6 +110,30 @@
     </ClInclude>
     <ClInclude Include="Operations\Inc\BitOperations.h">
       <Filter>Operations\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\AllocatorBase.h">
+      <Filter>Memory\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\MemoryOperators.h">
+      <Filter>Memory\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\HeapZoneBase.h">
+      <Filter>Memory\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\HeapZoneInfo.h">
+      <Filter>Memory\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\MemoryConstants.h">
+      <Filter>Memory\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Operations\Inc\MemoryOperations.h">
+      <Filter>Operations\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\HeapZone.h">
+      <Filter>Memory\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\TemplateConcepts.h">
+      <Filter>Core\Inc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

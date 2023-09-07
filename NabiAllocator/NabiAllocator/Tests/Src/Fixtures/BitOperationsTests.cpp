@@ -18,7 +18,7 @@
 namespace nabi_allocator::tests
 {
 #ifdef NABI_ALLOCATOR_TESTS
-#	define TEST_FIXTURE_NAME BitTests
+#	define TEST_FIXTURE_NAME BitOperationsTests
 
 	TEST(TEST_FIXTURE_NAME, FlipBit)
 	{

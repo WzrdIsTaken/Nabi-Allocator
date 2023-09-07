@@ -3,6 +3,9 @@
 // Config Headers
 #include "Config.h"
 
+// Nabi Headers
+#include "MacroUtils.h"
+
 /**
  * A collection of assert and logging macros to ease development and debugging.
  * Nabi has a more complex debug/logging system, but for this allocator I think these simple macros are all that is required.
@@ -20,7 +23,6 @@
 
 // Nabi Headers
 #	include "IntegerTypes.h"
-#	include "MacroUtils.h"
 
 // --- Helper Macros --- 
 

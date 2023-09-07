@@ -7,17 +7,19 @@
  * A collection of helper macros and functions for classes/structs/enums/etc.
 */
 
-#define NABI_ALLOCATOR_DELETE_COPY_MOVE_CONSTRUCTORS(type) \
-    NABI_ALLOCATOR_DELETE_COPY_CONSTRUCTORS(type) \
-    NABI_ALLOCATOR_DELETE_MOVE_CONSTRUCTORS(type)
+#define NABI_ALLOCATOR_SET_COPY_MOVE_CONSTRUCTORS(type, operation) \
+	NABI_ALLOCATOR_SET_COPY_CONSTRUCTORS(type, operation) \
+    NABI_ALLOCATOR_SET_MOVE_CONSTRUCTORS(type, operation)
 
-#define NABI_ALLOCATOR_DELETE_COPY_CONSTRUCTORS(type) \
-     type(type&) = delete; \
-     type(type const&) = delete; \
+#define NABI_ALLOCATOR_SET_COPY_CONSTRUCTORS(type, operation) \
+     type(type&) = operation; \
+     type(type const&) = operation; \
 
-#define NABI_ALLOCATOR_DELETE_MOVE_CONSTRUCTORS(type) \
-    type(type&&) = delete; \
-    type(type const&&) = delete;
+#define NABI_ALLOCATOR_SET_MOVE_CONSTRUCTORS(type, operation) \
+    type(type&&) = operation; \
+    type(type const&&) = operation;
+
+#define NABI_ALLOCATOR_NAMEOF(arg) ((decltype(&arg))nullptr, #arg) // C# nameof functionality. Source: https://stackoverflow.com/a/38697366/8890269
 
 namespace nabi_allocator::type_utils
 {

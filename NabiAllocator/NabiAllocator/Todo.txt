@@ -8,10 +8,25 @@ Tasks:
 
 - Profile the use of __forceinline on: (i have never used forceinline before, so it will be interesting to see)
 	- BitOperations
+	- MemoryOperations
+	- HeapZone -> Allocate/Free
+
+- Write a python script to display the memory layout as eg a pie chart (free vs allocated blocks).
+	- Is the projects folder structure ok to put this stuff in a place which makes sense?
 
 *General
 - Should we have the "Memory" folders/filters? Or should it be called something else
 	- Because the whole project is just for the allocator, we dont have to bury things all inside a 'memory' folder...
+		- Actually, I think that it should all be in there. do some more organisiing. Eg HeapZone folder, Alloctaor folder,
+		  and I think that the Operations should also go inside the Memory parent folder
+
+- Write a test for MemoryOperations::IsAlligned. And think - should the memory allignment be different on x64 and x86?
+
+- Do we need tests for utils? What is the difference between utils and operations?
+
+- Make .hint file and add all macros
+
+- Create the MemoryCommand. If we call it something different, need to update the summary comment in HeapZone.h
 
 Archive:
 - 

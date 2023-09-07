@@ -21,4 +21,10 @@ namespace nabi_allocator
 
 	using sPtr = std::intptr_t;
 	using uPtr = std::uintptr_t;
+
+	inline namespace integer_constants
+	{
+		sPtr constexpr c_NullsPtr = static_cast<sPtr>(0);
+		uPtr constexpr c_NulluPtr = static_cast<uPtr>(0);
+	} // inline namespace integer_constants
 } // namespace nabi_allocator

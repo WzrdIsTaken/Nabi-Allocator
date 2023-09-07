@@ -2,10 +2,10 @@
 
 // STD Headers
 #include <string>
-#include <type_traits>
 
 // Nabi Headers
 #include "IntegerTypes.h"
+#include "TemplateConcepts.h"
 
 /**
  * Functions to perform bit manipulation.
@@ -13,9 +13,6 @@
 
 namespace nabi_allocator::bit_operations
 {
-	template<typename T>
-	concept is_integral = std::is_integral<T>::value; // We could use the "requires" keword with each function, but I feel like that makes things cluttered
-
 	template<is_integral T>
 	[[nodiscard]] inline constexpr T FlipBit(T const value, u32 const bitPosition) noexcept;
 	template<is_integral T>
