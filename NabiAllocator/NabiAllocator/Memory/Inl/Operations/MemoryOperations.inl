@@ -1,5 +1,5 @@
 // inl's Header
-#include "MemoryOperations.h"
+#include "Operations/MemoryOperations.h"
 
 // STD Headers
 #include <cstdlib>
@@ -44,7 +44,7 @@ namespace nabi_allocator::memory_operations
 
 	inline uPtr GetMemorySize(void const* const start, void const* const end)
 	{
-		return GetMemorySize(TO_UPTR(start), TO_UPTR(end));
+		return GetMemorySize(NABI_ALLOCATOR_TO_UPTR(start), NABI_ALLOCATOR_TO_UPTR(end));
 	}
 
 	inline constexpr uPtr GetMemorySize(uPtr const start, uPtr const end) noexcept

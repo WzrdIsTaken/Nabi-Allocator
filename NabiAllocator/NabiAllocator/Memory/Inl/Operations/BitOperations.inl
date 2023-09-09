@@ -1,5 +1,5 @@
 // inl's Header
-#include "BitOperations.h"
+#include "Operations/BitOperations.h"
 
 // STD Headers
 #include <bitset>

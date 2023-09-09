@@ -6,7 +6,7 @@
 
 // Nabi Headers
 #include "IntegerTypes.h"
-#include "MemoryOperations.h"
+#include "Operations/MemoryOperations.h"
 
 /**
  * Tests for MemoryOperations
@@ -62,8 +62,8 @@ namespace nabi_allocator::tests
 		uPtr const start = 0u;
 		uPtr const end = 8u;
 
-		void const* const startVoid = TO_VPTR(start);
-		void const* const endVoid = TO_VPTR(end);
+		void const* const startVoid = NABI_ALLOCATOR_TO_VPTR(start);
+		void const* const endVoid = NABI_ALLOCATOR_TO_VPTR(end);
 
 		EXPECT_EQ(8u, memory_operations::GetMemorySize(start, end));
 		EXPECT_EQ(8u, memory_operations::GetMemorySize(startVoid, endVoid));

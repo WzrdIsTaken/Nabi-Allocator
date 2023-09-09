@@ -1,7 +1,7 @@
 #pragma once
 
 // Nabi Header
-#include "AllocatorBase.h"
+#include "Allocators/AllocatorBase.h"
 #include "HeapZoneBase.h"
 #include "IntegerTypes.h"
 #include "TypeUtils.h"
@@ -33,4 +33,4 @@ namespace nabi_allocator
 } // namespace nabi_allocator
 
 // Include Inline
-#include "HeapZone.inl"
+#include "HeapZone/HeapZone.inl"

@@ -9,8 +9,8 @@
  * Functions & macros to perform memory manipulation.
 */
 
-#define TO_UPTR(arg) reinterpret_cast<nabi_allocator::uPtr>(arg)
-#define TO_VPTR(arg) reinterpret_cast<void*>(arg)
+#define NABI_ALLOCATOR_TO_UPTR(arg) reinterpret_cast<nabi_allocator::uPtr>(arg)
+#define NABI_ALLOCATOR_TO_VPTR(arg) reinterpret_cast<void*>(arg)
 
 namespace nabi_allocator::memory_operations
 {
@@ -27,8 +27,8 @@ namespace nabi_allocator::memory_operations
 	[[nodiscard]] inline constexpr uPtr GetMemorySize(uPtr const start, uPtr const end) noexcept;
 
 	template<is_integral T>
-	[[nodiscard]] inline constexpr bool IsAlligned(T const value, u32 const allignment = c_MemoryAllignment) noexcept;
+	[[nodiscard]] inline constexpr bool IsAlligned(T const value, u32 const allignment) noexcept;
 } // namespace nabi_allocator
 
 // Inline Inline
-#include "MemoryOperations.inl"
+#include "Operations/MemoryOperations.inl"

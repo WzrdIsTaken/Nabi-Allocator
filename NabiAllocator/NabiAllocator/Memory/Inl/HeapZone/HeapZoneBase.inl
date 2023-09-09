@@ -1,8 +1,8 @@
 // inl's Header
-#include "HeapZoneBase.h"
+#include "HeapZone/HeapZoneBase.h"
 
 // Nabi Headers
-#include "MemoryOperations.h"
+#include "Operations/MemoryOperations.h"
 
 namespace nabi_allocator
 {

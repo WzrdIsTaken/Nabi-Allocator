@@ -5,14 +5,14 @@
     <ClCompile Include="Tests\Src\Fixtures\BitOperationsTests.cpp">
       <Filter>Tests\Src\Fixtures</Filter>
     </ClCompile>
-    <ClCompile Include="Memory\Src\HeapZoneBase.cpp">
-      <Filter>Memory\Src</Filter>
-    </ClCompile>
     <ClCompile Include="Tests\Src\Fixtures\MemoryOperationsTests.cpp">
       <Filter>Tests\Src\Fixtures</Filter>
     </ClCompile>
     <ClCompile Include="Tests\Src\Fixtures\HeapZoneTests.cpp">
       <Filter>Tests\Src\Fixtures</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\Src\HeapZone\HeapZoneBase.cpp">
+      <Filter>Memory\Src\HeapZone</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -58,30 +58,40 @@
     <Filter Include="Tests\Src\Fixtures">
       <UniqueIdentifier>{3b3d7ec7-f79c-4b32-adf5-603c24e980f8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Operations">
-      <UniqueIdentifier>{a516ea91-bf41-4b41-925b-9ce9de47d480}</UniqueIdentifier>
+    <Filter Include="Memory\Inc\HeapZone">
+      <UniqueIdentifier>{4c480661-1b20-4eba-974c-f1260193d942}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Operations\Inc">
-      <UniqueIdentifier>{c05fcece-2d4a-495b-9812-aac9d2925c55}</UniqueIdentifier>
+    <Filter Include="Memory\Inl\HeapZone">
+      <UniqueIdentifier>{2003bf25-043c-4e78-b285-5c113368c8de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Operations\Inl">
-      <UniqueIdentifier>{c972b031-bc1c-4b92-b941-3382a5ceafc2}</UniqueIdentifier>
+    <Filter Include="Memory\Inc\Operations">
+      <UniqueIdentifier>{61f8bc4d-9684-4de0-9c2b-35bee3a6777c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory\Inl\Operations">
+      <UniqueIdentifier>{ace9d205-79ff-4af1-8ff0-2727442192b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory\Src\HeapZone">
+      <UniqueIdentifier>{f94d031a-1471-4704-a8ea-0586d86a7a58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory\Inc\Allocators">
+      <UniqueIdentifier>{86b90a82-7c44-4fb6-b86c-2eb6d74b98e4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Operations\Inl\BitOperations.inl">
-      <Filter>Operations\Inl</Filter>
+    <None Include="Memory\Inl\Operations\BitOperations.inl">
+      <Filter>Memory\Inl\Operations</Filter>
     </None>
-    <None Include="Memory\Inl\HeapZoneBase.inl">
-      <Filter>Memory\Inl</Filter>
+    <None Include="Memory\Inl\Operations\MemoryOperations.inl">
+      <Filter>Memory\Inl\Operations</Filter>
     </None>
-    <None Include="Operations\Inl\MemoryOperations.inl">
-      <Filter>Operations\Inl</Filter>
+    <None Include="Memory\Inl\HeapZone\HeapZone.inl">
+      <Filter>Memory\Inl\HeapZone</Filter>
     </None>
-    <None Include="Memory\Inl\HeapZone.inl">
-      <Filter>Memory\Inl</Filter>
+    <None Include="Memory\Inl\HeapZone\HeapZoneBase.inl">
+      <Filter>Memory\Inl\HeapZone</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Todo.txt" />
@@ -108,32 +118,32 @@
     <ClInclude Include="Core\Inc\CharacterConstants.h">
       <Filter>Core\Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Operations\Inc\BitOperations.h">
-      <Filter>Operations\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory\Inc\AllocatorBase.h">
-      <Filter>Memory\Inc</Filter>
-    </ClInclude>
     <ClInclude Include="Memory\Inc\MemoryOperators.h">
-      <Filter>Memory\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory\Inc\HeapZoneBase.h">
-      <Filter>Memory\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory\Inc\HeapZoneInfo.h">
       <Filter>Memory\Inc</Filter>
     </ClInclude>
     <ClInclude Include="Memory\Inc\MemoryConstants.h">
       <Filter>Memory\Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Operations\Inc\MemoryOperations.h">
-      <Filter>Operations\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory\Inc\HeapZone.h">
-      <Filter>Memory\Inc</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Inc\TemplateConcepts.h">
       <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Operations\BitOperations.h">
+      <Filter>Memory\Inc\Operations</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Operations\MemoryOperations.h">
+      <Filter>Memory\Inc\Operations</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\HeapZone\HeapZone.h">
+      <Filter>Memory\Inc\HeapZone</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\HeapZone\HeapZoneBase.h">
+      <Filter>Memory\Inc\HeapZone</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\HeapZone\HeapZoneInfo.h">
+      <Filter>Memory\Inc\HeapZone</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Allocators\AllocatorBase.h">
+      <Filter>Memory\Inc\Allocators</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -15,18 +15,21 @@ Tasks:
 	- Is the projects folder structure ok to put this stuff in a place which makes sense?
 
 *General
+- Write a test for MemoryOperations::IsAlligned. And think - should the memory allignment be different on x64 and x86?
+	- Depending on the architecture, then eg the FreeList nodes will / won't fit within 8 bytes
+
+- Thoughts on NA_ rather than NABI_ALLOCATOR_
+	- Would be a lot shorter, then could eg have NA_LOG_[PREP/END] w/o it being too long
+
+- Create the MemoryCommand. If we call it something different, need to update the summary comment in HeapZone.h
+- Create functions to Load/Unload BlockInfo into a struct
+
+- Should MemoryConstants/Operators have its own folder? Also - lower case folder names?
+
+Archive:
+- Do we need tests for utils? [No, I don't think so] What is the difference between utils and operations? [yh i know now]
+- Make .hint file and add all macros
 - Should we have the "Memory" folders/filters? Or should it be called something else
 	- Because the whole project is just for the allocator, we dont have to bury things all inside a 'memory' folder...
 		- Actually, I think that it should all be in there. do some more organisiing. Eg HeapZone folder, Alloctaor folder,
 		  and I think that the Operations should also go inside the Memory parent folder
-
-- Write a test for MemoryOperations::IsAlligned. And think - should the memory allignment be different on x64 and x86?
-
-- Do we need tests for utils? What is the difference between utils and operations?
-
-- Make .hint file and add all macros
-
-- Create the MemoryCommand. If we call it something different, need to update the summary comment in HeapZone.h
-
-Archive:
-- 

@@ -5,12 +5,12 @@
 #include "Config.h"
 
 // Nabi Headers
-#include "AllocatorBase.h"
-#include "HeapZone.h"
-#include "HeapZoneInfo.h"
+#include "Allocators/AllocatorBase.h"
+#include "HeapZone/HeapZone.h"
+#include "HeapZone/HeapZoneInfo.h"
 #include "IntegerTypes.h"
 #include "MemoryConstants.h"
-#include "MemoryOperations.h"
+#include "Operations/MemoryOperations.h"
 
 /**
  * Tests for HeapZoneBase / HeapZone
@@ -51,12 +51,12 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, CreateAndDestroyHeapZone)
 	{
-		HeapZone<MockAllocator> heapZone{ c_MemoryAllignment, "TestHeapZone" };
+		HeapZone<MockAllocator> heapZone{ c_BlockAllignment, "TestHeapZone" };
 		HeapZoneInfo const& heapZoneInfo = heapZone.GetZoneInfo();
 
 		{
 			uPtr const heapZoneSize = memory_operations::GetMemorySize(heapZoneInfo.m_Start, heapZoneInfo.m_End);
-			EXPECT_EQ(c_MemoryAllignment, heapZoneSize);
+			EXPECT_EQ(c_BlockAllignment, heapZoneSize);
 		}
 		
 		heapZone.Deinit();
@@ -69,7 +69,7 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, CheckAllocatorCalls)
 	{
-		HeapZone<MockAllocator> heapZone{ c_MemoryAllignment, "TestHeapZone" };
+		HeapZone<MockAllocator> heapZone{ c_BlockAllignment, "TestHeapZone" };
 
 		void* ptr = heapZone.Allocate(1u);
 		EXPECT_EQ(1u, heapZone.GetAllocator().GetAllocationCount());

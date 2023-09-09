@@ -29,4 +29,4 @@ namespace nabi_allocator::bit_operations
 } // namespace nabi_allocator::bit_operations
 
 // Include Inline
-#include "BitOperations.inl"
+#include "Operations/BitOperations.inl"

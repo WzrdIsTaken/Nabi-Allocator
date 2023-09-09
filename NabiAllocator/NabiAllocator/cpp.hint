@@ -1,0 +1,29 @@
+// https://learn.microsoft.com/en-us/cpp/build/reference/hint-files?view=msvc-170
+
+// Config.h
+#define NABI_ALLOCATOR_DEBUG
+#define NABI_ALLOCATOR_MEMORY_TAGGING
+#define NABI_ALLOCATOR_TESTS
+#define NABI_ALLOCATOR_TRACK_ALLOCATIONS
+
+// Version.h
+#define NABI_ALLOCATOR_VERSION
+#define NABI_ALLOCATOR_VERSION_MAJOR 0
+#define NABI_ALLOCATOR_VERSION_MINOR 0 
+#define NABI_ALLOCATOR_VERSION_PATCH 0
+
+// MemoryOperations.h
+#define NABI_ALLOCATOR_TO_UPTR(arg) reinterpret_cast<nabi_allocator::uPtr>(arg)
+#define NABI_ALLOCATPR_TO_VPTR(arg) reinterpret_cast<void*>(arg)
+
+// MacroUtils.h
+#define NABI_ALLOCATOR_CONCAT(arg1, arg2) arg1 ## arg2
+#define NABI_ALLOCATOR_MACRO_NOT_DEFINED (void(0))
+#define NABI_ALLOCATOR_STR(arg) #arg
+#define NABI_ALLOCATOR_XSTR(arg) NABI_ALLOCATOR_STR(arg)
+
+// TypeUtils.h
+#define NABI_ALLOCATOR_NAMEOF(arg) ((decltype(&arg))nullptr, #arg)
+#define NABI_ALLOCATOR_SET_COPY_CONSTRUCTORS(type, operation) type(type&) = operation; type(type const&) = operation;
+#define NABI_ALLOCATOR_SET_COPY_MOVE_CONSTRUCTORS(type, operation) NABI_ALLOCATOR_SET_COPY_CONSTRUCTORS(type, operation) NABI_ALLOCATOR_SET_MOVE_CONSTRUCTORS(type, operation)
+#define NABI_ALLOCATOR_SET_MOVE_CONSTRUCTORS(type, operation) type(type&&) = operation; type(type const&&) = operation;

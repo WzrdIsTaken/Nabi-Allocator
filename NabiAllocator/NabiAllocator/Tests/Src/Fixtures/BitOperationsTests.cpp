@@ -8,8 +8,8 @@
 #include "Config.h"
 
 // Nabi Headers
-#include "BitOperations.h"
 #include "IntegerTypes.h"
+#include "Operations/BitOperations.h"
 
 /**
  * Tests for BitOperations

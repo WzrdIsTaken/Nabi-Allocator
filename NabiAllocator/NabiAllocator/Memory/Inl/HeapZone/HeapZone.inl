@@ -1,5 +1,5 @@
 // inl's Header
-#include "HeapZone.h"
+#include "HeapZone/HeapZone.h"
 
 namespace nabi_allocator
 {
