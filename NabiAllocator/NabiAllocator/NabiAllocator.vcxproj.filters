@@ -76,6 +76,9 @@
     <Filter Include="Memory\Inc\Allocators">
       <UniqueIdentifier>{86b90a82-7c44-4fb6-b86c-2eb6d74b98e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Memory\Inc\Allocators\FreeListAllocator">
+      <UniqueIdentifier>{dd23aedd-1aec-4497-a781-8092c08bc863}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -118,9 +121,6 @@
     <ClInclude Include="Core\Inc\CharacterConstants.h">
       <Filter>Core\Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Memory\Inc\MemoryOperators.h">
-      <Filter>Memory\Inc</Filter>
-    </ClInclude>
     <ClInclude Include="Memory\Inc\MemoryConstants.h">
       <Filter>Memory\Inc</Filter>
     </ClInclude>
@@ -144,6 +144,21 @@
     </ClInclude>
     <ClInclude Include="Memory\Inc\Allocators\AllocatorBase.h">
       <Filter>Memory\Inc\Allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListAllocator.h">
+      <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockInfo.h">
+      <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockInfoIndex.h">
+      <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\Node.h">
+      <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockPadding.h">
+      <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

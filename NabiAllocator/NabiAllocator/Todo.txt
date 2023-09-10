@@ -24,6 +24,12 @@ Tasks:
 - Create the MemoryCommand. If we call it something different, need to update the summary comment in HeapZone.h
 - Create functions to Load/Unload BlockInfo into a struct
 
+- I'm unsure how much overlap a free list allocator and segerated list allocator will have...
+	- I'm going to put everything for the free list under allocators/freelistallocator for now. this can be refactored later.
+		- If anything is generic, it can just go in the root Allocators/ folder along with AllocatorBase
+	- the same is with c_BlockAllignment. I'm doing the free list allocator first...
+		- maybe this block allignment can actually be a constant inside the allocator?
+
 Archive:
 - Write a test for MemoryOperations::IsAlligned. And think - should the memory allignment be different on x64 and x86?
 	- Depending on the architecture, then eg the FreeList nodes will / won't fit within 8 bytes

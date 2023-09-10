@@ -9,11 +9,13 @@
 #include "HeapZone/HeapZone.h"
 #include "HeapZone/HeapZoneInfo.h"
 #include "IntegerTypes.h"
-#include "MemoryConstants.h"
 #include "Operations/MemoryOperations.h"
 
 /**
- * Tests for HeapZoneBase / HeapZone
+ * Tests for HeapZoneBase / HeapZone.
+ * 
+ * In the tests, we set heapZoneSize to MockAllocator::c_BlockAllignment so these two values are
+ * always in sync and we never hit the memory_operations::IsAlligned assert in HeapZoneBase.cpp.
 */
 
 namespace nabi_allocator::tests
@@ -24,6 +26,8 @@ namespace nabi_allocator::tests
 	class MockAllocator final : public AllocatorBase
 	{
 	public:
+		static uInt constexpr c_BlockAllignment = 8u;
+
 		MockAllocator(HeapZoneInfo const& /*heapZoneInfo*/)
 			: m_AllocationCount(0u)
 		{
@@ -51,12 +55,13 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, CreateAndDestroyHeapZone)
 	{
-		HeapZone<MockAllocator> heapZone{ c_BlockAllignment, "TestHeapZone" };
+		uInt constexpr heapZoneSize = MockAllocator::c_BlockAllignment;
+		HeapZone<MockAllocator> heapZone{ heapZoneSize, "TestHeapZone" };
 		HeapZoneInfo const& heapZoneInfo = heapZone.GetZoneInfo();
 
 		{
-			uPtr const heapZoneSize = memory_operations::GetMemorySize(heapZoneInfo.m_Start, heapZoneInfo.m_End);
-			EXPECT_EQ(c_BlockAllignment, heapZoneSize);
+			uPtr const size = memory_operations::GetMemorySize(heapZoneInfo.m_Start, heapZoneInfo.m_End);
+			EXPECT_EQ(heapZoneSize, size);
 		}
 		
 		heapZone.Deinit();
@@ -69,7 +74,8 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, CheckAllocatorCalls)
 	{
-		HeapZone<MockAllocator> heapZone{ c_BlockAllignment, "TestHeapZone" };
+		uInt constexpr heapZoneSize = MockAllocator::c_BlockAllignment;
+		HeapZone<MockAllocator> heapZone{ heapZoneSize, "TestHeapZone" };
 
 		void* ptr = heapZone.Allocate(1u);
 		EXPECT_EQ(1u, heapZone.GetAllocator().GetAllocationCount());

@@ -19,11 +19,18 @@ namespace nabi_allocator
 {
 	class AllocatorBase;
 	template<typename T>
-	concept is_allocator = std::is_base_of_v<AllocatorBase, T>;
+	concept is_allocator = std::is_base_of_v<AllocatorBase, T> &&
+		requires
+		{
+			{ T::c_BlockAllignment };
+		};
 
 	class AllocatorBase abstract
 	{
 	public:
+		// static uInt constexpr c_BlockAllignment = [allignment]; 
+		// All allocator's must have this value defined.
+
 		[[nodiscard]] virtual void* Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo) = 0;
 		virtual void Free(void* memory, HeapZoneInfo const& heapZoneInfo) = 0;
 	};
