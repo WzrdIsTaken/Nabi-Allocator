@@ -23,10 +23,10 @@ namespace nabi_allocator
 		HeapZoneBase();
 		virtual ~HeapZoneBase() = default;
 
-		HeapZoneInfo& Init(u32 const numBytes, std::string const& debugName);
+		HeapZoneInfo& Init(uInt const numBytes, std::string const& debugName);
 		void Deinit();
 
-		[[nodiscard]] inline virtual void* Allocate(u32 const numBytes) = 0;
+		[[nodiscard]] inline virtual void* Allocate(uInt const numBytes) = 0;
 		inline virtual void Free(void* const memory) = 0;
 
 		inline HeapZoneInfo const& GetZoneInfo() const noexcept;

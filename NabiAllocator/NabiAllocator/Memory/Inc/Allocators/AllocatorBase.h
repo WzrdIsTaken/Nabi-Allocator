@@ -24,7 +24,7 @@ namespace nabi_allocator
 	class AllocatorBase abstract
 	{
 	public:
-		[[nodiscard]] virtual void* Allocate(u32 const numBytes, HeapZoneInfo const& heapZoneInfo) = 0;
+		[[nodiscard]] virtual void* Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo) = 0;
 		virtual void Free(void* memory, HeapZoneInfo const& heapZoneInfo) = 0;
 	};
 } // namespace nabi_allocator

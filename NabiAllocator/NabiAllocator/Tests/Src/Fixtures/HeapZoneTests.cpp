@@ -29,7 +29,7 @@ namespace nabi_allocator::tests
 		{
 		}
 
-		[[nodiscard]] void* Allocate(u32 const numBytes, HeapZoneInfo const& /*heapZoneInfo*/) override
+		[[nodiscard]] void* Allocate(uInt const numBytes, HeapZoneInfo const& /*heapZoneInfo*/) override
 		{
 			++m_AllocationCount;
 			return nullptr;

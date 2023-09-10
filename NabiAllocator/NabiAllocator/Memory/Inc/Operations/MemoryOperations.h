@@ -15,19 +15,20 @@
 namespace nabi_allocator::memory_operations
 {
 	template<typename T>
-	[[nodiscard]] inline T RequestMemoryFromOS(u32 const numBytes);
+	[[nodiscard]] inline T RequestMemoryFromOS(uInt const numBytes);
 	template<typename T>
 	inline void ReleaseMemoryToOS(T*& memory);
 
 	template<typename T>
 	inline void ResetMemory(T* const memory);
-	inline void ResetMemory(void* const destination, u32 const size);
+	inline void ResetMemory(void* const destination, uInt const numBytes);
 
-	[[nodiscard]] inline uPtr GetMemorySize(void const* const start, void const* const end);
-	[[nodiscard]] inline constexpr uPtr GetMemorySize(uPtr const start, uPtr const end) noexcept;
+	[[nodiscard]] inline uInt GetMemorySize(void const* const start, void const* const end);
+	[[nodiscard]] inline constexpr uInt GetMemorySize(uPtr const start, uPtr const end) noexcept;
 
 	template<is_integral T>
-	[[nodiscard]] inline constexpr bool IsAlligned(T const value, u32 const allignment) noexcept;
+	[[nodiscard]] inline constexpr bool IsAlligned(T const value, uInt const allignment) noexcept;
+	[[nodiscard]] inline bool IsAlligned(void const* const address, uInt const allignment);
 } // namespace nabi_allocator
 
 // Inline Inline

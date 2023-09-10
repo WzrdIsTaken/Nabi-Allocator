@@ -4,7 +4,7 @@
 namespace nabi_allocator
 {
 	template<is_allocator T>
-	inline HeapZone<T>::HeapZone(u32 const numBytes, std::string const& debugName)
+	inline HeapZone<T>::HeapZone(uInt const numBytes, std::string const& debugName)
 		: HeapZoneBase{}
 		, m_Allocator(Init(numBytes, debugName))
 	{
@@ -20,7 +20,7 @@ namespace nabi_allocator
 	}
 
 	template<is_allocator T>
-	inline void* HeapZone<T>::Allocate(u32 const numBytes)
+	inline void* HeapZone<T>::Allocate(uInt const numBytes)
 	{
 		return m_Allocator.Allocate(numBytes, m_ZoneInfo);
 	}

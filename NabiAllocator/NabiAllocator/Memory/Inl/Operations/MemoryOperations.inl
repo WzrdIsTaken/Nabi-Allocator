@@ -10,7 +10,7 @@
 namespace nabi_allocator::memory_operations
 {
 	template<typename T>
-	inline T RequestMemoryFromOS(u32 const numBytes)
+	inline T RequestMemoryFromOS(uInt const numBytes)
 	{
 		NABI_ALLOCATOR_ASSERT(numBytes > 0u, "Requesting 0 bytes");
 
@@ -36,25 +36,30 @@ namespace nabi_allocator::memory_operations
 		std::memset(memory, NULL, sizeof(T));
 	}
 
-	inline void ResetMemory(void* const destination, u32 const size)
+	inline void ResetMemory(void* const destination, uInt const numBytes)
 	{
 		NABI_ALLOCATOR_ASSERT(destination, "Can't reset null memory!");
-		std::memset(destination, NULL, size);
+		std::memset(destination, NULL, static_cast<std::size_t>(numBytes));
 	}
 
-	inline uPtr GetMemorySize(void const* const start, void const* const end)
+	inline uInt GetMemorySize(void const* const start, void const* const end)
 	{
 		return GetMemorySize(NABI_ALLOCATOR_TO_UPTR(start), NABI_ALLOCATOR_TO_UPTR(end));
 	}
 
-	inline constexpr uPtr GetMemorySize(uPtr const start, uPtr const end) noexcept
+	inline constexpr uInt GetMemorySize(uPtr const start, uPtr const end) noexcept
 	{
 		return end - start;
 	}
 
 	template<is_integral T>
-	inline constexpr bool IsAlligned(T const value, u32 const allignment) noexcept
+	inline constexpr bool IsAlligned(T const value, uInt const allignment) noexcept
 	{
-		return (static_cast<u32>(value) % allignment) == 0u;
+		return (static_cast<uInt>(value) % allignment) == 0u;
+	}
+
+	inline bool IsAlligned(void const* const address, uInt const allignment)
+	{
+		return IsAlligned(NABI_ALLOCATOR_TO_UPTR(address), allignment);
 	}
 } // namespace nabi_allocator::memory_operations

@@ -9,7 +9,7 @@
 
 namespace nabi_allocator
 {
-	HeapZoneInfo& HeapZoneBase::Init(u32 const numBytes, std::string const& debugName)
+	HeapZoneInfo& HeapZoneBase::Init(uInt const numBytes, std::string const& debugName)
 	{
 		NABI_ALLOCATOR_ASSERT(!IsInitialized(),
 			"Heap zone is already initialized");

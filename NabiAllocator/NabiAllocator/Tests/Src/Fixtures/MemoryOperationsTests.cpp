@@ -59,14 +59,24 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, GetMemorySize)
 	{
-		uPtr const start = 0u;
-		uPtr const end = 8u;
+		uPtr constexpr start = 0u;
+		uPtr constexpr end = 8u;
 
 		void const* const startVoid = NABI_ALLOCATOR_TO_VPTR(start);
 		void const* const endVoid = NABI_ALLOCATOR_TO_VPTR(end);
 
 		EXPECT_EQ(8u, memory_operations::GetMemorySize(start, end));
 		EXPECT_EQ(8u, memory_operations::GetMemorySize(startVoid, endVoid));
+	}
+
+	TEST(TEST_FIXTURE_NAME, IsAlligned)
+	{
+		uInt constexpr value = 8u;
+		EXPECT_TRUE(memory_operations::IsAlligned(value, 4u));
+		EXPECT_FALSE(memory_operations::IsAlligned(value, 3u));
+
+		void const* const ptr = NABI_ALLOCATOR_TO_VPTR(value);
+		EXPECT_TRUE(memory_operations::IsAlligned(ptr, 4u));
 	}
 
 #	undef TEST_FIXTURE_NAME
