@@ -43,11 +43,12 @@
     <ClInclude Include="Core\Inc\IntegerTypes.h" />
     <ClInclude Include="Core\Inc\TemplateConcepts.h" />
     <ClInclude Include="Memory\Inc\Allocators\AllocatorBase.h" />
+    <ClInclude Include="Memory\Inc\Allocators\AllocatorStats.h" />
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockInfo.h" />
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockInfoIndex.h" />
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockPadding.h" />
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListAllocator.h" />
-    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\Node.h" />
+    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListNode.h" />
     <ClInclude Include="Memory\Inc\HeapZone\HeapZone.h" />
     <ClInclude Include="Memory\Inc\HeapZone\HeapZoneBase.h" />
     <ClInclude Include="Memory\Inc\HeapZone\HeapZoneInfo.h" />

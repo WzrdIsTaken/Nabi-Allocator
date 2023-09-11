@@ -3,7 +3,11 @@
 // STD Headers
 #include <type_traits>
 
+// Config Headers
+#include "Config.h"
+
 // Nabi Headers
+#include "AllocatorStats.h"
 #include "IntegerTypes.h"
 
 /**
@@ -33,5 +37,10 @@ namespace nabi_allocator
 
 		[[nodiscard]] virtual void* Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo) = 0;
 		virtual void Free(void* memory, HeapZoneInfo const& heapZoneInfo) = 0;
+
+	protected:
+#ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
+		AllocatorStats m_AllocatorStats = {};
+#endif // ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
 	};
 } // namespace nabi_allocator

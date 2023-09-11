@@ -30,6 +30,8 @@ Tasks:
 	- the same is with c_BlockAllignment. I'm doing the free list allocator first...
 		- maybe this block allignment can actually be a constant inside the allocator?
 
+- Should AllocatorBase have a construtor for m_AllocatorStats? or not?
+
 Archive:
 - Write a test for MemoryOperations::IsAlligned. And think - should the memory allignment be different on x64 and x86?
 	- Depending on the architecture, then eg the FreeList nodes will / won't fit within 8 bytes

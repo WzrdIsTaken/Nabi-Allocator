@@ -1,0 +1,65 @@
+#pragma once
+
+// Config Headers
+#include "Config.h"
+
+// Nabi Headers
+#include "IntegerTypes.h"
+#include "TypeUtils.h"
+
+/**
+* All memory blocks start with a header and end with a footer. These structures hold key infomation about a block,
+* such as its size, so that the free list allocator can quickly discern its characteristics.
+* 
+* - The infomation relevant to the allocator is duplicated in the header and footer to reduce cache misses. 
+* - Its important to keep the sizes of the blocks as small as possible and allignment friendly.
+*/
+
+namespace nabi_allocator::free_list_allocator
+{
+	struct BlockBase abstract
+	{
+		uInt m_BlockInfo;
+	};
+
+	struct BlockHeader final : public BlockBase
+	{
+#ifdef NABI_ALLOCATOR_MEMORY_TAGGING
+		u32 m_MemoryTag; // I hope a u32 has enough range for all the memory tags someone could ever want... (it can easily be changed though)
+#endif // ifdef NABI_ALLOCATOR_MEMORY_TAGGING
+	};
+
+	struct BlockFooter final : public BlockBase
+	{
+	};
+
+	uInt constexpr c_BlockHeaderSize = sizeof(BlockHeader);
+	uInt constexpr c_BlockFooterSize = sizeof(BlockFooter);
+
+	static_assert(c_BlockHeaderSize ==
+#ifdef _M_X64
+#	ifdef NABI_ALLOCATOR_MEMORY_TAGGING
+		12u
+#	else
+		8u
+#	endif // ifdef NABI_ALLOCATOR_MEMORY_TAGGING 
+#elif _M_IX86
+#	ifdef NABI_ALLOCATOR_MEMORY_TAGGING
+		8u
+#	else
+		4u
+#	endif // ifdef NABI_ALLOCATOR_MEMORY_TAGGING 
+#else
+#	error "Unsupported architecture"
+#endif // ifdef _M_IX86, elif _M_IX86
+		, NABI_ALLOCATOR_NAMEOF_LITERAL(BlockHeader) " is not the expected size");
+	static_assert(c_BlockFooterSize == 
+#ifdef _M_X64
+		8u
+#elif _M_IX86
+		4u
+#else
+#	error "Unsupported architecture"
+#endif // ifdef _M_IX86, elif _M_IX86
+		, NABI_ALLOCATOR_NAMEOF_LITERAL(BlockFooter) " is not the expected size");
+} // namespace nabi_allocator::free_list_allocator

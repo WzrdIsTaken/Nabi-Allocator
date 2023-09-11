@@ -154,11 +154,14 @@
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockInfoIndex.h">
       <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
     </ClInclude>
-    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\Node.h">
+    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListNode.h">
       <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
     </ClInclude>
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockPadding.h">
       <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Allocators\AllocatorStats.h">
+      <Filter>Memory\Inc\Allocators</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
