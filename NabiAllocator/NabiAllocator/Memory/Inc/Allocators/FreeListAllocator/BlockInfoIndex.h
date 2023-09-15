@@ -10,7 +10,7 @@
 
 namespace nabi_allocator::free_list_allocator
 {
-	enum class BlockInfoIndex : uInt
+	enum class BlockInfoIndex : u32
 	{
 		Allocated = 0u,
 		Padded = 1u,

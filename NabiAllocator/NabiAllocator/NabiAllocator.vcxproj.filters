@@ -14,6 +14,15 @@
     <ClCompile Include="Memory\Src\HeapZone\HeapZoneBase.cpp">
       <Filter>Memory\Src\HeapZone</Filter>
     </ClCompile>
+    <ClCompile Include="Memory\Src\Allocators\FreeListAllocator\BlockInfo.cpp">
+      <Filter>Memory\Src\Allocators\FreeListAllocator</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\Src\Allocators\AllocatorStats.cpp">
+      <Filter>Memory\Src\Allocators</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\Src\Fixtures\FreeListAllocatorTests.cpp">
+      <Filter>Tests\Src\Fixtures</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tests">
@@ -79,6 +88,18 @@
     <Filter Include="Memory\Inc\Allocators\FreeListAllocator">
       <UniqueIdentifier>{dd23aedd-1aec-4497-a781-8092c08bc863}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Memory\Src\Allocators">
+      <UniqueIdentifier>{33649a5e-1d15-4385-8929-331ebae52cc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory\Src\Allocators\FreeListAllocator">
+      <UniqueIdentifier>{76e173c5-6dc6-4de0-9634-5de7ac2ba033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory\Inl\Allocators">
+      <UniqueIdentifier>{ef6e5d2a-08a3-4fe7-a7ea-8b58acdd591e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory\Inl\Allocators\FreeListAllocator">
+      <UniqueIdentifier>{762ea10b-1fb1-4866-8484-e5ff3b268d16}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -95,6 +116,9 @@
       <Filter>Memory\Inl\HeapZone</Filter>
     </None>
     <None Include="cpp.hint" />
+    <None Include="Memory\Inl\Allocators\FreeListAllocator\FreeListAllocator.inl">
+      <Filter>Memory\Inl\Allocators\FreeListAllocator</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Todo.txt" />
@@ -162,6 +186,12 @@
     </ClInclude>
     <ClInclude Include="Memory\Inc\Allocators\AllocatorStats.h">
       <Filter>Memory\Inc\Allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\SearchAlgorithm.h">
+      <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListAllocatorSettings.h">
+      <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

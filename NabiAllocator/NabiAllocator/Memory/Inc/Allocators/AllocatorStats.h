@@ -21,5 +21,16 @@ namespace nabi_allocator
 		u64 m_TotalAllocationCount;
 		u64 m_TotalBytesAllocated;
 	};
+
+	enum class AllocatorStatsUpdateType : u32
+	{
+		Allocate,
+		Free,
+
+		ENUM_COUNT
+	};
+
+	void UpdateAllocatorStats(AllocatorStats& allocatorStats, AllocatorStatsUpdateType const updateType,
+		u64 const& allocationCountAdjustment, u64 const& allocationByteAdjustment);
 #endif // ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
 } // namespace nabi_allocator

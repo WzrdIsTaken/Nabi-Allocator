@@ -7,8 +7,10 @@
 /**
 * If the a memory block isn't a multiple of 8, then this struct is used to pad out the size.
 * 
-* If the block is padded, then the minimum padding is 1. Therefore, in this space we can store the BlockPadding struct
-* 'for free' which contains a u8. The maximum padding of a block is 7.
+* If a block is padded, then the minimum padding is 1. Therefore, in this space we can store this BlockPadding struct
+* which contains a u8 'for free'. The maximum padding of a block in isolation 7. However, if memory block is too large
+* for the required number of bytes for an allocation but too small to be its own block (size < FreeListAllocator::c_MinBlockSize)
+* then then the padding will be originalBlockSize - requiredBlockSize.
 */
 
 namespace nabi_allocator::free_list_allocator

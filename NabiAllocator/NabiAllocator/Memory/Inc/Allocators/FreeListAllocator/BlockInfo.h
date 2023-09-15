@@ -33,6 +33,13 @@ namespace nabi_allocator::free_list_allocator
 	{
 	};
 
+	struct BlockInfoContent final
+	{
+		bool m_Allocated;
+		bool m_Padded;
+		uInt m_NumBytes;
+	};
+
 	uInt constexpr c_BlockHeaderSize = sizeof(BlockHeader);
 	uInt constexpr c_BlockFooterSize = sizeof(BlockFooter);
 
@@ -62,4 +69,7 @@ namespace nabi_allocator::free_list_allocator
 #	error "Unsupported architecture"
 #endif // ifdef _M_IX86, elif _M_IX86
 		, NABI_ALLOCATOR_NAMEOF_LITERAL(BlockFooter) " is not the expected size");
+
+	void LoadBlockInfo(BlockInfoContent const& blockInfoContent, BlockBase& blockOne, BlockBase* const blockTwo = nullptr) noexcept; // This function can take in two blocks (ie, a header and footer)
+	void UnloadBlockInfo(BlockInfoContent& blockInfoContent, BlockBase const& block) noexcept;
 } // namespace nabi_allocator::free_list_allocator

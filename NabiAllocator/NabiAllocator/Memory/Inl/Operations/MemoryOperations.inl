@@ -42,14 +42,14 @@ namespace nabi_allocator::memory_operations
 		std::memset(destination, NULL, static_cast<std::size_t>(numBytes));
 	}
 
-	inline uInt GetMemorySize(void const* const start, void const* const end)
-	{
-		return GetMemorySize(NABI_ALLOCATOR_TO_UPTR(start), NABI_ALLOCATOR_TO_UPTR(end));
-	}
-
 	inline constexpr uInt GetMemorySize(uPtr const start, uPtr const end) noexcept
 	{
 		return end - start;
+	}
+
+	inline uInt GetMemorySize(void const* const start, void const* const end)
+	{
+		return GetMemorySize(NABI_ALLOCATOR_TO_UPTR(start), NABI_ALLOCATOR_TO_UPTR(end));
 	}
 
 	template<is_integral T>
@@ -61,5 +61,15 @@ namespace nabi_allocator::memory_operations
 	inline bool IsAlligned(void const* const address, uInt const allignment)
 	{
 		return IsAlligned(NABI_ALLOCATOR_TO_UPTR(address), allignment);
+	}
+
+	inline constexpr bool IsPtrInRange(uPtr const start, uPtr const end, uPtr const ptr) noexcept
+	{
+		return ptr >= start && ptr < end;
+	}
+
+	inline bool IsPtrInRange(void const* const start, void const* const end, void const* const ptr)
+	{
+		return IsPtrInRange(NABI_ALLOCATOR_TO_UPTR(start), NABI_ALLOCATOR_TO_UPTR(end), NABI_ALLOCATOR_TO_UPTR(ptr));
 	}
 } // namespace nabi_allocator::memory_operations

@@ -8,12 +8,9 @@
 
 namespace nabi_allocator
 {
-	HeapZoneInfo& HeapZoneBase::Init(uInt const numBytes, uInt const allignment, std::string const& debugName)
+	HeapZoneInfo& HeapZoneBase::Init(uInt const numBytes, std::string const& debugName)
 	{
-		NABI_ALLOCATOR_ASSERT(!IsInitialized(),
-			"Heap zone is already initialized");
-		NABI_ALLOCATOR_ASSERT(memory_operations::IsAlligned(numBytes, allignment),
-			"The size of the heap zone must be exactly divisible by " << NABI_ALLOCATOR_NAMEOF(allignment));
+		NABI_ALLOCATOR_ASSERT(!IsInitialized(), "Heap zone is already initialized");
 
 		m_ZoneInfo.m_Start = memory_operations::RequestMemoryFromOS<uPtr>(numBytes);
 		m_ZoneInfo.m_End = m_ZoneInfo.m_Start + static_cast<uPtr>(numBytes);

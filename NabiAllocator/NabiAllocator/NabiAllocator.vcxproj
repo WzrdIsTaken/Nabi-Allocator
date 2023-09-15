@@ -20,13 +20,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Memory\Src\Allocators\AllocatorStats.cpp" />
+    <ClCompile Include="Memory\Src\Allocators\FreeListAllocator\BlockInfo.cpp" />
     <ClCompile Include="Memory\Src\HeapZone\HeapZoneBase.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\BitOperationsTests.cpp" />
+    <ClCompile Include="Tests\Src\Fixtures\FreeListAllocatorTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\HeapZoneTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\MemoryOperationsTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="Memory\Inl\Allocators\FreeListAllocator\FreeListAllocator.inl" />
     <None Include="Memory\Inl\HeapZone\HeapZone.inl" />
     <None Include="Memory\Inl\HeapZone\HeapZoneBase.inl" />
     <None Include="Memory\Inl\Operations\BitOperations.inl" />
@@ -48,7 +52,9 @@
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockInfoIndex.h" />
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockPadding.h" />
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListAllocator.h" />
+    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListAllocatorSettings.h" />
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListNode.h" />
+    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\SearchAlgorithm.h" />
     <ClInclude Include="Memory\Inc\HeapZone\HeapZone.h" />
     <ClInclude Include="Memory\Inc\HeapZone\HeapZoneBase.h" />
     <ClInclude Include="Memory\Inc\HeapZone\HeapZoneInfo.h" />

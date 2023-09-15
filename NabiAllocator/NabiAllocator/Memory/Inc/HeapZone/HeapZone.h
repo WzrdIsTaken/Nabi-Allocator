@@ -20,8 +20,8 @@ namespace nabi_allocator
 		HeapZone(uInt const numBytes, std::string const& debugName);
 		~HeapZone() override;
 
-		[[nodiscard]] inline virtual void* Allocate(uInt const numBytes) override;
-		inline virtual void Free(void* const memory) override;
+		[[nodiscard]] inline void* Allocate(uInt const numBytes) override;
+		inline void Free(void* const memory) override;
 
 		inline T& GetAllocator() noexcept;
 

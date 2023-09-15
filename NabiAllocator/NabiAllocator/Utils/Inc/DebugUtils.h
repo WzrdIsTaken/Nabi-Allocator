@@ -74,6 +74,7 @@ namespace nabi_allocator::debug_utils
 
 // Use
 #   define NABI_ALLOCATOR_ASSERT(condition, message) NABI_ALLOCATOR_ASSERT_BASE(condition, message)
+#	define NABI_ALLOCATOR_ASSERT_DEFAULT(condition) NABI_ALLOCATOR_ASSERT_BASE(condition, NABI_ALLOCATOR_STR(condition))
 #   define NABI_ALLOCATOR_ASSERT_FAIL(message) NABI_ALLOCATOR_ASSERT(false, message)
 
 // --- Logging Macros ---
@@ -96,6 +97,7 @@ namespace nabi_allocator::debug_utils
 #	pragma warning( disable : 4002 ) // Disables 'too many arguements for function-like macro' warning we get when using (void(0))
 
 #   define NABI_ALLOCATOR_ASSERT(condition, message) NABI_ALLOCATOR_MACRO_NOT_DEFINED
+#	define NABI_ALLOCATOR_ASSERT_DEFAULT(condition) NABI_ALLOCATOR_MACRO_NOT_DEFINED
 #   define NABI_ALLOCATOR_ASSERT_FAIL(message) NABI_ALLOCATOR_MACRO_NOT_DEFINED
 #	define NABI_ALLOCATOR_LOG(message) NABI_ALLOCATOR_MACRO_NOT_DEFINED
 #endif // ifdef NABI_ALLOCATOR_DEBUG

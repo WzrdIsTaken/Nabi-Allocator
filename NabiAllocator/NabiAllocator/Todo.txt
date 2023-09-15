@@ -1,5 +1,14 @@
 This project is my dissertation! (hopefully...)
 
+Resources:
+* Videos
+- "What does it take to design a memory allocator?" https://www.youtube.com/watch?v=UTii4dyhR5c (+ the playlist)
+- "Introduction to General Purpose Allocation" https://youtu.be/MvDUe2evkHg?feature=shared (+ the playlist)
+
+* Articles
+- "Writing a memory allocator" http://dmitrysoshnikov.com/compilers/writing-a-memory-allocator/
+- "Writing your own memory allocator" https://screwjankgames.github.io/engine%20programming/2020/09/24/writing-your-own-memory-allocators.html
+
 Tasks:
 
 *Long Term
@@ -28,9 +37,15 @@ Tasks:
 	- I'm going to put everything for the free list under allocators/freelistallocator for now. this can be refactored later.
 		- If anything is generic, it can just go in the root Allocators/ folder along with AllocatorBase
 	- the same is with c_BlockAllignment. I'm doing the free list allocator first...
-		- maybe this block allignment can actually be a constant inside the allocator?
+		- maybe this block allignment can actually be a constant inside the allocator? [DONE]
+	- what about c_MinBlockSize? I've put this as an assert inside the allocator for now
 
-- Should AllocatorBase have a construtor for m_AllocatorStats? or not?
+- debug_[method name/var name] for debug stuff (eg heapzone getdebugname), same with test stuff? test_?
+
+- Should AllocatorBase have a construtor for m_AllocatorStats? or not? (if so, remember to call it in FreeListAllocator.inl)
+- Make sure you test running with defines on / off and x64/86 etc
+- Should defines, like NABI_ALLOCATOR_TRACK_ALLOCATIONS toggle if headers are included or not? eg AllocatorStats in AllocatorBase.h
+- Make the allocator base requirement check the type of c_BlockAllignment is uint
 
 Archive:
 - Write a test for MemoryOperations::IsAlligned. And think - should the memory allignment be different on x64 and x86?

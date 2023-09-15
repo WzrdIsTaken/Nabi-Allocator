@@ -6,15 +6,11 @@
 #define NABI_ALLOCATOR_TESTS
 #define NABI_ALLOCATOR_TRACK_ALLOCATIONS
 
-// Version.h
-#define NABI_ALLOCATOR_VERSION
-#define NABI_ALLOCATOR_VERSION_MAJOR 0
-#define NABI_ALLOCATOR_VERSION_MINOR 0 
-#define NABI_ALLOCATOR_VERSION_PATCH 0
-
-// MemoryOperations.h
-#define NABI_ALLOCATOR_TO_UPTR(arg) reinterpret_cast<nabi_allocator::uPtr>(arg)
-#define NABI_ALLOCATPR_TO_VPTR(arg) reinterpret_cast<void*>(arg)
+// DebugUtils.h
+#define NABI_ALLOCATOR_ASSERT(condition, message) NABI_ALLOCATOR_ASSERT_BASE(condition, message)
+#define NABI_ALLOCATOR_ASSERT_DEFAULT(condition) NABI_ALLOCATOR_ASSERT_BASE(condition, NABI_ALLOCATOR_STR(condition))
+#define NABI_ALLOCATOR_ASSERT_FAIL(message) NABI_ALLOCATOR_ASSERT(false, message)
+#define NABI_ALLOCATOR_LOG(message) NABI_ALLOCATOR_LOG_BASE(message)
 
 // MacroUtils.h
 #define NABI_ALLOCATOR_CONCAT(arg1, arg2) arg1 ## arg2
@@ -22,8 +18,18 @@
 #define NABI_ALLOCATOR_STR(arg) #arg
 #define NABI_ALLOCATOR_XSTR(arg) NABI_ALLOCATOR_STR(arg)
 
+// MemoryOperations.h
+#define NABI_ALLOCATOR_TO_UPTR(arg) reinterpret_cast<nabi_allocator::uPtr>(arg)
+#define NABI_ALLOCATPR_TO_VPTR(arg) reinterpret_cast<void*>(arg)
+
 // TypeUtils.h
 #define NABI_ALLOCATOR_NAMEOF(arg) ((decltype(&arg))nullptr, #arg)
 #define NABI_ALLOCATOR_SET_COPY_CONSTRUCTORS(type, operation) type(type&) = operation; type(type const&) = operation;
 #define NABI_ALLOCATOR_SET_COPY_MOVE_CONSTRUCTORS(type, operation) NABI_ALLOCATOR_SET_COPY_CONSTRUCTORS(type, operation) NABI_ALLOCATOR_SET_MOVE_CONSTRUCTORS(type, operation)
 #define NABI_ALLOCATOR_SET_MOVE_CONSTRUCTORS(type, operation) type(type&&) = operation; type(type const&&) = operation;
+
+// Version.h
+#define NABI_ALLOCATOR_VERSION
+#define NABI_ALLOCATOR_VERSION_MAJOR 0
+#define NABI_ALLOCATOR_VERSION_MINOR 0 
+#define NABI_ALLOCATOR_VERSION_PATCH 0

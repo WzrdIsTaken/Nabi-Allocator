@@ -13,9 +13,6 @@
 
 /**
  * Tests for HeapZoneBase / HeapZone.
- * 
- * In the tests, we set heapZoneSize to MockAllocator::c_BlockAllignment so these two values are
- * always in sync and we never hit the memory_operations::IsAlligned assert in HeapZoneBase.cpp.
 */
 
 namespace nabi_allocator::tests
@@ -23,11 +20,11 @@ namespace nabi_allocator::tests
 #ifdef NABI_ALLOCATOR_TESTS
 #	define TEST_FIXTURE_NAME HeapZoneTests
 
+	static uInt constexpr c_TestHeapZoneSize = 1u;
+
 	class MockAllocator final : public AllocatorBase
 	{
 	public:
-		static uInt constexpr c_BlockAllignment = 8u;
-
 		MockAllocator(HeapZoneInfo const& /*heapZoneInfo*/)
 			: m_AllocationCount(0u)
 		{
@@ -55,33 +52,32 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, CreateAndDestroyHeapZone)
 	{
-		uInt constexpr heapZoneSize = MockAllocator::c_BlockAllignment;
-		HeapZone<MockAllocator> heapZone{ heapZoneSize, "TestHeapZone" };
+		HeapZone<MockAllocator> heapZone{ c_TestHeapZoneSize, "TestHeapZone" };
 		HeapZoneInfo const& heapZoneInfo = heapZone.GetZoneInfo();
 
 		{
 			uPtr const size = memory_operations::GetMemorySize(heapZoneInfo.m_Start, heapZoneInfo.m_End);
-			EXPECT_EQ(heapZoneSize, size);
+			EXPECT_EQ(c_TestHeapZoneSize, size);
 		}
 		
 		heapZone.Deinit();
 
 		{
-			uPtr const heapZoneSize = memory_operations::GetMemorySize(heapZoneInfo.m_Start, heapZoneInfo.m_End);
-			EXPECT_EQ(0u, heapZoneSize);
+			uPtr const size = memory_operations::GetMemorySize(heapZoneInfo.m_Start, heapZoneInfo.m_End);
+			EXPECT_EQ(0u, size);
 		}
 	}
 
 	TEST(TEST_FIXTURE_NAME, CheckAllocatorCalls)
 	{
-		uInt constexpr heapZoneSize = MockAllocator::c_BlockAllignment;
-		HeapZone<MockAllocator> heapZone{ heapZoneSize, "TestHeapZone" };
+		HeapZone<MockAllocator> heapZone{ c_TestHeapZoneSize, "TestHeapZone" };
+		MockAllocator const& mockAllocator = heapZone.GetAllocator();
 
 		void* ptr = heapZone.Allocate(1u);
-		EXPECT_EQ(1u, heapZone.GetAllocator().GetAllocationCount());
+		EXPECT_EQ(1u, mockAllocator.GetAllocationCount());
 
 		heapZone.Free(ptr);
-		EXPECT_EQ(0u, heapZone.GetAllocator().GetAllocationCount());
+		EXPECT_EQ(0u, mockAllocator.GetAllocationCount());
 	}
 
 #	undef TEST_FIXTURE_NAME
