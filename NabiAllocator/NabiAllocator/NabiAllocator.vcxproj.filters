@@ -193,5 +193,8 @@
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListAllocatorSettings.h">
       <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
     </ClInclude>
+    <ClInclude Include="Memory\Inc\Allocators\AllocatorBlockInfo.h">
+      <Filter>Memory\Inc\Allocators</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

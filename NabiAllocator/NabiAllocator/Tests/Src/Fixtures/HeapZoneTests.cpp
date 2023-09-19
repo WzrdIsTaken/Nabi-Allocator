@@ -6,6 +6,8 @@
 
 // Nabi Headers
 #include "Allocators/AllocatorBase.h"
+#include "Allocators/AllocatorBlockInfo.h"
+#include "DebugUtils.h"
 #include "HeapZone/HeapZone.h"
 #include "HeapZone/HeapZoneInfo.h"
 #include "IntegerTypes.h"
@@ -41,7 +43,14 @@ namespace nabi_allocator::tests
 			--m_AllocationCount;
 		}
 
-		inline u32 GetAllocationCount() const noexcept
+		[[nodiscard]] std::deque<AllocatorBlockInfo> IterateThroughMemoryPool(
+			std::optional<std::function<bool(AllocatorBlockInfo const&)>> /*action*/, HeapZoneInfo const& /*heapZoneInfo*/) override
+		{
+			NABI_ALLOCATOR_FUNCTION_NOT_IMPLEMENTED;
+			return {};
+		}
+
+		[[nodiscard]] inline u32 GetAllocationCount() const noexcept
 		{
 			return m_AllocationCount;
 		}

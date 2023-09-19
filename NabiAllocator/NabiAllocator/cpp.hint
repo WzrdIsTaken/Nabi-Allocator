@@ -10,6 +10,7 @@
 #define NABI_ALLOCATOR_ASSERT(condition, message) NABI_ALLOCATOR_ASSERT_BASE(condition, message)
 #define NABI_ALLOCATOR_ASSERT_DEFAULT(condition) NABI_ALLOCATOR_ASSERT_BASE(condition, NABI_ALLOCATOR_STR(condition))
 #define NABI_ALLOCATOR_ASSERT_FAIL(message) NABI_ALLOCATOR_ASSERT(false, message)
+#define NABI_ALLOCATOR_FUNCTION_NOT_IMPLEMENTED NABI_ALLOCATOR_ASSERT_FAIL("The function " << __FUNCTION__ << " is not implemented!")
 #define NABI_ALLOCATOR_LOG(message) NABI_ALLOCATOR_LOG_BASE(message)
 
 // MacroUtils.h

@@ -23,7 +23,7 @@ namespace nabi_allocator
 		[[nodiscard]] inline void* Allocate(uInt const numBytes) override;
 		inline void Free(void* const memory) override;
 
-		inline T& GetAllocator() noexcept;
+		[[nodiscard]] inline T& GetAllocator() noexcept;
 
 	private:
 		NABI_ALLOCATOR_SET_COPY_MOVE_CONSTRUCTORS(HeapZone, delete);

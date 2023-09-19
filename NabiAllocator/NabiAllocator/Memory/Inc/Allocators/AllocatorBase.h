@@ -1,6 +1,9 @@
 #pragma once
 
 // STD Headers
+#include <deque>
+#include <functional>
+#include <optional>
 #include <type_traits>
 
 // Config Headers
@@ -16,6 +19,7 @@
 
 namespace nabi_allocator
 {
+	struct AllocatorBlockInfo;
 	struct HeapZoneInfo;
 } // namespace nabi_allocator
 
@@ -30,6 +34,9 @@ namespace nabi_allocator
 	public:
 		[[nodiscard]] virtual void* Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo) = 0;
 		virtual void Free(void* memory, HeapZoneInfo const& heapZoneInfo) = 0;
+
+		[[nodiscard]] virtual std::deque<AllocatorBlockInfo> IterateThroughMemoryPool(
+			std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) = 0;
 
 	protected:
 #ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS

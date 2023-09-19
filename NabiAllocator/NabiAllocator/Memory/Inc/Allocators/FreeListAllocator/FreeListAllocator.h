@@ -1,5 +1,10 @@
 #pragma once
 
+// STD Headers
+#include <deque>
+#include <functional>
+#include <optional>
+
 // Nabi Headers
 #include "Allocators\AllocatorBase.h"
 #include "FreeListAllocatorSettings.h"
@@ -26,6 +31,7 @@
 
 namespace nabi_allocator
 {
+	struct AllocatorBlockInfo;
 	struct HeapZoneInfo;
 } // namespace nabi_allocator
 namespace nabi_allocator::free_list_allocator
@@ -45,6 +51,9 @@ namespace nabi_allocator::free_list_allocator
 
 		[[nodiscard]] void* Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo) override;
 		void Free(void* memory, HeapZoneInfo const& heapZoneInfo) override;
+
+		[[nodiscard]] virtual std::deque<AllocatorBlockInfo> IterateThroughMemoryPool(
+			std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) override;
 
 	private:
 		NABI_ALLOCATOR_SET_COPY_MOVE_CONSTRUCTORS(FreeListAllocator, delete);

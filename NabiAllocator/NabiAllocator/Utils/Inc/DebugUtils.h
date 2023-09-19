@@ -92,6 +92,11 @@ namespace nabi_allocator::debug_utils
 
 // Use
 #	define NABI_ALLOCATOR_LOG(message) NABI_ALLOCATOR_LOG_BASE(message)
+
+// --- Other Debug Macros ---
+
+// Use
+#	define NABI_ALLOCATOR_FUNCTION_NOT_IMPLEMENTED NABI_ALLOCATOR_ASSERT_FAIL("The function " << __FUNCTION__ << " is not implemented!")
 #else
 #	pragma warning( push ) // Push but never pop
 #	pragma warning( disable : 4002 ) // Disables 'too many arguements for function-like macro' warning we get when using (void(0))
@@ -100,4 +105,5 @@ namespace nabi_allocator::debug_utils
 #	define NABI_ALLOCATOR_ASSERT_DEFAULT(condition) NABI_ALLOCATOR_MACRO_NOT_DEFINED
 #   define NABI_ALLOCATOR_ASSERT_FAIL(message) NABI_ALLOCATOR_MACRO_NOT_DEFINED
 #	define NABI_ALLOCATOR_LOG(message) NABI_ALLOCATOR_MACRO_NOT_DEFINED
+#	define NABI_ALLOCATOR_FUNCTION_NOT_IMPLEMENTED NABI_ALLOCATOR_MACRO_NOT_DEFINED
 #endif // ifdef NABI_ALLOCATOR_DEBUG

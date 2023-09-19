@@ -4,6 +4,12 @@
 // Config Headers
 #include "Config.h"
 
+// Nabi Headers
+#include "Allocators\FreeListAllocator\FreeListAllocator.h"
+#include "Allocators\FreeListAllocator\FreeListAllocatorSettings.h"
+#include "HeapZone\HeapZone.h"
+#include "HeapZone\HeapZoneInfo.h"
+
 /**
  * Tests for FreeListAllocator
 */
@@ -25,7 +31,19 @@ namespace nabi_allocator::tests
 	// - Is it worth moving the search code in FreeListAllocator::TryFindFreeBlock to a different place? Eg in SearthAlogirthm can have
 	//   [[nodiscard]] [FindViaBestFit, FindViaFirstFit] etc functions. This could make the code more readable, modular and easy to test.
 	//       - If we do this (^) remove the "The code in TryFindFreeBlock is repeated..." comment line in FreeListAllocator.h
+	//		 - Also remember to remove the <limits> include from FreeListAllocator.inl
 	// - Make sure you test with all the defines in Config.h enabled/disabled.
+	// - And make sure that the includes in this file are only what we need
+
+	TEST(TEST_FIXTURE_NAME, notatestrnjustme)
+	{
+		//using namespace free_list_allocator;
+
+		//HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone = { 64u, "Name" };
+
+		//HeapZoneInfo heapZoneInfo = {};
+		//FreeListAllocator<c_FreeListAllocatorDefaultSettings> freeListAllocator = { heapZoneInfo };
+	}
 
 #	undef TEST_FIXTURE_NAME
 #endif // ifdef NABI_ALLOCATOR_TESTS

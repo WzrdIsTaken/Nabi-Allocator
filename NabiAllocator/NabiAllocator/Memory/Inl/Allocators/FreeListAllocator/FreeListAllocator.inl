@@ -8,6 +8,7 @@
 #include "Config.h"
 
 // Nabi Headers
+#include "Allocators\AllocatorBlockInfo.h"
 #include "Allocators\FreeListAllocator\BlockInfo.h"
 #include "Allocators\FreeListAllocator\BlockInfoIndex.h"
 #include "Allocators\FreeListAllocator\BlockPadding.h"
@@ -150,6 +151,53 @@ namespace nabi_allocator::free_list_allocator
 
 		// Begin the free process
 		TryCoalesceBlock(blockHeader, heapZoneInfo);
+	}
+
+	template<FreeListAllocatorSettings Settings>
+	inline std::deque<AllocatorBlockInfo> FreeListAllocator<Settings>::IterateThroughMemoryPool(
+		std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo)
+	{
+		std::deque<AllocatorBlockInfo> allocatorBlocks = {};
+		BlockHeader const* blockHeader = nullptr;
+		BlockInfoContent blockInfoContent = {};
+
+		// Loop through all the blocks in the heap zone until the end or "action" returns false
+		do
+		{
+			blockHeader = NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockHeader, blockHeader, +, blockInfoContent.m_NumBytes);
+			UnloadBlockInfo(&blockInfoContent, blockHeader);
+
+			// Store the block's infomation in allocatorBlockInfo
+			AllocatorBlockInfo& allocatorBlockInfo = allocatorBlocks.emplace_back();
+			allocatorBlockInfo.m_MemoryAddress = NABI_ALLOCATOR_TO_UPTR(blockHeader);
+#ifdef NABI_ALLOCATOR_MEMORY_TAGGING
+			allocatorBlockInfo.m_MemoryTag = blockHeader->m_MemoryTag;
+#endif // ifdef NABI_ALLOCATOR_MEMORY_TAGGING
+
+			allocatorBlockInfo.m_Allocated = blockInfoContent.m_Allocated;
+			allocatorBlockInfo.m_Padded = blockInfoContent.m_Padded;
+			
+			u32 padding = 0u;
+			if (allocatorBlockInfo.m_Padded)
+			{
+				BlockPadding const* const blockPadding = 
+					NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockPadding, blockHeader, +, (blockInfoContent.m_NumBytes - c_BlockFooterSize - c_BlockPaddingSize));
+				padding = static_cast<u32>(blockPadding.m_Padding);
+			}
+
+			allocatorBlockInfo.m_NumBytes = blockInfoContent.m_NumBytes;
+			allocatorBlockInfo.m_Padding = padding;
+
+			// Check if the loop should continue
+			bool const continuecontinueLooping = action ? (*action)(allocatorBlockInfo) : true;
+			if (!continueLooping)
+			{
+				break;
+			}
+		}
+		while (allocatorBlocks.back().m_MemoryAddress + blockInfoContent.m_NumBytes) <= heapZoneInfo.m_End);
+
+		return allocatorBlocks;
 	}
 
 	template<FreeListAllocatorSettings Settings>
