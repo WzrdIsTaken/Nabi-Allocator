@@ -165,7 +165,7 @@ namespace nabi_allocator::free_list_allocator
 		do
 		{
 			blockHeader = NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockHeader, blockHeader, +, blockInfoContent.m_NumBytes);
-			UnloadBlockInfo(&blockInfoContent, blockHeader);
+			UnloadBlockInfo(blockInfoContent, *blockHeader);
 
 			// Store the block's infomation in allocatorBlockInfo
 			AllocatorBlockInfo& allocatorBlockInfo = allocatorBlocks.emplace_back();
@@ -189,13 +189,13 @@ namespace nabi_allocator::free_list_allocator
 			allocatorBlockInfo.m_Padding = padding;
 
 			// Check if the loop should continue
-			bool const continuecontinueLooping = action ? (*action)(allocatorBlockInfo) : true;
+			bool const continueLooping = action ? (*action)(allocatorBlockInfo) : true;
 			if (!continueLooping)
 			{
 				break;
 			}
 		}
-		while (allocatorBlocks.back().m_MemoryAddress + blockInfoContent.m_NumBytes) <= heapZoneInfo.m_End);
+		while ((allocatorBlocks.back().m_MemoryAddress + blockInfoContent.m_NumBytes) <= heapZoneInfo.m_End);
 
 		return allocatorBlocks;
 	}
