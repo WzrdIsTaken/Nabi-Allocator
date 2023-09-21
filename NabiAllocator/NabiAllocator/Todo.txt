@@ -42,6 +42,8 @@ Tasks:
 
 - debug_[method name/var name] for debug stuff (eg heapzone getdebugname), same with test stuff? test_?
 
+- should things like AllocatorUtils have there own namespace? and allocatorstats?
+
 - Should AllocatorBase have a construtor for m_AllocatorStats? or not? (if so, remember to call it in FreeListAllocator.inl)
 - Make sure you test running with defines on / off and x64/86 etc
 - Should defines, like NABI_ALLOCATOR_TRACK_ALLOCATIONS toggle if headers are included or not? eg AllocatorStats in AllocatorBase.h

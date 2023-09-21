@@ -5,12 +5,6 @@
 #include "DebugUtils.h"
 #include "TypeUtils.h"
 
-#define NABI_ALLOCATOR_UPDATE_ALLOCATOR_STATS(allocatorStats, operation, countAdjustment, byteAdjustment) \
-	allocatorStats.m_ActiveAllocationCount += countAdjustment; \
-	allocatorStats.m_ActiveBytesAllocated  += byteAdjustment; \
-	allocatorStats.m_TotalAllocationCount  += countAdjustment; \
-	allocatorStats.m_TotalBytesAllocated   += byteAdjustment;
-
 namespace nabi_allocator
 {
 	void UpdateAllocatorStats(AllocatorStats& allocatorStats, AllocatorStatsUpdateType const updateType, 
@@ -19,8 +13,10 @@ namespace nabi_allocator
 		switch (updateType)
 		{
 		case AllocatorStatsUpdateType::Allocate:
-			NABI_ALLOCATOR_UPDATE_ALLOCATOR_STATS(allocatorStats, +, 
-				allocationCountAdjustment, allocationByteAdjustment);
+			allocatorStats.m_ActiveAllocationCount += allocationCountAdjustment;
+			allocatorStats.m_ActiveBytesAllocated  += allocationByteAdjustment;
+			allocatorStats.m_TotalAllocationCount  += allocationCountAdjustment;
+			allocatorStats.m_TotalBytesAllocated   += allocationByteAdjustment;
 			break;
 		case AllocatorStatsUpdateType::Free:
 			NABI_ALLOCATOR_ASSERT(allocatorStats.m_ActiveAllocationCount >= allocationCountAdjustment &&
@@ -29,8 +25,8 @@ namespace nabi_allocator
 				                  allocatorStats.m_TotalBytesAllocated   >= allocationByteAdjustment,
 				"Free operation results in a negative allocation or byte count. What has gone wrong?");
 
-			NABI_ALLOCATOR_UPDATE_ALLOCATOR_STATS(allocatorStats, -, 
-				allocationCountAdjustment, allocationByteAdjustment);
+			allocatorStats.m_ActiveAllocationCount -= allocationCountAdjustment;
+			allocatorStats.m_ActiveBytesAllocated  -= allocationByteAdjustment;
 			break;
 		default:
 			NABI_ALLOCATOR_ASSERT_FAIL("Using an unexpected " << NABI_ALLOCATOR_NAMEOF_LITERAL(AllocatorStatsUpdateType));

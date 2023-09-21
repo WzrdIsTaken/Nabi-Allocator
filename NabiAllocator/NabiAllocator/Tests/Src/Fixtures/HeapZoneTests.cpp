@@ -43,8 +43,8 @@ namespace nabi_allocator::tests
 			--m_AllocationCount;
 		}
 
-		[[nodiscard]] std::deque<AllocatorBlockInfo> IterateThroughMemoryPool(
-			std::optional<std::function<bool(AllocatorBlockInfo const&)>> /*action*/, HeapZoneInfo const& /*heapZoneInfo*/) override
+		std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
+			std::optional<std::function<bool(AllocatorBlockInfo const&)>> /*action*/, HeapZoneInfo const& /*heapZoneInfo*/) const override
 		{
 			NABI_ALLOCATOR_FUNCTION_NOT_IMPLEMENTED;
 			return {};

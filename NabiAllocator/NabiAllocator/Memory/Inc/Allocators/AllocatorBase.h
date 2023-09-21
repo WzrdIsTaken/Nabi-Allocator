@@ -35,8 +35,8 @@ namespace nabi_allocator
 		[[nodiscard]] virtual void* Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo) = 0;
 		virtual void Free(void* memory, HeapZoneInfo const& heapZoneInfo) = 0;
 
-		[[nodiscard]] virtual std::deque<AllocatorBlockInfo> IterateThroughMemoryPool(
-			std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) = 0;
+		virtual std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
+			std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) const = 0;
 
 	protected:
 #ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS

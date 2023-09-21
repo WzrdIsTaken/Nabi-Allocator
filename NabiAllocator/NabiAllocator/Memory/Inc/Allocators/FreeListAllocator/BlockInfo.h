@@ -26,6 +26,10 @@ namespace nabi_allocator::free_list_allocator
 	{
 #ifdef NABI_ALLOCATOR_MEMORY_TAGGING
 		u32 m_MemoryTag; // I hope a u32 has enough range for all the memory tags someone could ever want... (it can easily be changed though)
+
+#ifdef _M_X64
+		char const c_Padding[4];
+#endif // ifdef _M_X64
 #endif // ifdef NABI_ALLOCATOR_MEMORY_TAGGING
 	};
 
@@ -46,7 +50,7 @@ namespace nabi_allocator::free_list_allocator
 	static_assert(c_BlockHeaderSize ==
 #ifdef _M_X64
 #	ifdef NABI_ALLOCATOR_MEMORY_TAGGING
-		12u
+		16u
 #	else
 		8u
 #	endif // ifdef NABI_ALLOCATOR_MEMORY_TAGGING 

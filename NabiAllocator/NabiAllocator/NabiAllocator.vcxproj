@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Memory\Src\Allocators\AllocatorStats.cpp" />
+    <ClCompile Include="Memory\Src\Allocators\AllocatorUtils.cpp" />
     <ClCompile Include="Memory\Src\Allocators\FreeListAllocator\BlockInfo.cpp" />
     <ClCompile Include="Memory\Src\HeapZone\HeapZoneBase.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\BitOperationsTests.cpp" />
@@ -49,6 +50,7 @@
     <ClInclude Include="Memory\Inc\Allocators\AllocatorBase.h" />
     <ClInclude Include="Memory\Inc\Allocators\AllocatorBlockInfo.h" />
     <ClInclude Include="Memory\Inc\Allocators\AllocatorStats.h" />
+    <ClInclude Include="Memory\Inc\Allocators\AllocatorUtils.h" />
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockInfo.h" />
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockInfoIndex.h" />
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockPadding.h" />

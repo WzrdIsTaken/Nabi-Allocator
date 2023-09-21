@@ -52,8 +52,8 @@ namespace nabi_allocator::free_list_allocator
 		[[nodiscard]] void* Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo) override;
 		void Free(void* memory, HeapZoneInfo const& heapZoneInfo) override;
 
-		[[nodiscard]] virtual std::deque<AllocatorBlockInfo> IterateThroughMemoryPool(
-			std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) override;
+		virtual std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
+			std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) const override;
 
 	private:
 		NABI_ALLOCATOR_SET_COPY_MOVE_CONSTRUCTORS(FreeListAllocator, delete);

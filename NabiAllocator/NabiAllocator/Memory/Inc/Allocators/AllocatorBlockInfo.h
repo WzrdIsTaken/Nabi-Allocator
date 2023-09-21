@@ -22,6 +22,8 @@ namespace nabi_allocator
 #endif // ifdef NABI_ALLOCATOR_MEMORY_TAGGING
 
 		// General
+		void* m_PayloadPtr;
+
 		bool m_Allocated;
 		bool m_Padded;
 
