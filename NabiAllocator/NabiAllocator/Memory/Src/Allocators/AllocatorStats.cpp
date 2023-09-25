@@ -7,6 +7,7 @@
 
 namespace nabi_allocator
 {
+#ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
 	void UpdateAllocatorStats(AllocatorStats& allocatorStats, AllocatorStatsUpdateType const updateType, 
 		u64 const& allocationCountAdjustment, u64 const& allocationByteAdjustment)
 	{
@@ -33,6 +34,5 @@ namespace nabi_allocator
 			break;
 		}
 	}
+#endif // ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
 } // namespace nabi_allocator
-
-#undef NABI_ALLOCATOR_UPDATE_ALLOCATOR_STATS

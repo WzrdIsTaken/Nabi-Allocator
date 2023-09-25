@@ -270,7 +270,6 @@ namespace nabi_allocator::free_list_allocator
 
 		// Mark the block as memory as a free block
 		void* const leftExtentPtr = NABI_ALLOCATOR_REINTERPRET_MEMORY(void, blockHeader, -, leftExtent);
-		memory_operations::ResetMemory(leftExtentPtr, newBlockSize);
 		AddFreeBlock(leftExtentPtr, newBlockSize);
 	}
 
@@ -339,7 +338,8 @@ namespace nabi_allocator::free_list_allocator
 
 		// Add the free list node
 		FreeListNode* const freeListNode = NABI_ALLOCATOR_REINTERPRET_MEMORY(FreeListNode, freeBlockHeader, +, c_BlockHeaderSize);
-		memory_operations::ResetMemory(freeListNode);
+		freeListNode->m_Next = nullptr;     // Its important to set this to nullptr, as AddFreeListNode spins through all the nodes until !currentNode->Next
+		freeListNode->m_Previous = nullptr; // This would invalidate the free list and cause a crash in SearchAlgorithm::FindVia[algorithm name]
 		AddFreeListNode(freeListNode);
 	}
 
@@ -377,7 +377,11 @@ namespace nabi_allocator::free_list_allocator
 			}
 		}
 
-		// Reset the free list node
-		memory_operations::ResetMemory(freeListNode);
+#if defined NABI_ALLOCATOR_DEBUG || defined NABI_ALLOCATOR_TESTS
+		// Same deal as above. These resets are done in AddFreeBlock anyway
+		freeListNode->m_Next = nullptr;
+		freeListNode->m_Previous = nullptr;
+#endif // ifdef NABI_ALLOCATOR_DEBUG || NABI_ALLOCATOR_TESTS
+		//memory_operations::ResetMemory(freeListNode);
 	}
 } // namespace nabi_allocator::free_list_allocator
