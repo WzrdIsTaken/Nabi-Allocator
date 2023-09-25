@@ -23,6 +23,7 @@
     <ClCompile Include="Memory\Src\Allocators\AllocatorStats.cpp" />
     <ClCompile Include="Memory\Src\Allocators\AllocatorUtils.cpp" />
     <ClCompile Include="Memory\Src\Allocators\FreeListAllocator\BlockInfo.cpp" />
+    <ClCompile Include="Memory\Src\Allocators\FreeListAllocator\SearchAlgorithms.cpp" />
     <ClCompile Include="Memory\Src\HeapZone\HeapZoneBase.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\BitOperationsTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\FreeListAllocatorTests.cpp" />
@@ -57,7 +58,7 @@
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListAllocator.h" />
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListAllocatorSettings.h" />
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListNode.h" />
-    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\SearchAlgorithm.h" />
+    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\SearchAlgorithms.h" />
     <ClInclude Include="Memory\Inc\HeapZone\HeapZone.h" />
     <ClInclude Include="Memory\Inc\HeapZone\HeapZoneBase.h" />
     <ClInclude Include="Memory\Inc\HeapZone\HeapZoneInfo.h" />

@@ -2,7 +2,7 @@
 
 // Nabi Headers
 #include "IntegerTypes.h"
-#include "SearchAlgorithm.h"
+#include "SearchAlgorithms.h"
 
 /**
  * The FreeListAllocator is templated with this settings struct so that it can be customised at compile time.

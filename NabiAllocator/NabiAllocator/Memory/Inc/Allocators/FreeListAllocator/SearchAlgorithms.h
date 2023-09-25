@@ -14,6 +14,12 @@
 
 namespace nabi_allocator::free_list_allocator
 {
+	struct BlockHeader;
+	struct FreeListNode;
+} // namespace nabi_allocator::free_list_allocator
+
+namespace nabi_allocator::free_list_allocator
+{
 	enum class SearchAlgorithm : u32
 	{
 		BestFit,
@@ -22,4 +28,8 @@ namespace nabi_allocator::free_list_allocator
 
 		ENUM_COUNT
 	};
+
+	[[nodiscard]] BlockHeader* const FindViaBestFit(FreeListNode const* freeListNode, uInt const numBytes, uInt const leniency);
+	[[nodiscard]] BlockHeader* const FindViaFirstFit(FreeListNode const* freeListNode, uInt const numBytes);
+	[[nodiscard]] BlockHeader* const FindViaNextFit(FreeListNode const* freeListNode, uInt const numBytes);
 } // namespace nabi_allocator::free_list_allocator

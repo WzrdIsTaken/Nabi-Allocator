@@ -1,9 +1,6 @@
 // inl's Header
 #include "Allocators\FreeListAllocator\FreeListAllocator.h"
 
-// STD Headers
-#include <limits>
-
 // Config Headers
 #include "Config.h"
 
@@ -13,7 +10,7 @@
 #include "Allocators\FreeListAllocator\BlockInfoIndex.h"
 #include "Allocators\FreeListAllocator\BlockPadding.h"
 #include "Allocators\FreeListAllocator\FreeListNode.h"
-#include "Allocators\FreeListAllocator\SearchAlgorithm.h"
+#include "Allocators\FreeListAllocator\SearchAlgorithms.h"
 #include "DebugUtils.h"
 #include "HeapZone\HeapZoneInfo.h"
 #include "Operations\BitOperations.h"
@@ -23,7 +20,7 @@ namespace nabi_allocator::free_list_allocator
 {
 	// The size of blocks of memory have to be multiples of 8. This is because then we can always
 	// mask of 3 bits of the size to store other infomation and still retain the size of the block.
-	// Allignments of 8 also always work for x64 and x64 architecture. 
+	// Allignments of 8 also always work for x64 and x86 architecture. 
 	static uInt constexpr c_BlockAllignment = 8u;
 	static uInt constexpr c_MinBlockSize = c_BlockHeaderSize + c_FreeListNodeSize + c_BlockFooterSize + 
 		((c_BlockHeaderSize + c_FreeListNodeSize + c_BlockFooterSize) % c_BlockAllignment);
@@ -34,7 +31,7 @@ namespace nabi_allocator::free_list_allocator
 	{
 		uInt const heapZoneSize = memory_operations::GetMemorySize(heapZoneInfo.m_Start, heapZoneInfo.m_End);
 		NABI_ALLOCATOR_ASSERT_DEFAULT(memory_operations::IsAlligned(heapZoneSize, c_BlockAllignment));
-		NABI_ALLOCATOR_ASSERT_DEFAULT(heapZoneSize >= c_MinBlockSize);
+		NABI_ALLOCATOR_ASSERT_DEFAULT(heapZoneSize > c_MinBlockSize);
 
 		AddFreeBlock(NABI_ALLOCATOR_TO_VPTR(heapZoneInfo.m_Start), heapZoneSize);
 	}
@@ -207,59 +204,19 @@ namespace nabi_allocator::free_list_allocator
 	template<FreeListAllocatorSettings Settings>
 	BlockHeader* const FreeListAllocator<Settings>::TryFindFreeBlock(uInt const numBytes) const
 	{
+		BlockHeader* freeBlock = nullptr;
+
 		if constexpr (Settings.m_SearchAlgorithm == SearchAlgorithm::BestFit)
 		{
-			// Iterate through the free list to try and find a block with a size as close as possible to numBytes.
-			FreeListNode* freeListNode = m_FreeList;
-			BlockHeader* bestBlock = nullptr;
-			uInt bestBlockSize = std::numeric_limits<uInt>::max();
-
-			while (freeListNode)
-			{
-				BlockHeader* const freeBlockHeader = NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockHeader, freeListNode, -, c_BlockHeaderSize);
-				uInt const freeBlockNumBytes = bit_operations::RightShiftBit(freeBlockHeader->m_BlockInfo, type_utils::ToUnderlying(BlockInfoIndex::SizeStart));
-
-				if (freeBlockNumBytes >= numBytes && numBytes <= (freeBlockNumBytes + Settings.m_BestFitLeniency))
-				{
-					return freeBlockHeader;
-				}
-				else
-				{
-					if (freeBlockNumBytes >= numBytes && freeBlockNumBytes < bestBlockSize)
-					{
-						bestBlock = freeBlockHeader;
-						bestBlockSize = freeBlockNumBytes;
-					}
-				}
-			}
-
-			return bestBlock;
+			freeBlock = FindViaBestFit(m_FreeList, numBytes, Settings.m_BestFitLeniency);
 		}
 		else if constexpr (Settings.m_SearchAlgorithm == SearchAlgorithm::FirstFit)
 		{
-			// Iterate through the free list until we find a block with size greater than or equal to numBytes. 
-			FreeListNode* freeListNode = m_FreeList;
-
-			while (freeListNode)
-			{
-				BlockHeader* const freeBlockHeader = NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockHeader, freeListNode, -, c_BlockHeaderSize);
-				uInt const freeBlockNumBytes = bit_operations::RightShiftBit(freeBlockHeader->m_BlockInfo, type_utils::ToUnderlying(BlockInfoIndex::SizeStart));
-
-				if (numBytes <= freeBlockNumBytes)
-				{
-					return freeBlockHeader;
-				}
-				else
-				{
-					freeListNode = freeListNode->m_Next;
-				}
-			}
-
-			return nullptr;
+			freeBlock = FindViaFirstFit(m_FreeList, numBytes);
 		}
 		else if constexpr (Settings.m_SearchAlgorithm == SearchAlgorithm::NextFit)
 		{
-			NABI_ALLOCATOR_ASSERT_FAIL(NABI_ALLOCATOR_NAMEOF_LITERAL(SearchAlgorithm::NextFit) << "is not currently supported");
+			freeBlock = FindViaNextFit(m_FreeList, numBytes);
 		}
 		else
 		{
@@ -267,7 +224,7 @@ namespace nabi_allocator::free_list_allocator
 		}
 
 		// If no suitable block was found, the allocator is out of memory
-		return nullptr;
+		return freeBlock;
 	}
 
 	template<FreeListAllocatorSettings Settings>
@@ -394,10 +351,18 @@ namespace nabi_allocator::free_list_allocator
 		// Find the free list node
 		FreeListNode* const freeListNode = NABI_ALLOCATOR_REINTERPRET_MEMORY(FreeListNode, blockStartPtr, +, c_BlockHeaderSize);
 
-		// If the free list node is the free list, then there are no more free blocks
+		// If the free list node is the start of the free list, rewire the head of the list
 		if (freeListNode == m_FreeList)
 		{
-			m_FreeList = nullptr;
+			m_FreeList = freeListNode->m_Next;
+
+#if defined NABI_ALLOCATOR_DEBUG || defined NABI_ALLOCATOR_TESTS
+			// Not necessary, but makes the debug output easier to reason
+			if (m_FreeList) 
+			{
+				m_FreeList->m_Previous = nullptr;
+			}
+#endif // ifdef NABI_ALLOCATOR_DEBUG || NABI_ALLOCATOR_TESTS
 		}
 		else
 		{

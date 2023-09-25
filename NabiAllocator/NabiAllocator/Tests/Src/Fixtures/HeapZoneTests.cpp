@@ -59,7 +59,7 @@ namespace nabi_allocator::tests
 		u32 m_AllocationCount;
 	};
 
-	TEST(TEST_FIXTURE_NAME, CreateAndDestroyHeapZone)
+	TEST(TEST_FIXTURE_NAME, CreateAndDestroy)
 	{
 		HeapZone<MockAllocator> heapZone{ c_TestHeapZoneSize, "TestHeapZone" };
 		HeapZoneInfo const& heapZoneInfo = heapZone.GetZoneInfo();

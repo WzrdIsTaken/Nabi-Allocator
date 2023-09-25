@@ -26,6 +26,9 @@
     <ClCompile Include="Memory\Src\Allocators\AllocatorUtils.cpp">
       <Filter>Memory\Src\Allocators</Filter>
     </ClCompile>
+    <ClCompile Include="Memory\Src\Allocators\FreeListAllocator\SearchAlgorithms.cpp">
+      <Filter>Memory\Src\Allocators\FreeListAllocator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tests">
@@ -190,7 +193,7 @@
     <ClInclude Include="Memory\Inc\Allocators\AllocatorStats.h">
       <Filter>Memory\Inc\Allocators</Filter>
     </ClInclude>
-    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\SearchAlgorithm.h">
+    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\SearchAlgorithms.h">
       <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
     </ClInclude>
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListAllocatorSettings.h">

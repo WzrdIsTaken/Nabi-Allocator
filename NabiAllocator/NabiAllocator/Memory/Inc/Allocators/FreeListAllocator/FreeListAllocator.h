@@ -25,8 +25,6 @@
 * - Normally I pass things which cannot be null as references. However in this allocator I pass things as pointers and then assert
 *   if they are null. This is because in these cases we are often manipulating and reinterpret casting memory, so a dereferenced
 *   pointer would just have to do referenced again anyway.
-* - The code in TryFindFreeBlock is repeated a bit, but I think this is ok as pulling it out into another function would reduce
-*   readability and possibly performance. 
 */
 
 namespace nabi_allocator

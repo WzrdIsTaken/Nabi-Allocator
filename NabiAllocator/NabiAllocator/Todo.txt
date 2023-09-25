@@ -9,6 +9,10 @@ Resources:
 - "Writing a memory allocator" http://dmitrysoshnikov.com/compilers/writing-a-memory-allocator/
 - "Writing your own memory allocator" https://screwjankgames.github.io/engine%20programming/2020/09/24/writing-your-own-memory-allocators.html
 
+* Other
+- Profiling: https://learn.microsoft.com/en-us/visualstudio/profiling/profiling-feature-tour?view=vs-2022
+- If we need to access the private members of a class for testing, see this: https://stackoverflow.com/a/23267346/8890269
+
 Tasks:
 
 *Long Term
@@ -24,11 +28,27 @@ Tasks:
 	- Is the projects folder structure ok to put this stuff in a place which makes sense?
 
 *General
+- Next up we need to write the segerated list allocator, and also do some more reading into the free list allocator design.
+- Then we need to learn how to profile and optimise what we have!
+- My first attempt is using more memory and taking more than than just malloc/free. Based off a very basic test though.
+	- Though tbh, it being slower in the end doesn't really matter. Its more about anylsing *why* it is slower and profiling / comparing to
+	  other allocators and research papers. This is where the marks are at!
+	- Take a look at the VS profiling tools https://learn.microsoft.com/en-us/visualstudio/profiling/profiling-feature-tour?view=vs-2022
+		- Make sure you make notes of any things you profile and adjust. These will probs be good in write up
+
+	- Also just read this: https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/c-custom-memory-allocation-r3010/
+		- And the other artciesl on my 300 word doc
+		- That allocator is much faster than mine! Why?
+
 - Thoughts on NA_ rather than NABI_ALLOCATOR_
 	- Would be a lot shorter, then could eg have NA_LOG_[PREP/END] w/o it being too long
+- Thoughts on sizeT rather than uInt...
 
 - Should MemoryConstants/Operators have its own folder? Also - lower case folder names? 
 	- Still on the fence... should the Operations stuff just go in Constants?
+
+- find a fix so we dont have to reintrepret cast nulltpr and add.
+	- yh defo fix this, its jank
 
 - Create the MemoryCommand. If we call it something different, need to update the summary comment in HeapZone.h
 - Create functions to Load/Unload BlockInfo into a struct
@@ -54,6 +74,16 @@ Tasks:
 	- Will probs have to reigster a heap zone with the memory command
 		- Perhaps a macro to do this?
 			- Macro can construct the heap zone and register with the supplied tag (for the heap zone scope)
+
+- The basic interface tests for the free list allocator (eg, allocating/freeing/usage with heapzone) will be the same for all allocators.
+  Therefore, once we have written / tested the tests perhaps package them up into a macro or something. We could do like
+  NABI_ALLOCATOR_IMPLEMENT_ALLOCATOR_BASIC_TESTS(testFixtureName, allocType) and this would create the gTest TEST macros
+  for the basic tests which we could use for all allocators. [could we?]
+
+- Should GetMemoryLayout be in its own namespace and be debug only?
+
+- note the final comment about no debug heap
+	- https://stackoverflow.com/questions/13064850/malloc-vs-custom-allocator-malloc-has-a-lot-of-overhead-why
 
 Archive:
 - Write a test for MemoryOperations::IsAlligned. And think - should the memory allignment be different on x64 and x86?
