@@ -36,14 +36,14 @@ namespace nabi_allocator::tests
 
 	using namespace free_list_allocator;
 
-	uInt constexpr c_SmallTestHeapZoneSize = 64u;
-	uInt constexpr c_LargeTestHeapZoneSize = 256u;
+	uInt constexpr c_SmallHeapZoneSize = 64u;
+	uInt constexpr c_LargeHeapZoneSize = 256u;
 
-	std::vector<BlockInfoContent> const c_TestSearchAlgorithmBlocks = 
+	std::vector<BlockInfoContent> const c_SearchAlgorithmBlocks = 
 	{
 		{ false, false, 64u }, { true,  false, 32u }, { false, false, 32u } // Order: m_Allocated, m_Padded, m_NumBytes
 	};
-	std::vector<BlockInfoContent> const c_TestCoalesceBlocks = 
+	std::vector<BlockInfoContent> const c_CoalesceBlocks = 
 	{
 		{ false, false, 32u }, { false,  false, 32u }
 	};
@@ -58,7 +58,7 @@ namespace nabi_allocator::tests
 
 		for (auto it = blockInfoContent.rbegin(); it != blockInfoContent.rend(); ++it) // We need to iterate backwards to set the node->m_Next ptr
 		{
-			BlockFooter* const footer = NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockFooter, nullptr, +, memoryAddress);
+			BlockFooter* const footer = NABI_ALLOCATOR_REINTERPRET_MEMORY_DEFAULT(BlockFooter, memoryAddress);
 			FreeListNode* const node = NABI_ALLOCATOR_REINTERPRET_MEMORY(FreeListNode, footer, -, c_FreeListNodeSize);
 			BlockHeader* const header = NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockHeader, node, -, c_BlockHeaderSize);
 
@@ -89,7 +89,7 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, CreateAndDestroy)
 	{
-		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone{ HeapZoneBase::c_NoParent, c_SmallTestHeapZoneSize, "TestHeapZone" };
+		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone{ HeapZoneBase::c_NoParent, c_SmallHeapZoneSize, "TestHeapZone" };
 
 		std::string const expectedLayout = "F64P0";
 		std::string const actualLayout = GetMemoryLayout(heapZone.GetAllocator(), heapZone.GetZoneInfo());
@@ -98,7 +98,7 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, AllocateAndFree)
 	{
-		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone{ HeapZoneBase::c_NoParent, c_SmallTestHeapZoneSize, "TestHeapZone" };
+		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone{ HeapZoneBase::c_NoParent, c_SmallHeapZoneSize, "TestHeapZone" };
 		auto const& allocator = heapZone.GetAllocator();
 		auto const& heapZoneInfo = heapZone.GetZoneInfo();
 
@@ -135,7 +135,7 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, BestFitSearch)
 	{
-		void* memory = AllocateAndSetUpMockMemory(c_TestSearchAlgorithmBlocks);
+		void* memory = AllocateAndSetUpMockMemory(c_SearchAlgorithmBlocks);
 		FreeListNode const* const firstFreeListNode = NABI_ALLOCATOR_REINTERPRET_MEMORY(FreeListNode, memory, +, c_BlockHeaderSize);
 
 		{
@@ -158,7 +158,7 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, FirstFitSearch)
 	{
-		void* memory = AllocateAndSetUpMockMemory(c_TestSearchAlgorithmBlocks);
+		void* memory = AllocateAndSetUpMockMemory(c_SearchAlgorithmBlocks);
 		FreeListNode const* const firstFreeListNode = NABI_ALLOCATOR_REINTERPRET_MEMORY(FreeListNode, memory, +, c_BlockHeaderSize);
 
 		{
@@ -176,7 +176,7 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, CoalesceBlock)
 	{
-		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone{ HeapZoneBase::c_NoParent, c_LargeTestHeapZoneSize, "TestHeapZone" };
+		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone{ HeapZoneBase::c_NoParent, c_LargeHeapZoneSize, "TestHeapZone" };
 		auto const& allocator = heapZone.GetAllocator();
 		auto const& heapZoneInfo = heapZone.GetZoneInfo();
 
@@ -265,11 +265,11 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, FreeListNodePtrsCorrect)
 	{
-		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone{ HeapZoneBase::c_NoParent, c_LargeTestHeapZoneSize, "TestHeapZone" };
+		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone{ HeapZoneBase::c_NoParent, c_LargeHeapZoneSize, "TestHeapZone" };
 		auto const& heapZoneInfo = heapZone.GetZoneInfo();
 
 		// Expected starting free list structure 
-		FreeListNode const* const firstFreeListNode = NABI_ALLOCATOR_REINTERPRET_MEMORY(FreeListNode, nullptr, +, (heapZoneInfo.m_Start + c_BlockHeaderSize));
+		FreeListNode const* const firstFreeListNode = NABI_ALLOCATOR_REINTERPRET_MEMORY_DEFAULT(FreeListNode, (heapZoneInfo.m_Start + c_BlockHeaderSize));
 		EXPECT_FALSE(firstFreeListNode->m_Next);
 		EXPECT_FALSE(firstFreeListNode->m_Previous);
 		

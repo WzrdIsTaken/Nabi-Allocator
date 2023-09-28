@@ -8,4 +8,17 @@ namespace nabi_allocator::type_utils
 	{
 		return static_cast<typename std::underlying_type<Enum>::type>(e);
 	}
+
+	template<typename TypeOne, typename TypeTwo>
+	inline constexpr TypeTwo ReinterpretCastIfNeeded(TypeOne const value)
+	{
+		if constexpr (std::is_same_v<TypeOne, TypeTwo>)
+		{
+			return value;
+		}
+		else 
+		{
+			return reinterpret_cast<TypeTwo>(value);
+		}
+	}
 } // namespace nabi_allocator::type_utils

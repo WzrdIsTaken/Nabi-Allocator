@@ -23,7 +23,7 @@ namespace nabi_allocator::tests
 #ifdef NABI_ALLOCATOR_TESTS
 #	define TEST_FIXTURE_NAME NABI_ALLOCATOR_TEST_FIXTURE_NAME(HeapZoneTests)
 
-	static uInt constexpr c_TestHeapZoneSize = 1u;
+	static uInt constexpr c_HeapZoneSize = 1u;
 
 	class MockAllocator final : public AllocatorBase
 	{
@@ -62,12 +62,12 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, CreateAndDestroy)
 	{
-		HeapZone<MockAllocator> heapZone{ HeapZoneBase::c_NoParent, c_TestHeapZoneSize, "TestHeapZone" };
+		HeapZone<MockAllocator> heapZone{ HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		HeapZoneInfo const& heapZoneInfo = heapZone.GetZoneInfo();
 
 		{
 			uPtr const size = memory_operations::GetMemorySize(heapZoneInfo.m_Start, heapZoneInfo.m_End);
-			EXPECT_EQ(c_TestHeapZoneSize, size);
+			EXPECT_EQ(c_HeapZoneSize, size);
 		}
 		
 		heapZone.Deinit();
@@ -80,7 +80,7 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, CheckAllocatorCalls)
 	{
-		HeapZone<MockAllocator> heapZone{ HeapZoneBase::c_NoParent, c_TestHeapZoneSize, "TestHeapZone" };
+		HeapZone<MockAllocator> heapZone{ HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		MockAllocator const& mockAllocator = heapZone.GetAllocator();
 
 		void* ptr = heapZone.Allocate(1u);

@@ -163,7 +163,7 @@ namespace nabi_allocator::free_list_allocator
 		// Loop through all the blocks in the heap zone until the end or "action" returns false
 		do
 		{
-			blockHeader = NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockHeader, nullptr, +, progressThroughHeapZone);
+			blockHeader = NABI_ALLOCATOR_REINTERPRET_MEMORY_DEFAULT(BlockHeader, static_cast<uPtr>(progressThroughHeapZone));
 			UnloadBlockInfo(blockInfoContent, *blockHeader);
 			progressThroughHeapZone += blockInfoContent.m_NumBytes;
 

@@ -16,6 +16,19 @@ Resources:
 - Profiling: https://learn.microsoft.com/en-us/visualstudio/profiling/profiling-feature-tour?view=vs-2022
 - If we need to access the private members of a class for testing, see this: https://stackoverflow.com/a/23267346/8890269
 
+Notes:
+- A large block of memory should be allocated when the program starts using malloc (and this should be the only malloc made) this 
+  large block of memory is managed by a global allocator (for example a stack allocator). Each subsystem should then allocate the block of
+  memory it needs to work from the global allocator, and create allocators that will manage that memory.
+	- From the gamedev.net article. Looks like we need a basic allocator as well? We were already going to make an unmanagedalloctor 
+	  (just a wrapper around malloc/free) - but we might need something else below this?
+	- The heap zone parent stuff will allow for this elegantly 
+	- We can also mention this design structure in the dis
+
+- Note the final comment about no debug heap
+	- https://stackoverflow.com/questions/13064850/malloc-vs-custom-allocator-malloc-has-a-lot-of-overhead-why
+	- also /FA or debugger output to view generated assembly
+
 Tasks:
 
 *Long Term
@@ -33,36 +46,28 @@ Tasks:
 
 - Remember C:\Users\Ben\Desktop\Uni\Year 3\Dissertation -> Lots of good stuff in here for the writeup
 
-*General
-- Next up we need to write the segerated list allocator, and also do some more reading into the free list allocator design.
-- Then we need to learn how to profile and optimise what we have!
-- My first attempt is using more memory and taking more than than just malloc/free. Based off a very basic test though.
-	- Though tbh, it being slower in the end doesn't really matter. Its more about anylsing *why* it is slower and profiling / comparing to
-	  other allocators and research papers. This is where the marks are at!
-	- Take a look at the VS profiling tools https://learn.microsoft.com/en-us/visualstudio/profiling/profiling-feature-tour?view=vs-2022
-		- Make sure you make notes of any things you profile and adjust. These will probs be good in write up
-
-	- Also just read this: https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/c-custom-memory-allocation-r3010/
-		- And the other artciesl on my 300 word doc
-		- That allocator is much faster than mine! Why?
-
-- See:
-  A large block of memory should be allocated when the program starts using malloc (and this should be the only malloc made) this 
-  large block of memory is managed by a global allocator (for example a stack allocator). Each subsystem should then allocate the block of
-  memory it needs to work from the global allocator, and create allocators that will manage that memory.
-	- From the gamedev.net article. Looks like we need a basic allocator as well? We were already going to make an unmanagedalloctor 
-	  (just a wrapper around malloc/free) - but we might need something else below this?
-	- We can also mention this design structure in the dis
-
 - Something to investigate / understand is virtual memory in the context of - when the OS gives memory to an application it gives it in a way
   that every application thinks it has a block going from 0 -> end..? perhaps..? can this memory be non contigous? eg the application thinks it
   is but in reality its not?
 
-- Pass std::function by ref of val?
-- Mark 1 arg constructros as explicit
+*General
+- Next up we need to write the segerated list allocator, and also do some more reading into the free list allocator design.
+	- The basic interface tests for the free list allocator (eg, allocating/freeing/usage with heapzone) will be the same for all allocators.
+	  Therefore, once we have written / tested the tests perhaps package them up into a macro or something. We could do like
+      NABI_ALLOCATOR_IMPLEMENT_ALLOCATOR_BASIC_TESTS(testFixtureName, allocType) and this would create the gTest TEST macros
+      for the basic tests which we could use for all allocators. [could we?]
 
-- We can then use than class to profile futher. Apperently the TryCoalesceBlock function is the slowest now. It has some futher function calls
-  in it though, and I can't see exactly what I can push futher right now.
+- Then we need to learn how to profile and optimise what we have as much as we can!
+	- Apperently the TryCoalesceBlock function is the slowest now. It has some futher function calls in it though, and I can't see exactly what I can push futher right now.
+
+- Create the MemoryCommand. If we call it something different, need to update the summary comment in HeapZone.h
+	- Remember, the HeapZone should have no knwoledge of the memory command
+		- Will probs have to reigster a heap zone with the memory command
+			- Perhaps a macro to do this?
+				- Macro can construct the heap zone and register with the supplied tag (for the heap zone scope)
+- Make the allocations thread safe? std::scoped_lock in HeapZone alloc/free?
+
+
 
 
 - Thoughts on NA_ rather than NABI_ALLOCATOR_
@@ -71,21 +76,6 @@ Tasks:
 
 - Should MemoryConstants/Operators have its own folder? Also - lower case folder names? 
 	- Still on the fence... should the Operations stuff just go in Constants?
-
-- find a fix so we dont have to reintrepret cast nulltpr and add.
-	- yh defo fix this, its jank
-
-- Remove the "test" from variables in the test scripts.. we know its tests!!
-
-- Create the MemoryCommand. If we call it something different, need to update the summary comment in HeapZone.h
-- Create functions to Load/Unload BlockInfo into a struct
-
-- I'm unsure how much overlap a free list allocator and segerated list allocator will have...
-	- I'm going to put everything for the free list under allocators/freelistallocator for now. this can be refactored later.
-		- If anything is generic, it can just go in the root Allocators/ folder along with AllocatorBase
-	- the same is with c_BlockAllignment. I'm doing the free list allocator first...
-		- maybe this block allignment can actually be a constant inside the allocator? [DONE]
-	- what about c_MinBlockSize? I've put this as an assert inside the allocator for now
 
 - debug_[method name/var name] for debug stuff (eg heapzone getdebugname), same with test stuff? test_?
 
@@ -99,28 +89,34 @@ Tasks:
 
 - If I manually free memory, do i need to call that memory's destructor? memory->~T();?
 
-- Make the allocations thread safe? std::scoped_lock in HeapZone alloc/free?
-
-- Remember, the HeapZone should have no knwoledge of the memory command
-	- Will probs have to reigster a heap zone with the memory command
-		- Perhaps a macro to do this?
-			- Macro can construct the heap zone and register with the supplied tag (for the heap zone scope)
-
-- The basic interface tests for the free list allocator (eg, allocating/freeing/usage with heapzone) will be the same for all allocators.
-  Therefore, once we have written / tested the tests perhaps package them up into a macro or something. We could do like
-  NABI_ALLOCATOR_IMPLEMENT_ALLOCATOR_BASIC_TESTS(testFixtureName, allocType) and this would create the gTest TEST macros
-  for the basic tests which we could use for all allocators. [could we?]
 
 - Should GetMemoryLayout be in its own namespace and be debug only?
 
-- note the final comment about no debug heap
-	- https://stackoverflow.com/questions/13064850/malloc-vs-custom-allocator-malloc-has-a-lot-of-overhead-why
-	- also /FA or debugger output to view generated assembly
 
-- Once we have done all these todos, we can finally get to the segerated list allocator!!
-	- Then after that, we can optimise both allocators as much as we can
+
+- Write a test for heap zone parent functionality. This can be done once we have an unmanged allocator or something in heap zone tests
 
 Archive:
+- find a fix so we dont have to reintrepret cast nulltpr and add.
+	- yh defo fix this, its jank
+- Remove the "test" from variables in the test scripts.. we know its tests!!
+- I'm unsure how much overlap a free list allocator and segerated list allocator will have... [i think what we've got is ok]
+	- I'm going to put everything for the free list under allocators/freelistallocator for now. this can be refactored later.
+		- If anything is generic, it can just go in the root Allocators/ folder along with AllocatorBase
+	- the same is with c_BlockAllignment. I'm doing the free list allocator first...
+		- maybe this block allignment can actually be a constant inside the allocator? [DONE]
+	- what about c_MinBlockSize? I've put this as an assert inside the allocator for now
+- Create functions to Load/Unload BlockInfo into a struct
+- Pass std::function by ref of val?
+- Mark 1 arg constructros as explicit
+- My first attempt is using more memory and taking more than than just malloc/free. Based off a very basic test though. [fixed this B)]
+	- Though tbh, it being slower in the end doesn't really matter. Its more about anylsing *why* it is slower and profiling / comparing to
+	  other allocators and research papers. This is where the marks are at!
+	- Take a look at the VS profiling tools https://learn.microsoft.com/en-us/visualstudio/profiling/profiling-feature-tour?view=vs-2022
+		- Make sure you make notes of any things you profile and adjust. These will probs be good in write up
+	- Also just read this: https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/c-custom-memory-allocation-r3010/
+		- And the other artciesl on my 300 word doc
+		- That allocator is much faster than mine! Why?
 - Add a parent zone functionality to heapzone? This would allow us to only do one large allocation with like a stack or linear allocator more elegantly.
 - Write a test for MemoryOperations::IsAlligned. And think - should the memory allignment be different on x64 and x86?
 	- Depending on the architecture, then eg the FreeList nodes will / won't fit within 8 bytes

@@ -30,6 +30,9 @@ namespace nabi_allocator::type_utils
 	// Used to convert an enum to its underlying type (note - to_underlying will do this in cpp23)
 	template <is_enum Enum>
     inline constexpr typename std::underlying_type<Enum>::type ToUnderlying(Enum const e) noexcept;
+
+    template<typename TypeOne, typename TypeTwo>
+    inline constexpr TypeTwo ReinterpretCastIfNeeded(TypeOne const value);
 } // namespace nabi_allocator::type_utils
 
 // Include Inline

@@ -167,13 +167,13 @@ namespace nabi_allocator::tests
 
 	BENCHMARK(TEST_BENCHMARK_NAME, FreeListAllocatorAllocThenFree)
 	{
-		HeapZone<free_list_allocator::FreeListAllocator<c_FreeListAllocatorSettings>> heapZone = { c_HeapZoneSize, "TestHeapZone" };
+		HeapZone<free_list_allocator::FreeListAllocator<c_FreeListAllocatorSettings>> heapZone = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		AllocThenFree(heapZone);
 	}
 
 	BENCHMARK(TEST_BENCHMARK_NAME, FreeListAllocatorVaryingSizeAllocThenFree)
 	{
-		HeapZone<free_list_allocator::FreeListAllocator<c_FreeListAllocatorSettings>> heapZone = { c_HeapZoneSize, "TestHeapZone" };
+		HeapZone<free_list_allocator::FreeListAllocator<c_FreeListAllocatorSettings>> heapZone = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		VaryingSizeAllocThenFree(heapZone);
 	}
 

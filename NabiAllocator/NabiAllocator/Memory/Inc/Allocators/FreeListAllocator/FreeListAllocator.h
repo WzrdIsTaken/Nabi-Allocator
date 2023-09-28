@@ -44,7 +44,7 @@ namespace nabi_allocator::free_list_allocator
 	class FreeListAllocator final : public AllocatorBase
 	{
 	public:
-		FreeListAllocator(HeapZoneInfo const& heapZoneInfo);
+		explicit FreeListAllocator(HeapZoneInfo const& heapZoneInfo);
 		~FreeListAllocator();
 
 		[[nodiscard]] void* Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo) override;
