@@ -61,6 +61,10 @@ Tasks:
 - Pass std::function by ref of val?
 - Mark 1 arg constructros as explicit
 
+- We can then use than class to profile futher. Apperently the TryCoalesceBlock function is the slowest now. It has some futher function calls
+  in it though, and I can't see exactly what I can push futher right now.
+
+
 - Thoughts on NA_ rather than NABI_ALLOCATOR_
 	- Would be a lot shorter, then could eg have NA_LOG_[PREP/END] w/o it being too long <-- DEFO need this. eg for the benchmark logging the file line is ugly
 - Thoughts on sizeT rather than uInt...

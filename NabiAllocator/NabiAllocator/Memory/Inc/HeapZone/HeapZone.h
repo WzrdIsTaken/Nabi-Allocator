@@ -33,4 +33,4 @@ namespace nabi_allocator
 } // namespace nabi_allocator
 
 // Include Inline
-#include "HeapZone/HeapZone.inl"
+#include "Memory\Inl\HeapZone\HeapZone.inl"

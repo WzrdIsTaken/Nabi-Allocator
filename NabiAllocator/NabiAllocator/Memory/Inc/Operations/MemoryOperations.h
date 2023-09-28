@@ -39,4 +39,4 @@ namespace nabi_allocator::memory_operations
 } // namespace nabi_allocator
 
 // Inline Inline
-#include "Operations/MemoryOperations.inl"
+#include "Memory\Inl\Operations\MemoryOperations.inl"

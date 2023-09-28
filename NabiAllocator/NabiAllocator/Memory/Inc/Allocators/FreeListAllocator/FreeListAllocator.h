@@ -68,4 +68,4 @@ namespace nabi_allocator::free_list_allocator
 } // namespace nabi_allocator::free_list_allocator
 
 // Include Inline
-#include "Allocators\FreeListAllocator\FreeListAllocator.inl"
+#include "Memory\Inl\Allocators\FreeListAllocator\FreeListAllocator.inl"
