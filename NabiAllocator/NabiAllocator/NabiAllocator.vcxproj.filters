@@ -235,5 +235,8 @@
     <ClInclude Include="Core\Inc\FloatingPointTypes.h">
       <Filter>Core\Inc</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\Inc\StringUtils.h">
+      <Filter>Utils\Inc</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

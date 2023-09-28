@@ -13,7 +13,16 @@
 #define NA_ASSERT_DEFAULT(condition) NA_ASSERT_BASE(condition, NA_STR(condition))
 #define NA_ASSERT_FAIL(message) NA_ASSERT(false, message)
 #define NA_FUNCTION_NOT_IMPLEMENTED NA_ASSERT_FAIL("The function " << __FUNCTION__ << " is not implemented!")
-#define NA_LOG(message) NA_LOG_BASE(message)
+#define NA_LOG(prep, severity, category, message, end) NA_LOG_BASE(prep, severity, category, message, end)
+#define NA_LOG_CATEGORY_ASSERT "[Assert] "
+#define NA_LOG_CATEGORY_CORE "[Core] "
+#define NA_LOG_CATEGORY_MEMORY "[Memory] "
+#define NA_LOG_CATEGORY_TEST "[Test] "
+#define NA_LOG_ERROR "ERROR"
+#define NA_LOG_END std::endl
+#define NA_LOG_END_NL nabi_allocator::character_constants::c_NewLine
+#define NA_LOG_INFO "INFO"
+#define NA_LOG_WARN "WARN"
 
 // MacroUtils.h
 #define NA_CONCAT(arg1, arg2) arg1 ## arg2
@@ -31,6 +40,9 @@
 #define NA_BENCHMARK_IDENTIFIER b_
 #define NA_TEST_FIXTURE_NAME(testFixtureName) NA_CONCAT(NA_EXPAND(NA_TEST_IDENTIFIER), testFixtureName)
 #define NA_TEST_IDENTIFIER t_
+
+// StringUtils.h
+#define NA_MAKE_STRING_FROM_STREAM(stringAssignment, content) std::ostringstream stringStream = {}; stringStream << content; stringAssignment = stringStream.str();
 
 // TypeUtils.h
 #define NA_NAMEOF(arg) ((decltype(&arg))nullptr, #arg)

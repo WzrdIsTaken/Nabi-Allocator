@@ -4,10 +4,10 @@
 // STD Headers
 #include <iomanip>
 #include <limits>
-#include <sstream>
 
 // Nabi Headers
 #include "CharacterConstants.h"
+#include "StringUtils.h"
 
 namespace nabi_allocator::benchmark_utils
 {
@@ -26,23 +26,22 @@ namespace nabi_allocator::benchmark_utils
 				return stream.str();
 			};
 
-		std::ostringstream stream = {};
-		stream << "Ran Benchmark " << results.m_Repetitions << " Times."          << c_NewLine <<
-		       	  "Fastest Time: " << getTimeWithPrecision(results.m_FastestTime) << c_NewLine <<
-			      "Slowest Time: " << getTimeWithPrecision(results.m_SlowestTime) << c_NewLine <<
-			      "Average Time: " << getTimeWithPrecision(results.m_AverageTime);
+		NA_MAKE_STRING_FROM_STREAM(std::string const resultsAsString,
+			"Ran Benchmark " << results.m_Repetitions << " Times."          << c_NewLine <<
+			"Fastest Time: " << getTimeWithPrecision(results.m_FastestTime) << c_NewLine <<
+			"Slowest Time: " << getTimeWithPrecision(results.m_SlowestTime) << c_NewLine <<
+			"Average Time: " << getTimeWithPrecision(results.m_AverageTime));
 
-		std::string const streamAsString = stream.str();
 		if (print)
 		{
 #ifdef NA_DEBUG
-			NA_LOG(streamAsString);
+			NA_LOG(NA_LOG_PREP, NA_LOG_INFO, NA_LOG_CATEGORY_TEST, resultsAsString, NA_LOG_END);
 #else
-			std::cout << streamAsString << std::endl; // If NA_DEBUG is not defined we can't use LOG
+			std::cout << resultsAsString << std::endl; // If NA_DEBUG is not defined we can't use LOG
 #endif // ifdef NA_DEBUG
 		}
 
-		return streamAsString;
+		return resultsAsString;
 	}
 #endif // ifdef NA_BENCHMARKS
 } // namespace nabi_allocator::benchmark_utils

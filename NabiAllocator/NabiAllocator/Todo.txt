@@ -70,8 +70,6 @@ Tasks:
 
 
 
-- Thoughts on NA_ rather than NA_ [half done]
-	- Would be a lot shorter, then could eg have NA_LOG_[PREP/END] w/o it being too long <-- DEFO need this. eg for the benchmark logging the file line is ugly
 - Thoughts on sizeT rather than uInt...
 
 - Should MemoryConstants/Operators have its own folder? Also - lower case folder names? 
@@ -97,6 +95,9 @@ Tasks:
 - Write a test for heap zone parent functionality. This can be done once we have an unmanged allocator or something in heap zone tests
 
 Archive:
+- Thoughts on NA_ rather than NA_ [half done]
+	- Would be a lot shorter, then could eg have NA_LOG_[PREP/END] w/o it being too long <-- DEFO need this. eg for the benchmark logging the file line is ugly
+	- add new macros to hint
 - find a fix so we dont have to reintrepret cast nulltpr and add.
 	- yh defo fix this, its jank
 - Remove the "test" from variables in the test scripts.. we know its tests!!

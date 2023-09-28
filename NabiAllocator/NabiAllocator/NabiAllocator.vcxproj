@@ -74,6 +74,7 @@
     <ClInclude Include="Utils\Inc\DebugUtils.h" />
     <ClInclude Include="Utils\Inc\MacroUtils.h" />
     <ClInclude Include="Utils\Inc\BenchmarkUtils.h" />
+    <ClInclude Include="Utils\Inc\StringUtils.h" />
     <ClInclude Include="Utils\Inc\TypeUtils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

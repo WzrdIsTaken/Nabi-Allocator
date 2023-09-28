@@ -10,7 +10,6 @@
 #include "Version.h"
 
 // Nabi Headers
-#include "CharacterConstants.h"
 #include "DebugUtils.h"
 #include "IntegerTypes.h"
 #include "MacroUtils.h"
@@ -24,7 +23,8 @@ using namespace nabi_allocator;
 
 s32 main(s32 argc, char* argv[])
 {
-	NA_LOG("Launching Nabi Allocator, version " << NA_VERSION << "." << character_constants::c_NewLine);
+	NA_LOG(NA_LOG_PREP, NA_LOG_INFO, NA_LOG_CATEGORY_CORE, "Launching Nabi Allocator, version " << 
+		NA_VERSION << ".", NA_LOG_END_NL);
 
 #ifdef NA_DEBUG
 	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_WNDW);
@@ -45,7 +45,7 @@ s32 main(s32 argc, char* argv[])
 
 	NA_ASSERT(testResults == EXIT_SUCCESS, 
 		"One or more of the tests failed. See the console output for details, or run the test explorer.");
-	NA_LOG("All tests complete!" << character_constants::c_NewLine);
+	NA_LOG(NA_LOG_PREP, NA_LOG_INFO, NA_LOG_CATEGORY_TEST, "All tests complete!", NA_LOG_END_NL);
 #endif // ifdef NA_TESTS || NA_BENCHMARKS
 
 	return EXIT_SUCCESS;
