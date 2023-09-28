@@ -1,45 +1,45 @@
 // https://learn.microsoft.com/en-us/cpp/build/reference/hint-files?view=msvc-170
 
 // Config.h
-#define NABI_ALLOCATOR_BENCHMARKS
-#define NABI_ALLOCATOR_BENCHMARK_RUN_COUNT 1
-#define NABI_ALLOCATOR_DEBUG
-#define NABI_ALLOCATOR_MEMORY_TAGGING
-#define NABI_ALLOCATOR_TESTS
-#define NABI_ALLOCATOR_TRACK_ALLOCATIONS
+#define NA_BENCHMARKS
+#define NA_BENCHMARK_RUN_COUNT 1
+#define NA_DEBUG
+#define NA_MEMORY_TAGGING
+#define NA_TESTS
+#define NA_TRACK_ALLOCATIONS
 
 // DebugUtils.h
-#define NABI_ALLOCATOR_ASSERT(condition, message) NABI_ALLOCATOR_ASSERT_BASE(condition, message)
-#define NABI_ALLOCATOR_ASSERT_DEFAULT(condition) NABI_ALLOCATOR_ASSERT_BASE(condition, NABI_ALLOCATOR_STR(condition))
-#define NABI_ALLOCATOR_ASSERT_FAIL(message) NABI_ALLOCATOR_ASSERT(false, message)
-#define NABI_ALLOCATOR_FUNCTION_NOT_IMPLEMENTED NABI_ALLOCATOR_ASSERT_FAIL("The function " << __FUNCTION__ << " is not implemented!")
-#define NABI_ALLOCATOR_LOG(message) NABI_ALLOCATOR_LOG_BASE(message)
+#define NA_ASSERT(condition, message) NA_ASSERT_BASE(condition, message)
+#define NA_ASSERT_DEFAULT(condition) NA_ASSERT_BASE(condition, NA_STR(condition))
+#define NA_ASSERT_FAIL(message) NA_ASSERT(false, message)
+#define NA_FUNCTION_NOT_IMPLEMENTED NA_ASSERT_FAIL("The function " << __FUNCTION__ << " is not implemented!")
+#define NA_LOG(message) NA_LOG_BASE(message)
 
 // MacroUtils.h
-#define NABI_ALLOCATOR_CONCAT(arg1, arg2) arg1 ## arg2
-#define NABI_ALLOCATOR_EXPAND(arg) arg
-#define NABI_ALLOCATOR_MACRO_NOT_DEFINED (void(0))
-#define NABI_ALLOCATOR_STR(arg) #arg
-#define NABI_ALLOCATOR_XSTR(arg) NABI_ALLOCATOR_STR(arg)
+#define NA_CONCAT(arg1, arg2) arg1 ## arg2
+#define NA_EXPAND(arg) arg
+#define NA_MACRO_NOT_DEFINED (void(0))
+#define NA_STR(arg) #arg
+#define NA_XSTR(arg) NA_STR(arg)
 
 // MemoryOperations.h
-#define NABI_ALLOCATOR_TO_UPTR(arg) reinterpret_cast<nabi_allocator::uPtr>(arg)
+#define NA_TO_UPTR(arg) reinterpret_cast<nabi_allocator::uPtr>(arg)
 #define NABI_ALLOCATPR_TO_VPTR(arg) reinterpret_cast<void*>(arg)
 
 // TestConstants.h
-#define NABI_ALLOCATOR_BENCHMARK_FIXTURE_NAME(benchmarkFixtureName) NABI_ALLOCATOR_CONCAT(NABI_ALLOCATOR_EXPAND(NABI_ALLOCATOR_BENCHMARK_IDENTIFIER), benchmarkFixtureName)
-#define NABI_ALLOCATOR_BENCHMARK_IDENTIFIER b_
-#define NABI_ALLOCATOR_TEST_FIXTURE_NAME(testFixtureName) NABI_ALLOCATOR_CONCAT(NABI_ALLOCATOR_EXPAND(NABI_ALLOCATOR_TEST_IDENTIFIER), testFixtureName)
-#define NABI_ALLOCATOR_TEST_IDENTIFIER t_
+#define NA_BENCHMARK_FIXTURE_NAME(benchmarkFixtureName) NA_CONCAT(NA_EXPAND(NA_BENCHMARK_IDENTIFIER), benchmarkFixtureName)
+#define NA_BENCHMARK_IDENTIFIER b_
+#define NA_TEST_FIXTURE_NAME(testFixtureName) NA_CONCAT(NA_EXPAND(NA_TEST_IDENTIFIER), testFixtureName)
+#define NA_TEST_IDENTIFIER t_
 
 // TypeUtils.h
-#define NABI_ALLOCATOR_NAMEOF(arg) ((decltype(&arg))nullptr, #arg)
-#define NABI_ALLOCATOR_SET_COPY_CONSTRUCTORS(type, operation) type(type&) = operation; type(type const&) = operation;
-#define NABI_ALLOCATOR_SET_COPY_MOVE_CONSTRUCTORS(type, operation) NABI_ALLOCATOR_SET_COPY_CONSTRUCTORS(type, operation) NABI_ALLOCATOR_SET_MOVE_CONSTRUCTORS(type, operation)
-#define NABI_ALLOCATOR_SET_MOVE_CONSTRUCTORS(type, operation) type(type&&) = operation; type(type const&&) = operation;
+#define NA_NAMEOF(arg) ((decltype(&arg))nullptr, #arg)
+#define NA_SET_COPY_CONSTRUCTORS(type, operation) type(type&) = operation; type(type const&) = operation;
+#define NA_SET_COPY_MOVE_CONSTRUCTORS(type, operation) NA_SET_COPY_CONSTRUCTORS(type, operation) NA_SET_MOVE_CONSTRUCTORS(type, operation)
+#define NA_SET_MOVE_CONSTRUCTORS(type, operation) type(type&&) = operation; type(type const&&) = operation;
 
 // Version.h
-#define NABI_ALLOCATOR_VERSION
-#define NABI_ALLOCATOR_VERSION_MAJOR 0
-#define NABI_ALLOCATOR_VERSION_MINOR 0 
-#define NABI_ALLOCATOR_VERSION_PATCH 0
+#define NA_VERSION
+#define NA_VERSION_MAJOR 0
+#define NA_VERSION_MINOR 0 
+#define NA_VERSION_PATCH 0

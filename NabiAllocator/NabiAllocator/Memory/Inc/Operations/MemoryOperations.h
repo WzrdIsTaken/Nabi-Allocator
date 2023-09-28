@@ -9,13 +9,13 @@
  * Functions & macros to perform memory manipulation.
 */
 
-#define NABI_ALLOCATOR_REINTERPRET_MEMORY(returnPtrType, startPtr, operation, numBytes) \
+#define NA_REINTERPRET_MEMORY(returnPtrType, startPtr, operation, numBytes) \
 	reinterpret_cast<returnPtrType*>(nabi_allocator::type_utils::ReinterpretCastIfNeeded<decltype(startPtr), nabi_allocator::uPtr>(startPtr) operation numBytes)
-#define NABI_ALLOCATOR_REINTERPRET_MEMORY_DEFAULT(returnPtrType, startPtr) \
-	NABI_ALLOCATOR_REINTERPRET_MEMORY(returnPtrType, startPtr, +, 0u)
+#define NA_REINTERPRET_MEMORY_DEFAULT(returnPtrType, startPtr) \
+	NA_REINTERPRET_MEMORY(returnPtrType, startPtr, +, 0u)
 
-#define NABI_ALLOCATOR_TO_UPTR(arg) reinterpret_cast<nabi_allocator::uPtr>(arg)
-#define NABI_ALLOCATOR_TO_VPTR(arg) reinterpret_cast<void*>(arg)
+#define NA_TO_UPTR(arg) reinterpret_cast<nabi_allocator::uPtr>(arg)
+#define NA_TO_VPTR(arg) reinterpret_cast<void*>(arg)
 
 namespace nabi_allocator::memory_operations
 {

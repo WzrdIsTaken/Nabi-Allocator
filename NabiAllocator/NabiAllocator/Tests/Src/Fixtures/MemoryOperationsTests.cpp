@@ -15,10 +15,10 @@
 
 namespace nabi_allocator::tests
 {
-#ifdef NABI_ALLOCATOR_TESTS
-#	define TEST_FIXTURE_NAME NABI_ALLOCATOR_TEST_FIXTURE_NAME(MemoryOperationsTests)
+#ifdef NA_TESTS
+#	define NA_FIXTURE_NAME NA_TEST_FIXTURE_NAME(MemoryOperationsTests)
 
-	TEST(TEST_FIXTURE_NAME, RequestAndReleaseMemory)
+	TEST(NA_FIXTURE_NAME, RequestAndReleaseMemory)
 	{
 		s32* memory = memory_operations::RequestMemoryFromOS<s32*>(sizeof(s32));
 		EXPECT_TRUE(memory);
@@ -27,7 +27,7 @@ namespace nabi_allocator::tests
 		EXPECT_FALSE(memory);
 	}
 
-	TEST(TEST_FIXTURE_NAME, ResetMemory)
+	TEST(NA_FIXTURE_NAME, ResetMemory)
 	{
 		struct MockStruct final
 		{
@@ -58,28 +58,28 @@ namespace nabi_allocator::tests
 		}
 	}
 
-	TEST(TEST_FIXTURE_NAME, GetMemorySize)
+	TEST(NA_FIXTURE_NAME, GetMemorySize)
 	{
 		uPtr constexpr start = 0u;
 		uPtr constexpr end = 8u;
 
-		void const* const startVoid = NABI_ALLOCATOR_TO_VPTR(start);
-		void const* const endVoid = NABI_ALLOCATOR_TO_VPTR(end);
+		void const* const startVoid = NA_TO_VPTR(start);
+		void const* const endVoid = NA_TO_VPTR(end);
 
 		EXPECT_EQ(8u, memory_operations::GetMemorySize(start, end));
 		EXPECT_EQ(8u, memory_operations::GetMemorySize(startVoid, endVoid));
 	}
 
-	TEST(TEST_FIXTURE_NAME, IsAlligned)
+	TEST(NA_FIXTURE_NAME, IsAlligned)
 	{
 		uInt constexpr value = 8u;
 		EXPECT_TRUE(memory_operations::IsAlligned(value, 4u));
 		EXPECT_FALSE(memory_operations::IsAlligned(value, 3u));
 
-		void const* const ptr = NABI_ALLOCATOR_TO_VPTR(value);
+		void const* const ptr = NA_TO_VPTR(value);
 		EXPECT_TRUE(memory_operations::IsAlligned(ptr, 4u));
 	}
 
-#	undef TEST_FIXTURE_NAME
-#endif // ifdef NABI_ALLOCATOR_TESTS
+#	undef NA_FIXTURE_NAME
+#endif // ifdef NA_TESTS
 } // namespace nabi_allocator::tests

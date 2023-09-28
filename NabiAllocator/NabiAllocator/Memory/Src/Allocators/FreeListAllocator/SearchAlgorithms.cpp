@@ -27,7 +27,7 @@ namespace nabi_allocator::free_list_allocator
 
 		while (freeListNode)
 		{
-			BlockHeader* const freeBlockHeader = NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockHeader, freeListNode, -, c_BlockHeaderSize);
+			BlockHeader* const freeBlockHeader = NA_REINTERPRET_MEMORY(BlockHeader, freeListNode, -, c_BlockHeaderSize);
 			uInt const freeBlockNumBytes = bit_operations::RightShiftBit(freeBlockHeader->m_BlockInfo, type_utils::ToUnderlying(BlockInfoIndex::SizeStart));
 
 			if (freeBlockNumBytes >= (numBytes - leniency) && freeBlockNumBytes <= (numBytes + leniency))
@@ -56,7 +56,7 @@ namespace nabi_allocator::free_list_allocator
 
 		while (freeListNode)
 		{
-			BlockHeader* const freeBlockHeader = NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockHeader, freeListNode, -, c_BlockHeaderSize);
+			BlockHeader* const freeBlockHeader = NA_REINTERPRET_MEMORY(BlockHeader, freeListNode, -, c_BlockHeaderSize);
 			uInt const freeBlockNumBytes = bit_operations::RightShiftBit(freeBlockHeader->m_BlockInfo, type_utils::ToUnderlying(BlockInfoIndex::SizeStart));
 
 			if (numBytes <= freeBlockNumBytes)
@@ -74,7 +74,7 @@ namespace nabi_allocator::free_list_allocator
 
 	BlockHeader* const FindViaNextFit(FreeListNode const* /*freeListNode*/, uInt const /*numBytes*/)
 	{
-		NABI_ALLOCATOR_FUNCTION_NOT_IMPLEMENTED;
+		NA_FUNCTION_NOT_IMPLEMENTED;
 		return nullptr;
 	}
 } // namespace nabi_allocator::free_list_allocator

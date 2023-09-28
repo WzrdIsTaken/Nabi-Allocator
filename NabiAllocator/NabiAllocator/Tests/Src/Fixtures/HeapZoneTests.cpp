@@ -20,8 +20,8 @@
 
 namespace nabi_allocator::tests
 {
-#ifdef NABI_ALLOCATOR_TESTS
-#	define TEST_FIXTURE_NAME NABI_ALLOCATOR_TEST_FIXTURE_NAME(HeapZoneTests)
+#ifdef NA_TESTS
+#	define NA_FIXTURE_NAME NA_TEST_FIXTURE_NAME(HeapZoneTests)
 
 	static uInt constexpr c_HeapZoneSize = 1u;
 
@@ -47,7 +47,7 @@ namespace nabi_allocator::tests
 		std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
 			std::optional<std::function<bool(AllocatorBlockInfo const&)>> /*action*/, HeapZoneInfo const& /*heapZoneInfo*/) const override
 		{
-			NABI_ALLOCATOR_FUNCTION_NOT_IMPLEMENTED;
+			NA_FUNCTION_NOT_IMPLEMENTED;
 			return {};
 		}
 
@@ -60,7 +60,7 @@ namespace nabi_allocator::tests
 		u32 m_AllocationCount;
 	};
 
-	TEST(TEST_FIXTURE_NAME, CreateAndDestroy)
+	TEST(NA_FIXTURE_NAME, CreateAndDestroy)
 	{
 		HeapZone<MockAllocator> heapZone{ HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		HeapZoneInfo const& heapZoneInfo = heapZone.GetZoneInfo();
@@ -78,7 +78,7 @@ namespace nabi_allocator::tests
 		}
 	}
 
-	TEST(TEST_FIXTURE_NAME, CheckAllocatorCalls)
+	TEST(NA_FIXTURE_NAME, CheckAllocatorCalls)
 	{
 		HeapZone<MockAllocator> heapZone{ HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		MockAllocator const& mockAllocator = heapZone.GetAllocator();
@@ -90,6 +90,6 @@ namespace nabi_allocator::tests
 		EXPECT_EQ(0u, mockAllocator.GetAllocationCount());
 	}
 
-#	undef TEST_FIXTURE_NAME
-#endif // ifdef NABI_ALLOCATOR_TESTS
+#	undef NA_FIXTURE_NAME
+#endif // ifdef NA_TESTS
 } // namespace nabi_allocator::tests

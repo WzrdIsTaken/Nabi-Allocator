@@ -26,7 +26,7 @@ namespace nabi_allocator
 		[[nodiscard]] inline T& GetAllocator() noexcept;
 
 	private:
-		NABI_ALLOCATOR_SET_COPY_MOVE_CONSTRUCTORS(HeapZone, delete);
+		NA_SET_COPY_MOVE_CONSTRUCTORS(HeapZone, delete);
 
 		T m_Allocator;
 	};

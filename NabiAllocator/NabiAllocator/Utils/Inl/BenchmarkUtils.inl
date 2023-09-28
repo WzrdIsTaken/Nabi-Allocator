@@ -11,7 +11,7 @@
 
 namespace nabi_allocator::benchmark_utils
 {
-#ifdef NABI_ALLOCATOR_BENCHMARKS
+#ifdef NA_BENCHMARKS
 	// --- StopWatch ---
 
 	inline StopWatch::StopWatch() noexcept
@@ -36,7 +36,7 @@ namespace nabi_allocator::benchmark_utils
 	template<is_function BenchmarkFunc, is_function ResetFunc>
 	BenchmarkResults RunBenchmark(BenchmarkFunc benchmarkFunc, ResetFunc resetFunc, u32 const repetitions)
 	{
-		NABI_ALLOCATOR_ASSERT_DEFAULT(repetitions > 0u);
+		NA_ASSERT_DEFAULT(repetitions > 0u);
 
 		// Setup
 		StopWatch stopWatch = {};
@@ -67,5 +67,5 @@ namespace nabi_allocator::benchmark_utils
 
 		return results;
 	}
-#endif // ifdef NABI_ALLOCATOR_BENCHMARKS
+#endif // ifdef NA_BENCHMARKS
 } // namespace nabi_allocator::benchmark_utils

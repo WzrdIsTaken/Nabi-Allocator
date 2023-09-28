@@ -54,7 +54,7 @@ namespace nabi_allocator::free_list_allocator
 			std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) const override;
 
 	private:
-		NABI_ALLOCATOR_SET_COPY_MOVE_CONSTRUCTORS(FreeListAllocator, delete);
+		NA_SET_COPY_MOVE_CONSTRUCTORS(FreeListAllocator, delete);
 
 		[[nodiscard]] BlockHeader* const TryFindFreeBlock(uInt const numBytes) const;
 		void TryCoalesceBlock(BlockHeader* const blockHeader, HeapZoneInfo const& heapZoneInfo);

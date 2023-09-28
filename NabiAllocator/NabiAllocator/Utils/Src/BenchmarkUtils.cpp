@@ -11,7 +11,7 @@
 
 namespace nabi_allocator::benchmark_utils
 {
-#ifdef NABI_ALLOCATOR_BENCHMARKS
+#ifdef NA_BENCHMARKS
 	std::string BenchmarkResultsToString(BenchmarkResults const& results, bool const print)
 	{
 		using namespace character_constants;
@@ -35,14 +35,14 @@ namespace nabi_allocator::benchmark_utils
 		std::string const streamAsString = stream.str();
 		if (print)
 		{
-#ifdef NABI_ALLOCATOR_DEBUG
-			NABI_ALLOCATOR_LOG(streamAsString);
+#ifdef NA_DEBUG
+			NA_LOG(streamAsString);
 #else
-			std::cout << streamAsString << std::endl; // If NABI_ALLOCATOR_DEBUG is not defined we can't use LOG
-#endif // ifdef NABI_ALLOCATOR_DEBUG
+			std::cout << streamAsString << std::endl; // If NA_DEBUG is not defined we can't use LOG
+#endif // ifdef NA_DEBUG
 		}
 
 		return streamAsString;
 	}
-#endif // ifdef NABI_ALLOCATOR_BENCHMARKS
+#endif // ifdef NA_BENCHMARKS
 } // namespace nabi_allocator::benchmark_utils

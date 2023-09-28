@@ -7,12 +7,12 @@
 #include "IntegerTypes.h"
 
 /**
- * Tracks the allocations / memory useage of allocators if NABI_ALLOCATOR_TRACK_ALLOCATIONS is defined.
+ * Tracks the allocations / memory useage of allocators if NA_TRACK_ALLOCATIONS is defined.
 */
 
 namespace nabi_allocator
 {
-#ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
+#ifdef NA_TRACK_ALLOCATIONS
 	struct AllocatorStats final
 	{ 
 		u64 m_ActiveAllocationCount;
@@ -32,5 +32,5 @@ namespace nabi_allocator
 
 	void UpdateAllocatorStats(AllocatorStats& allocatorStats, AllocatorStatsUpdateType const updateType,
 		u64 const& allocationCountAdjustment, u64 const& allocationByteAdjustment);
-#endif // ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
+#endif // ifdef NA_TRACK_ALLOCATIONS
 } // namespace nabi_allocator

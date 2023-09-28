@@ -24,29 +24,29 @@ using namespace nabi_allocator;
 
 s32 main(s32 argc, char* argv[])
 {
-	NABI_ALLOCATOR_LOG("Launching Nabi Allocator, version " << NABI_ALLOCATOR_VERSION << "." << character_constants::c_NewLine);
+	NA_LOG("Launching Nabi Allocator, version " << NA_VERSION << "." << character_constants::c_NewLine);
 
-#ifdef NABI_ALLOCATOR_DEBUG
+#ifdef NA_DEBUG
 	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_WNDW);
-#endif // ifdef NABI_ALLOCATOR_DEBUG
+#endif // ifdef NA_DEBUG
 
-#if defined NABI_ALLOCATOR_TESTS || defined NABI_ALLOCATOR_BENCHMARKS
+#if defined NA_TESTS || defined NA_BENCHMARKS
 	std::string filterPattern = {};
-#	ifdef NABI_ALLOCATOR_TESTS
-		filterPattern += NABI_ALLOCATOR_CONCAT(NABI_ALLOCATOR_XSTR(NABI_ALLOCATOR_TEST_IDENTIFIER), NABI_ALLOCATOR_GTEST_FILTER_SEPERATOR);
-#	endif // ifdef NABI_ALLOCATOR_TESTS
-#	ifdef NABI_ALLOCATOR_BENCHMARKS
-		filterPattern += NABI_ALLOCATOR_CONCAT(NABI_ALLOCATOR_XSTR(NABI_ALLOCATOR_BENCHMARK_IDENTIFIER), NABI_ALLOCATOR_GTEST_FILTER_SEPERATOR);
-#	endif // ifdef NABI_ALLOCATOR_BENCHMARKS
+#	ifdef NA_TESTS
+		filterPattern += NA_CONCAT(NA_XSTR(NA_TEST_IDENTIFIER), NA_GTEST_FILTER_SEPERATOR);
+#	endif // ifdef NA_TESTS
+#	ifdef NA_BENCHMARKS
+		filterPattern += NA_CONCAT(NA_XSTR(NA_BENCHMARK_IDENTIFIER), NA_GTEST_FILTER_SEPERATOR);
+#	endif // ifdef NA_BENCHMARKS
 	::testing::GTEST_FLAG(filter) = filterPattern.c_str();
 
 	::testing::InitGoogleTest(&argc, argv);
 	s32 const testResults = RUN_ALL_TESTS();
 
-	NABI_ALLOCATOR_ASSERT(testResults == EXIT_SUCCESS, 
+	NA_ASSERT(testResults == EXIT_SUCCESS, 
 		"One or more of the tests failed. See the console output for details, or run the test explorer.");
-	NABI_ALLOCATOR_LOG("All tests complete!" << character_constants::c_NewLine);
-#endif // ifdef NABI_ALLOCATOR_TESTS || NABI_ALLOCATOR_BENCHMARKS
+	NA_LOG("All tests complete!" << character_constants::c_NewLine);
+#endif // ifdef NA_TESTS || NA_BENCHMARKS
 
 	return EXIT_SUCCESS;
 }

@@ -9,9 +9,9 @@ namespace nabi_allocator
 	inline HeapZoneBase::HeapZoneBase()
 		: m_ZoneInfo{ c_NulluPtr, c_NulluPtr }
 		, m_ParentZone(nullptr)
-#ifdef NABI_ALLOCATOR_DEBUG
+#ifdef NA_DEBUG
 		, m_DebugName("NotAssigned")
-#endif // ifdef NABI_ALLOCATOR_DEBUG
+#endif // ifdef NA_DEBUG
 	{
 	}
 
@@ -20,12 +20,12 @@ namespace nabi_allocator
 		return m_ZoneInfo;
 	}
 
-#ifdef NABI_ALLOCATOR_DEBUG
+#ifdef NA_DEBUG
 	inline std::string const& HeapZoneBase::GetDebugName() const noexcept
 	{
 		return m_DebugName;
 	}
-#endif // ifdef NABI_ALLOCATOR_DEBUG
+#endif // ifdef NA_DEBUG
 
 	inline bool HeapZoneBase::IsInitialized() const noexcept
 	{

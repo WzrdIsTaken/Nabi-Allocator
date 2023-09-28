@@ -30,19 +30,19 @@ namespace nabi_allocator::free_list_allocator
 		: m_FreeList(nullptr)
 	{
 		uInt const heapZoneSize = memory_operations::GetMemorySize(heapZoneInfo.m_Start, heapZoneInfo.m_End);
-		NABI_ALLOCATOR_ASSERT_DEFAULT(memory_operations::IsAlligned(heapZoneSize, c_BlockAllignment));
-		NABI_ALLOCATOR_ASSERT_DEFAULT(heapZoneSize > c_MinBlockSize);
+		NA_ASSERT_DEFAULT(memory_operations::IsAlligned(heapZoneSize, c_BlockAllignment));
+		NA_ASSERT_DEFAULT(heapZoneSize > c_MinBlockSize);
 
-		AddFreeBlock(NABI_ALLOCATOR_TO_VPTR(heapZoneInfo.m_Start), heapZoneSize);
+		AddFreeBlock(NA_TO_VPTR(heapZoneInfo.m_Start), heapZoneSize);
 	}
 
 	template<FreeListAllocatorSettings Settings>
 	FreeListAllocator<Settings>::~FreeListAllocator()
 	{
-#ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
-		NABI_ALLOCATOR_ASSERT(m_AllocatorStats.m_ActiveAllocationCount == 0u && m_AllocatorStats.m_ActiveBytesAllocated == 0u,
-			NABI_ALLOCATOR_NAMEOF_LITERAL(FreeListAllocator) << "'s destructor was called, but objects it allocated are still active");
-#endif // ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
+#ifdef NA_TRACK_ALLOCATIONS
+		NA_ASSERT(m_AllocatorStats.m_ActiveAllocationCount == 0u && m_AllocatorStats.m_ActiveBytesAllocated == 0u,
+			NA_NAMEOF_LITERAL(FreeListAllocator) << "'s destructor was called, but objects it allocated are still active");
+#endif // ifdef NA_TRACK_ALLOCATIONS
 	}
 
 	template<FreeListAllocatorSettings Settings>
@@ -65,7 +65,7 @@ namespace nabi_allocator::free_list_allocator
 		bool requiresPadding = padding != 0u;
 
 		blockHeader = TryFindFreeBlock(requiredBlockSize);
-		NABI_ALLOCATOR_ASSERT(blockHeader, NABI_ALLOCATOR_NAMEOF_LITERAL(FreeListAllocator) " is out of memory");
+		NA_ASSERT(blockHeader, NA_NAMEOF_LITERAL(FreeListAllocator) " is out of memory");
 
 		uInt const originalBlockSize = bit_operations::RightShiftBit(blockHeader->m_BlockInfo, type_utils::ToUnderlying(BlockInfoIndex::SizeStart));
 		RemoveFreeBlock(blockHeader);
@@ -88,13 +88,13 @@ namespace nabi_allocator::free_list_allocator
 		blockInfoContent.m_NumBytes = requiredBlockSize;
 		LoadBlockInfo(blockInfoContent, *blockHeader);
 
-#ifdef NABI_ALLOCATOR_MEMORY_TAGGING
+#ifdef NA_MEMORY_TAGGING
 		// TODO Memory Tagging here (MemoryTagScope, get from the MemoryCommand singleton)
-#endif // ifdef NABI_ALLOCATOR_MEMORY_TAGGING
+#endif // ifdef NA_MEMORY_TAGGING
 		allocatedBytes += c_BlockHeaderSize;
 
 		// Store the pointer to where the payload will be allocated
-		void* const payloadPtr = NABI_ALLOCATOR_REINTERPRET_MEMORY(void, blockHeader, +, allocatedBytes);
+		void* const payloadPtr = NA_REINTERPRET_MEMORY(void, blockHeader, +, allocatedBytes);
 		allocatedBytes += numBytes;
 
 		// Allocate the padding if needed
@@ -103,29 +103,29 @@ namespace nabi_allocator::free_list_allocator
 			// We want to allocate the padding one byte before the footer. 
 			// Its ok to do padding - c_BlockPaddingSize, because if "requiresPadding" is true, "padding" will always be > 1 and c_BlockPaddingSize is 1.
 			uInt const blockPaddingStructPosition = padding - c_BlockPaddingSize;
-			BlockPadding* const blockPadding = NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockPadding, blockHeader, +, (allocatedBytes + blockPaddingStructPosition));
+			BlockPadding* const blockPadding = NA_REINTERPRET_MEMORY(BlockPadding, blockHeader, +, (allocatedBytes + blockPaddingStructPosition));
 
 			blockPadding->m_Padding = static_cast<u8>(padding);
 			allocatedBytes += padding;
 		}
 
 		// Allocate the footer
-		BlockFooter* const blockFooter = NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockFooter, blockHeader, +, allocatedBytes);
+		BlockFooter* const blockFooter = NA_REINTERPRET_MEMORY(BlockFooter, blockHeader, +, allocatedBytes);
 		blockFooter->m_BlockInfo = blockHeader->m_BlockInfo;
 		allocatedBytes += c_BlockFooterSize;
 
 		// Split the original memory block if it was of sufficient size
 		if (remainingBlockSpaceSufficient)
 		{
-			void* const newFreeBlockStart = NABI_ALLOCATOR_REINTERPRET_MEMORY(void, blockFooter, +, c_BlockFooterSize);
+			void* const newFreeBlockStart = NA_REINTERPRET_MEMORY(void, blockFooter, +, c_BlockFooterSize);
 			AddFreeBlock(newFreeBlockStart, unusedSpace);
 		}
 
 		// Update stats
-#ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
+#ifdef NA_TRACK_ALLOCATIONS
 		u64 constexpr allocationCountAdjustment = 1u;
 		UpdateAllocatorStats(m_AllocatorStats, AllocatorStatsUpdateType::Allocate, allocationCountAdjustment, static_cast<u64>(requiredBlockSize));
-#endif // #ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
+#endif // #ifdef NA_TRACK_ALLOCATIONS
 
 		return payloadPtr;
 	}
@@ -133,19 +133,19 @@ namespace nabi_allocator::free_list_allocator
 	template<FreeListAllocatorSettings Settings>
 	void FreeListAllocator<Settings>::Free(void* memory, HeapZoneInfo const& heapZoneInfo)
 	{
-		NABI_ALLOCATOR_ASSERT(memory, "Cannot free nullptr");
-		NABI_ALLOCATOR_ASSERT(memory_operations::IsPtrInRange(heapZoneInfo.m_Start, heapZoneInfo.m_End,
-			NABI_ALLOCATOR_TO_UPTR(memory)), "Trying to release memory not managed by this allocator");
+		NA_ASSERT(memory, "Cannot free nullptr");
+		NA_ASSERT(memory_operations::IsPtrInRange(heapZoneInfo.m_Start, heapZoneInfo.m_End,
+			NA_TO_UPTR(memory)), "Trying to release memory not managed by this allocator");
 
 		// Get the payload's block's header
-		BlockHeader* const blockHeader = NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockHeader, memory, -, c_BlockHeaderSize);
+		BlockHeader* const blockHeader = NA_REINTERPRET_MEMORY(BlockHeader, memory, -, c_BlockHeaderSize);
 
 		// Update stats
-#ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
+#ifdef NA_TRACK_ALLOCATIONS
 		u64 constexpr allocationCountAdjustment = 1u;
 		uInt const blockSize = bit_operations::RightShiftBit(blockHeader->m_BlockInfo, type_utils::ToUnderlying(BlockInfoIndex::SizeStart));
 		UpdateAllocatorStats(m_AllocatorStats, AllocatorStatsUpdateType::Free, allocationCountAdjustment, static_cast<u64>(blockSize));
-#endif // #ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
+#endif // #ifdef NA_TRACK_ALLOCATIONS
 
 		// Begin the free process
 		TryCoalesceBlock(blockHeader, heapZoneInfo);
@@ -163,18 +163,18 @@ namespace nabi_allocator::free_list_allocator
 		// Loop through all the blocks in the heap zone until the end or "action" returns false
 		do
 		{
-			blockHeader = NABI_ALLOCATOR_REINTERPRET_MEMORY_DEFAULT(BlockHeader, static_cast<uPtr>(progressThroughHeapZone));
+			blockHeader = NA_REINTERPRET_MEMORY_DEFAULT(BlockHeader, static_cast<uPtr>(progressThroughHeapZone));
 			UnloadBlockInfo(blockInfoContent, *blockHeader);
 			progressThroughHeapZone += blockInfoContent.m_NumBytes;
 
 			// Store the block's infomation in allocatorBlockInfo
 			AllocatorBlockInfo& allocatorBlockInfo = allocatorBlocks.emplace_back();
-			allocatorBlockInfo.m_MemoryAddress = NABI_ALLOCATOR_TO_UPTR(blockHeader);
-#ifdef NABI_ALLOCATOR_MEMORY_TAGGING
+			allocatorBlockInfo.m_MemoryAddress = NA_TO_UPTR(blockHeader);
+#ifdef NA_MEMORY_TAGGING
 			allocatorBlockInfo.m_MemoryTag = blockHeader->m_MemoryTag;
-#endif // ifdef NABI_ALLOCATOR_MEMORY_TAGGING
+#endif // ifdef NA_MEMORY_TAGGING
 
-			allocatorBlockInfo.m_PayloadPtr = NABI_ALLOCATOR_REINTERPRET_MEMORY(void, blockHeader, +, c_BlockHeaderSize);
+			allocatorBlockInfo.m_PayloadPtr = NA_REINTERPRET_MEMORY(void, blockHeader, +, c_BlockHeaderSize);
 			allocatorBlockInfo.m_Allocated = blockInfoContent.m_Allocated;
 			allocatorBlockInfo.m_Padded = blockInfoContent.m_Padded;
 			
@@ -182,7 +182,7 @@ namespace nabi_allocator::free_list_allocator
 			if (allocatorBlockInfo.m_Padded)
 			{
 				BlockPadding const* const blockPadding = 
-					NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockPadding, blockHeader, +, (blockInfoContent.m_NumBytes - c_BlockFooterSize - c_BlockPaddingSize));
+					NA_REINTERPRET_MEMORY(BlockPadding, blockHeader, +, (blockInfoContent.m_NumBytes - c_BlockFooterSize - c_BlockPaddingSize));
 				padding = static_cast<u32>(blockPadding->m_Padding);
 			}
 
@@ -220,7 +220,7 @@ namespace nabi_allocator::free_list_allocator
 		}
 		else
 		{
-			NABI_ALLOCATOR_ASSERT_FAIL("Using an unexpected " << NABI_ALLOCATOR_NAMEOF_LITERAL(SearchAlgorithm));
+			NA_ASSERT_FAIL("Using an unexpected " << NA_NAMEOF_LITERAL(SearchAlgorithm));
 		}
 
 		// If no suitable block was found, the allocator is out of memory
@@ -230,17 +230,17 @@ namespace nabi_allocator::free_list_allocator
 	template<FreeListAllocatorSettings Settings>
 	void FreeListAllocator<Settings>::TryCoalesceBlock(BlockHeader* const blockHeader, HeapZoneInfo const& heapZoneInfo)
 	{
-		NABI_ALLOCATOR_ASSERT(blockHeader, NABI_ALLOCATOR_NAMEOF_LITERAL(blockHeader) " is null");
+		NA_ASSERT(blockHeader, NA_NAMEOF_LITERAL(blockHeader) " is null");
 
 		uInt const blockSize = bit_operations::RightShiftBit(blockHeader->m_BlockInfo, type_utils::ToUnderlying(BlockInfoIndex::SizeStart));
-		uPtr const blockAddress = NABI_ALLOCATOR_TO_UPTR(blockHeader);
+		uPtr const blockAddress = NA_TO_UPTR(blockHeader);
 		uInt newBlockSize = blockSize;
 		uInt leftExtent = 0u;
 
 		// Attempt to coalesce with right neighbor
 		if ((blockAddress + blockSize) != heapZoneInfo.m_End)
 		{
-			BlockHeader* const rightBlockHeader = NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockHeader, blockHeader, +, blockSize);
+			BlockHeader* const rightBlockHeader = NA_REINTERPRET_MEMORY(BlockHeader, blockHeader, +, blockSize);
 			bool const rightBlockFree = !bit_operations::GetBit(rightBlockHeader->m_BlockInfo, type_utils::ToUnderlying(BlockInfoIndex::Allocated));
 
 			if (rightBlockFree)
@@ -254,7 +254,7 @@ namespace nabi_allocator::free_list_allocator
 		// Attempt to coalesce with left neighbor
 		if (blockAddress != heapZoneInfo.m_Start)
 		{
-			BlockFooter* const leftBlockFooter = NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockFooter, blockHeader, -, c_BlockFooterSize);
+			BlockFooter* const leftBlockFooter = NA_REINTERPRET_MEMORY(BlockFooter, blockHeader, -, c_BlockFooterSize);
 			bool const leftBlockFree = !bit_operations::GetBit(leftBlockFooter->m_BlockInfo, type_utils::ToUnderlying(BlockInfoIndex::Allocated));
 
 			if (leftBlockFree)
@@ -263,20 +263,20 @@ namespace nabi_allocator::free_list_allocator
 				leftExtent = leftBlockSize;
 				newBlockSize += leftBlockSize;
 
-				void* const leftblockStartPtr = NABI_ALLOCATOR_REINTERPRET_MEMORY(void, leftBlockFooter, -, (leftBlockSize - c_BlockFooterSize));
+				void* const leftblockStartPtr = NA_REINTERPRET_MEMORY(void, leftBlockFooter, -, (leftBlockSize - c_BlockFooterSize));
 				RemoveFreeBlock(leftblockStartPtr);
 			}
 		}
 
 		// Mark the block as memory as a free block
-		void* const leftExtentPtr = NABI_ALLOCATOR_REINTERPRET_MEMORY(void, blockHeader, -, leftExtent);
+		void* const leftExtentPtr = NA_REINTERPRET_MEMORY(void, blockHeader, -, leftExtent);
 		AddFreeBlock(leftExtentPtr, newBlockSize);
 	}
 
 	template<FreeListAllocatorSettings Settings>
 	void FreeListAllocator<Settings>::AddFreeListNode(FreeListNode* const node)
 	{
-		NABI_ALLOCATOR_ASSERT(node, NABI_ALLOCATOR_NAMEOF_LITERAL(node) " is null");
+		NA_ASSERT(node, NA_NAMEOF_LITERAL(node) " is null");
 
 		// If there are no free blocks, this block becomes the head of the list
 		if (!m_FreeList)
@@ -286,8 +286,8 @@ namespace nabi_allocator::free_list_allocator
 		}
 
 		// If the memory of block is before the memory of the list's head, then make this block the new head to ensure cache performance
-		uPtr const nodeAddress = NABI_ALLOCATOR_TO_UPTR(node);
-		if (nodeAddress < NABI_ALLOCATOR_TO_UPTR(m_FreeList))
+		uPtr const nodeAddress = NA_TO_UPTR(node);
+		if (nodeAddress < NA_TO_UPTR(m_FreeList))
 		{
 			node->m_Next = m_FreeList;
 			m_FreeList->m_Previous = node;
@@ -300,8 +300,8 @@ namespace nabi_allocator::free_list_allocator
 
 		while (currentNode->m_Next)
 		{
-			if (nodeAddress > NABI_ALLOCATOR_TO_UPTR(currentNode) &&
-				nodeAddress < NABI_ALLOCATOR_TO_UPTR(currentNode->m_Next))
+			if (nodeAddress > NA_TO_UPTR(currentNode) &&
+				nodeAddress < NA_TO_UPTR(currentNode->m_Next))
 			{
 				node->m_Next = currentNode->m_Next;
 				currentNode->m_Next->m_Previous = node;
@@ -323,12 +323,12 @@ namespace nabi_allocator::free_list_allocator
 	template<FreeListAllocatorSettings Settings>
 	void FreeListAllocator<Settings>::AddFreeBlock(void* const blockStartPtr, uInt const numBytes)
 	{
-		NABI_ALLOCATOR_ASSERT(blockStartPtr, NABI_ALLOCATOR_NAMEOF_LITERAL(blockStartPtr) " is null");
-		NABI_ALLOCATOR_ASSERT(numBytes >= c_MinBlockSize, "Trying to add a free block with size " << numBytes << ". The minimum size is " << c_MinBlockSize);
+		NA_ASSERT(blockStartPtr, NA_NAMEOF_LITERAL(blockStartPtr) " is null");
+		NA_ASSERT(numBytes >= c_MinBlockSize, "Trying to add a free block with size " << numBytes << ". The minimum size is " << c_MinBlockSize);
 
 		// Add the memory structures (header/footer)
-		BlockHeader* const freeBlockHeader = NABI_ALLOCATOR_REINTERPRET_MEMORY_DEFAULT(BlockHeader, blockStartPtr);
-		BlockFooter* const freeBlockFooter = NABI_ALLOCATOR_REINTERPRET_MEMORY(BlockFooter, blockStartPtr, +, (numBytes - c_BlockFooterSize));
+		BlockHeader* const freeBlockHeader = NA_REINTERPRET_MEMORY_DEFAULT(BlockHeader, blockStartPtr);
+		BlockFooter* const freeBlockFooter = NA_REINTERPRET_MEMORY(BlockFooter, blockStartPtr, +, (numBytes - c_BlockFooterSize));
 
 		BlockInfoContent blockInfoContent = {};
 		blockInfoContent.m_Allocated = false;
@@ -337,7 +337,7 @@ namespace nabi_allocator::free_list_allocator
 		LoadBlockInfo(blockInfoContent, *freeBlockHeader, freeBlockFooter);
 
 		// Add the free list node
-		FreeListNode* const freeListNode = NABI_ALLOCATOR_REINTERPRET_MEMORY(FreeListNode, freeBlockHeader, +, c_BlockHeaderSize);
+		FreeListNode* const freeListNode = NA_REINTERPRET_MEMORY(FreeListNode, freeBlockHeader, +, c_BlockHeaderSize);
 		freeListNode->m_Next = nullptr;     // Its important to set this to nullptr, as AddFreeListNode spins through all the nodes until !currentNode->Next
 		freeListNode->m_Previous = nullptr; // This would invalidate the free list and cause a crash in SearchAlgorithm::FindVia[algorithm name]
 		AddFreeListNode(freeListNode);
@@ -346,23 +346,23 @@ namespace nabi_allocator::free_list_allocator
 	template<FreeListAllocatorSettings Settings>
 	void FreeListAllocator<Settings>::RemoveFreeBlock(void* const blockStartPtr)
 	{
-		NABI_ALLOCATOR_ASSERT(blockStartPtr, NABI_ALLOCATOR_NAMEOF_LITERAL(blockStartPtr) " is null");
+		NA_ASSERT(blockStartPtr, NA_NAMEOF_LITERAL(blockStartPtr) " is null");
 
 		// Find the free list node
-		FreeListNode* const freeListNode = NABI_ALLOCATOR_REINTERPRET_MEMORY(FreeListNode, blockStartPtr, +, c_BlockHeaderSize);
+		FreeListNode* const freeListNode = NA_REINTERPRET_MEMORY(FreeListNode, blockStartPtr, +, c_BlockHeaderSize);
 
 		// If the free list node is the start of the free list, rewire the head of the list
 		if (freeListNode == m_FreeList)
 		{
 			m_FreeList = freeListNode->m_Next;
 
-#if defined NABI_ALLOCATOR_DEBUG || defined NABI_ALLOCATOR_TESTS
+#if defined NA_DEBUG || defined NA_TESTS
 			// Not necessary, but makes the debug output easier to reason
 			if (m_FreeList) 
 			{
 				m_FreeList->m_Previous = nullptr;
 			}
-#endif // ifdef NABI_ALLOCATOR_DEBUG || NABI_ALLOCATOR_TESTS
+#endif // ifdef NA_DEBUG || NA_TESTS
 		}
 		else
 		{
@@ -377,10 +377,10 @@ namespace nabi_allocator::free_list_allocator
 			}
 		}
 
-#if defined NABI_ALLOCATOR_DEBUG || defined NABI_ALLOCATOR_TESTS
+#if defined NA_DEBUG || defined NA_TESTS
 		// Same deal as above. These resets are done in AddFreeBlock anyway
 		freeListNode->m_Next = nullptr;
 		freeListNode->m_Previous = nullptr;
-#endif // ifdef NABI_ALLOCATOR_DEBUG || NABI_ALLOCATOR_TESTS
+#endif // ifdef NA_DEBUG || NA_TESTS
 	}
 } // namespace nabi_allocator::free_list_allocator

@@ -22,5 +22,5 @@ namespace nabi_allocator::free_list_allocator
 	
 	uInt constexpr c_BlockPaddingSize = sizeof(BlockPadding);
 
-	static_assert(c_BlockPaddingSize == 1u, NABI_ALLOCATOR_NAMEOF_LITERAL(BlockPadding) "is not the expected size");
+	static_assert(c_BlockPaddingSize == 1u, NA_NAMEOF_LITERAL(BlockPadding) "is not the expected size");
 } // namespace nabi_allocator::free_list_allocator

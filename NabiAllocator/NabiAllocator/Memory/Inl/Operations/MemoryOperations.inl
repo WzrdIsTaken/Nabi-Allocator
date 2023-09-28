@@ -12,10 +12,10 @@ namespace nabi_allocator::memory_operations
 	template<typename T>
 	inline T RequestMemoryFromOS(uInt const numBytes)
 	{
-		NABI_ALLOCATOR_ASSERT(numBytes > 0u, "Requesting 0 bytes");
+		NA_ASSERT(numBytes > 0u, "Requesting 0 bytes");
 
 		void* const memory = std::malloc(static_cast<std::size_t>(numBytes));
-		NABI_ALLOCATOR_ASSERT(memory, "Call to malloc requesting " << numBytes << " failed! Are we out of memory?");
+		NA_ASSERT(memory, "Call to malloc requesting " << numBytes << " failed! Are we out of memory?");
 
 		return reinterpret_cast<T>(memory);
 	}
@@ -23,7 +23,7 @@ namespace nabi_allocator::memory_operations
 	template<typename T>
 	inline void ReleaseMemoryToOS(T*& memory)
 	{
-		NABI_ALLOCATOR_ASSERT(memory, "Can't free null memory!");
+		NA_ASSERT(memory, "Can't free null memory!");
 
 		std::free(memory);
 		memory = nullptr;
@@ -32,13 +32,13 @@ namespace nabi_allocator::memory_operations
 	template<typename T>
 	inline void ResetMemory(T* const memory)
 	{
-		NABI_ALLOCATOR_ASSERT(memory, "Can't reset null memory!");
+		NA_ASSERT(memory, "Can't reset null memory!");
 		std::memset(memory, NULL, sizeof(T));
 	}
 
 	inline void ResetMemory(void* const destination, uInt const numBytes)
 	{
-		NABI_ALLOCATOR_ASSERT(destination, "Can't reset null memory!");
+		NA_ASSERT(destination, "Can't reset null memory!");
 		std::memset(destination, NULL, static_cast<std::size_t>(numBytes));
 	}
 
@@ -49,7 +49,7 @@ namespace nabi_allocator::memory_operations
 
 	inline uInt GetMemorySize(void const* const start, void const* const end)
 	{
-		return GetMemorySize(NABI_ALLOCATOR_TO_UPTR(start), NABI_ALLOCATOR_TO_UPTR(end));
+		return GetMemorySize(NA_TO_UPTR(start), NA_TO_UPTR(end));
 	}
 
 	template<is_integral T>
@@ -60,7 +60,7 @@ namespace nabi_allocator::memory_operations
 
 	inline bool IsAlligned(void const* const address, uInt const allignment)
 	{
-		return IsAlligned(NABI_ALLOCATOR_TO_UPTR(address), allignment);
+		return IsAlligned(NA_TO_UPTR(address), allignment);
 	}
 
 	inline constexpr bool IsPtrInRange(uPtr const start, uPtr const end, uPtr const ptr) noexcept
@@ -70,6 +70,6 @@ namespace nabi_allocator::memory_operations
 
 	inline bool IsPtrInRange(void const* const start, void const* const end, void const* const ptr)
 	{
-		return IsPtrInRange(NABI_ALLOCATOR_TO_UPTR(start), NABI_ALLOCATOR_TO_UPTR(end), NABI_ALLOCATOR_TO_UPTR(ptr));
+		return IsPtrInRange(NA_TO_UPTR(start), NA_TO_UPTR(end), NA_TO_UPTR(ptr));
 	}
 } // namespace nabi_allocator::memory_operations

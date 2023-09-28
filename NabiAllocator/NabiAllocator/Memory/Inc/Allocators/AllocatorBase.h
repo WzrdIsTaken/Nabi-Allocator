@@ -39,8 +39,8 @@ namespace nabi_allocator
 			std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) const = 0;
 
 	protected:
-#ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
+#ifdef NA_TRACK_ALLOCATIONS
 		AllocatorStats m_AllocatorStats = {};
-#endif // ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
+#endif // ifdef NA_TRACK_ALLOCATIONS
 	};
 } // namespace nabi_allocator

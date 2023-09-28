@@ -22,10 +22,10 @@
 
 namespace nabi_allocator::benchmark_utils
 {
-#ifdef NABI_ALLOCATOR_BENCHMARKS
-#	define /*NABI_ALLOCATOR_?*/BENCHMARK(benchmarkFixtureName, benchmarkCaseName) TEST(benchmarkFixtureName, benchmarkCaseName)
+#ifdef NA_BENCHMARKS
+#	define NA_BENCHMARK(benchmarkFixtureName, benchmarkCaseName) TEST(benchmarkFixtureName, benchmarkCaseName)
 
-	static_assert(NABI_ALLOCATOR_BENCHMARK_RUN_COUNT > 0u);
+	static_assert(NA_BENCHMARK_RUN_COUNT > 0u);
 
 	class StopWatch final
 	{
@@ -52,9 +52,9 @@ namespace nabi_allocator::benchmark_utils
 	};
 
 	template<is_function BenchmarkFunc, is_function ResetFunc>
-	[[nodiscard]] BenchmarkResults RunBenchmark(BenchmarkFunc benchmarkFunc, ResetFunc resetFunc, u32 const repetitions = NABI_ALLOCATOR_BENCHMARK_RUN_COUNT);
+	[[nodiscard]] BenchmarkResults RunBenchmark(BenchmarkFunc benchmarkFunc, ResetFunc resetFunc, u32 const repetitions = NA_BENCHMARK_RUN_COUNT);
 	std::string BenchmarkResultsToString(BenchmarkResults const& results, bool const print);
-#endif // #ifdef NABI_ALLOCATOR_BENCHMARK
+#endif // #ifdef NA_BENCHMARK
 } // namespace nabi_allocator::benchmark_utils
 
 // Include Inline

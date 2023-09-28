@@ -30,6 +30,6 @@ namespace nabi_allocator::free_list_allocator
 #else
 #	error "Unsupported architecture"
 #endif // ifdef _M_IX86, elif _M_IX86
-		, NABI_ALLOCATOR_NAMEOF_LITERAL(FreeListNode) "is not the expected size");
+		, NA_NAMEOF_LITERAL(FreeListNode) "is not the expected size");
 } // namespace nabi_allocator::free_list_allocator
 

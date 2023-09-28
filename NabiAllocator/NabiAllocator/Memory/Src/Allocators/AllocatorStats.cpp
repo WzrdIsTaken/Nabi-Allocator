@@ -7,7 +7,7 @@
 
 namespace nabi_allocator
 {
-#ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
+#ifdef NA_TRACK_ALLOCATIONS
 	void UpdateAllocatorStats(AllocatorStats& allocatorStats, AllocatorStatsUpdateType const updateType, 
 		u64 const& allocationCountAdjustment, u64 const& allocationByteAdjustment)
 	{
@@ -20,7 +20,7 @@ namespace nabi_allocator
 			allocatorStats.m_TotalBytesAllocated   += allocationByteAdjustment;
 			break;
 		case AllocatorStatsUpdateType::Free:
-			NABI_ALLOCATOR_ASSERT(allocatorStats.m_ActiveAllocationCount >= allocationCountAdjustment &&
+			NA_ASSERT(allocatorStats.m_ActiveAllocationCount >= allocationCountAdjustment &&
 			                      allocatorStats.m_ActiveBytesAllocated  >= allocationByteAdjustment  &&
 				                  allocatorStats.m_TotalAllocationCount  >= allocationCountAdjustment &&
 				                  allocatorStats.m_TotalBytesAllocated   >= allocationByteAdjustment,
@@ -30,9 +30,9 @@ namespace nabi_allocator
 			allocatorStats.m_ActiveBytesAllocated  -= allocationByteAdjustment;
 			break;
 		default:
-			NABI_ALLOCATOR_ASSERT_FAIL("Using an unexpected " << NABI_ALLOCATOR_NAMEOF_LITERAL(AllocatorStatsUpdateType));
+			NA_ASSERT_FAIL("Using an unexpected " << NA_NAMEOF_LITERAL(AllocatorStatsUpdateType));
 			break;
 		}
 	}
-#endif // ifdef NABI_ALLOCATOR_TRACK_ALLOCATIONS
+#endif // ifdef NA_TRACK_ALLOCATIONS
 } // namespace nabi_allocator

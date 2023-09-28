@@ -17,9 +17,9 @@ namespace nabi_allocator
 	{
 		// Meta
 		uPtr m_MemoryAddress;
-#ifdef NABI_ALLOCATOR_MEMORY_TAGGING
+#ifdef NA_MEMORY_TAGGING
 		u32 m_MemoryTag;
-#endif // ifdef NABI_ALLOCATOR_MEMORY_TAGGING
+#endif // ifdef NA_MEMORY_TAGGING
 
 		// General
 		void* m_PayloadPtr;

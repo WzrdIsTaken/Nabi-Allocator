@@ -24,13 +24,13 @@ namespace nabi_allocator::free_list_allocator
 
 	struct BlockHeader final : public BlockBase
 	{
-#ifdef NABI_ALLOCATOR_MEMORY_TAGGING
+#ifdef NA_MEMORY_TAGGING
 		u32 m_MemoryTag; // I hope a u32 has enough range for all the memory tags someone could ever want... (it can easily be changed though)
 
 #ifdef _M_X64
 		char const c_Padding[4];
 #endif // ifdef _M_X64
-#endif // ifdef NABI_ALLOCATOR_MEMORY_TAGGING
+#endif // ifdef NA_MEMORY_TAGGING
 	};
 
 	struct BlockFooter final : public BlockBase
@@ -49,21 +49,21 @@ namespace nabi_allocator::free_list_allocator
 
 	static_assert(c_BlockHeaderSize ==
 #ifdef _M_X64
-#	ifdef NABI_ALLOCATOR_MEMORY_TAGGING
+#	ifdef NA_MEMORY_TAGGING
 		16u
 #	else
 		8u
-#	endif // ifdef NABI_ALLOCATOR_MEMORY_TAGGING 
+#	endif // ifdef NA_MEMORY_TAGGING 
 #elif _M_IX86
-#	ifdef NABI_ALLOCATOR_MEMORY_TAGGING
+#	ifdef NA_MEMORY_TAGGING
 		8u
 #	else
 		4u
-#	endif // ifdef NABI_ALLOCATOR_MEMORY_TAGGING 
+#	endif // ifdef NA_MEMORY_TAGGING 
 #else
 #	error "Unsupported architecture"
 #endif // ifdef _M_IX86, elif _M_IX86
-		, NABI_ALLOCATOR_NAMEOF_LITERAL(BlockHeader) " is not the expected size");
+		, NA_NAMEOF_LITERAL(BlockHeader) " is not the expected size");
 	static_assert(c_BlockFooterSize == 
 #ifdef _M_X64
 		8u
@@ -72,7 +72,7 @@ namespace nabi_allocator::free_list_allocator
 #else
 #	error "Unsupported architecture"
 #endif // ifdef _M_IX86, elif _M_IX86
-		, NABI_ALLOCATOR_NAMEOF_LITERAL(BlockFooter) " is not the expected size");
+		, NA_NAMEOF_LITERAL(BlockFooter) " is not the expected size");
 
 	void LoadBlockInfo(BlockInfoContent const& blockInfoContent, BlockBase& blockOne, BlockBase* const blockTwo = nullptr) noexcept; // This function can take in two blocks (ie, a header and footer)
 	void UnloadBlockInfo(BlockInfoContent& blockInfoContent, BlockBase const& block) noexcept;

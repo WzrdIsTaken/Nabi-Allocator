@@ -18,10 +18,10 @@
 
 namespace nabi_allocator::tests
 {
-#ifdef NABI_ALLOCATOR_TESTS
-#	define TEST_FIXTURE_NAME NABI_ALLOCATOR_TEST_FIXTURE_NAME(BitOperationsTests)
+#ifdef NA_TESTS
+#	define NA_FIXTURE_NAME NA_TEST_FIXTURE_NAME(BitOperationsTests)
 
-	TEST(TEST_FIXTURE_NAME, FlipBit)
+	TEST(NA_FIXTURE_NAME, FlipBit)
 	{
 		u32 constexpr value = 0b0011u;
 
@@ -37,7 +37,7 @@ namespace nabi_allocator::tests
 		}
 	}
 
-	TEST(TEST_FIXTURE_NAME, GetBit)
+	TEST(NA_FIXTURE_NAME, GetBit)
 	{
 		u32 constexpr value = 0b0001u;
 
@@ -53,7 +53,7 @@ namespace nabi_allocator::tests
 		}
 	}
 
-	TEST(TEST_FIXTURE_NAME, SetBit)
+	TEST(NA_FIXTURE_NAME, SetBit)
 	{
 		u32 constexpr value = 0b0001u;
 
@@ -74,7 +74,7 @@ namespace nabi_allocator::tests
 		}
 	}
 
-	TEST(TEST_FIXTURE_NAME, BitShift)
+	TEST(NA_FIXTURE_NAME, BitShift)
 	{
 		u32 constexpr value = 0b0010u;
 
@@ -90,7 +90,7 @@ namespace nabi_allocator::tests
 		}
 	}
 
-	TEST(TEST_FIXTURE_NAME, ToBinaryString)
+	TEST(NA_FIXTURE_NAME, ToBinaryString)
 	{
 		u32 constexpr value = 0b0101u;
 		std::string const/*expr :(*/ expected = "00000000 00000000 00000000 00000101";
@@ -99,6 +99,6 @@ namespace nabi_allocator::tests
 		EXPECT_EQ(actual, expected);
 	}
 
-#	undef TEST_FIXTURE_NAME
-#endif // ifdef NABI_ALLOCATOR_TESTS
+#	undef NA_FIXTURE_NAME
+#endif // ifdef NA_TESTS
 } // namespace nabi_allocator::tests

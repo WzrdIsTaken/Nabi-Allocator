@@ -38,21 +38,21 @@ namespace nabi_allocator
 		inline virtual void Free(void* const memory) = 0;
 
 		inline HeapZoneInfo const& GetZoneInfo() const noexcept;
-#ifdef NABI_ALLOCATOR_DEBUG
+#ifdef NA_DEBUG
 		inline std::string const& GetDebugName() const noexcept;
-#endif // ifdef NABI_ALLOCATOR_DEBUG
+#endif // ifdef NA_DEBUG
 
 		inline bool IsInitialized() const noexcept;
 
 	protected:
 		HeapZoneInfo m_ZoneInfo;
 		HeapZoneBase* m_ParentZone;
-#ifdef NABI_ALLOCATOR_DEBUG
+#ifdef NA_DEBUG
 		std::string m_DebugName;
-#endif // ifdef NABI_ALLOCATOR_DEBUG
+#endif // ifdef NA_DEBUG
 
 	private:
-		NABI_ALLOCATOR_SET_COPY_MOVE_CONSTRUCTORS(HeapZoneBase, delete);
+		NA_SET_COPY_MOVE_CONSTRUCTORS(HeapZoneBase, delete);
 	};
 } // namespace nabi_allocator
 

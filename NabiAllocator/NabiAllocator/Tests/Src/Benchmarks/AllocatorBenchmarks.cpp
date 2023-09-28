@@ -23,13 +23,13 @@
 
 /**
  * Benchmarks for all the allocators. 
- * Running these tests can be toggled on/off by the NABI_ALLOCATOR_BENCHMARKS define in Config.h.
+ * Running these tests can be toggled on/off by the NA_BENCHMARKS define in Config.h.
 */
 
 namespace nabi_allocator::tests
 {
-#ifdef NABI_ALLOCATOR_BENCHMARKS
-#	define TEST_BENCHMARK_NAME NABI_ALLOCATOR_BENCHMARK_FIXTURE_NAME(AllocatorBenchmarks)
+#ifdef NA_BENCHMARKS
+#	define NA_FIXTURE_NAME NA_BENCHMARK_FIXTURE_NAME(AllocatorBenchmarks)
 
 	bool constexpr c_PrintBenchmarkResults = true;
 	uInt constexpr c_HeapZoneSize = 20_MB;
@@ -145,13 +145,13 @@ namespace nabi_allocator::tests
 
 	// --- Unmanaged Allocator ---
 
-	BENCHMARK(TEST_BENCHMARK_NAME, UnmanagedAllocatorAllocThenFree)
+	NA_BENCHMARK(NA_FIXTURE_NAME, UnmanagedAllocatorAllocThenFree)
 	{
 		UntilWeWriteAnUnmangedAllocator test = {};
 		AllocThenFree(test);
 	}
 
-	BENCHMARK(TEST_BENCHMARK_NAME, UnmanagedAllocatorVaryingSizeAllocThenFree)
+	NA_BENCHMARK(NA_FIXTURE_NAME, UnmanagedAllocatorVaryingSizeAllocThenFree)
 	{
 		UntilWeWriteAnUnmangedAllocator test = {};
 		VaryingSizeAllocThenFree(test);
@@ -165,20 +165,20 @@ namespace nabi_allocator::tests
 		.m_BestFitLeniency = 0u
 	};
 
-	BENCHMARK(TEST_BENCHMARK_NAME, FreeListAllocatorAllocThenFree)
+	NA_BENCHMARK(NA_FIXTURE_NAME, FreeListAllocatorAllocThenFree)
 	{
 		HeapZone<free_list_allocator::FreeListAllocator<c_FreeListAllocatorSettings>> heapZone = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		AllocThenFree(heapZone);
 	}
 
-	BENCHMARK(TEST_BENCHMARK_NAME, FreeListAllocatorVaryingSizeAllocThenFree)
+	NA_BENCHMARK(NA_FIXTURE_NAME, FreeListAllocatorVaryingSizeAllocThenFree)
 	{
 		HeapZone<free_list_allocator::FreeListAllocator<c_FreeListAllocatorSettings>> heapZone = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		VaryingSizeAllocThenFree(heapZone);
 	}
 
-#	undef TEST_BENCHMARK_NAME
-#endif // ifdef NABI_ALLOCATOR_BENCHMARKS
+#	undef NA_FIXTURE_NAME
+#endif // ifdef NA_BENCHMARKS
 } // namespace nabi_allocator::tests
 
 /*
