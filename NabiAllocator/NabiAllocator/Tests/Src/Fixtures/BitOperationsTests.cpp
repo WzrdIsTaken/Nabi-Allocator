@@ -10,6 +10,7 @@
 // Nabi Headers
 #include "IntegerTypes.h"
 #include "Operations/BitOperations.h"
+#include "TestConstants.h"
 
 /**
  * Tests for BitOperations
@@ -18,7 +19,7 @@
 namespace nabi_allocator::tests
 {
 #ifdef NABI_ALLOCATOR_TESTS
-#	define TEST_FIXTURE_NAME BitOperationsTests
+#	define TEST_FIXTURE_NAME NABI_ALLOCATOR_TEST_FIXTURE_NAME(BitOperationsTests)
 
 	TEST(TEST_FIXTURE_NAME, FlipBit)
 	{

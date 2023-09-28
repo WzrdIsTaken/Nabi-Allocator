@@ -29,13 +29,16 @@
     <ClCompile Include="Memory\Src\Allocators\FreeListAllocator\SearchAlgorithms.cpp">
       <Filter>Memory\Src\Allocators\FreeListAllocator</Filter>
     </ClCompile>
+    <ClCompile Include="Tests\Src\Benchmarks\AllocatorBenchmarks.cpp">
+      <Filter>Tests\Src\Benchmarks</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Src\BenchmarkUtils.cpp">
+      <Filter>Utils\Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tests">
       <UniqueIdentifier>{0d9f41cf-d11d-4807-9b22-31b478704aee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tests\Inc">
-      <UniqueIdentifier>{3a912592-1377-460d-8835-4785cfeadeaf}</UniqueIdentifier>
     </Filter>
     <Filter Include="Tests\Src">
       <UniqueIdentifier>{0b6bdcb4-3013-4afe-92e3-3db54f49cb65}</UniqueIdentifier>
@@ -106,6 +109,18 @@
     <Filter Include="Memory\Inl\Allocators\FreeListAllocator">
       <UniqueIdentifier>{762ea10b-1fb1-4866-8484-e5ff3b268d16}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\Inl">
+      <UniqueIdentifier>{068e5831-1315-487a-9546-90ea997acbc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Src\Benchmarks">
+      <UniqueIdentifier>{ba0d65c6-819e-4a39-bb82-920d538b044e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\Src">
+      <UniqueIdentifier>{192548ec-bbc4-4f0d-b167-b65c75587a3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Inc">
+      <UniqueIdentifier>{6fe5104e-534c-4a04-9549-fcc94d807da5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -124,6 +139,12 @@
     <None Include="cpp.hint" />
     <None Include="Memory\Inl\Allocators\FreeListAllocator\FreeListAllocator.inl">
       <Filter>Memory\Inl\Allocators\FreeListAllocator</Filter>
+    </None>
+    <None Include="Utils\Inl\BenchmarkUtils.inl">
+      <Filter>Utils\Inl</Filter>
+    </None>
+    <None Include="Utils\Inl\TypeUtils.inl">
+      <Filter>Utils\Inl</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -204,6 +225,15 @@
     </ClInclude>
     <ClInclude Include="Memory\Inc\Allocators\AllocatorUtils.h">
       <Filter>Memory\Inc\Allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Inc\BenchmarkUtils.h">
+      <Filter>Utils\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Tests\Inc\TestConstants.h">
+      <Filter>Tests\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FloatingPointTypes.h">
+      <Filter>Core\Inc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -19,6 +19,7 @@
 #include "HeapZone\HeapZoneInfo.h"
 #include "Operations\BitOperations.h"
 #include "Operations\MemoryOperations.h"
+#include "TestConstants.h"
 #include "TypeUtils.h"
 
 /**
@@ -31,7 +32,7 @@
 namespace nabi_allocator::tests
 {
 #ifdef NABI_ALLOCATOR_TESTS
-#	define TEST_FIXTURE_NAME FreeListAllocatorTests
+#	define TEST_FIXTURE_NAME NABI_ALLOCATOR_TEST_FIXTURE_NAME(FreeListAllocatorTests)
 
 	using namespace free_list_allocator;
 
@@ -307,63 +308,6 @@ namespace nabi_allocator::tests
 		heapZone.Free(ptr4);
 		heapZone.Free(ptr5);
 		heapZone.Free(ptr6);
-	}
-
-	TEST(d, d)
-	{
-		// TODO - Temp. We gotta make it faster now...
-		//  - First up we need some acutal benchmarking code rather than using the test suite
-		//	- Start by examinitng the code in that artcile and doing some more reading.
-		//  - Learn how to use the profiler!
-
-		FreeListAllocatorSettings constexpr se =
-		{
-			SearchAlgorithm::FirstFit,
-			0u
-		};
-
-		HeapZone<FreeListAllocator<se>> heapZone(1 * 1024 * 1024, "TestHeapZone");
-		std::vector<void*> ptrs = {};
-		ptrs.reserve(1000);
-
-
-		for (int i = 0; i < 10000; i++)
-		{
-			void* ptr = heapZone.Allocate(4);
-			//void* ptr = malloc(4);
-			ptrs.push_back(ptr);
-
-			/*
-			bool alloc = rand() % 2;
-			if (alloc)
-			{
-				//void* ptr = malloc(rand() % 200);
-				void* ptr = heapZone.Allocate(rand() % 2000);
-				ptrs.push_back(ptr);
-			}
-			else
-			{
-				if (!ptrs.empty())
-				{
-					uInt index = rand() % ptrs.size();
-
-					void* ptr = ptrs.at(index);
-					ptrs.erase(std::next(ptrs.begin(), index));
-					//free(ptr);
-					heapZone.Free(ptr);
-				}
-			}
-			*/
-		}
-
-		std::string s = GetMemoryLayout(heapZone.GetAllocator(), heapZone.GetZoneInfo());
-		int i = 0;
-
-		for (uInt i = 0; i < ptrs.size(); ++i)
-		{
-			heapZone.Free(ptrs[i]);
-			//free(ptrs[i]);
-		}
 	}
 
 #	undef TEST_FIXTURE_NAME

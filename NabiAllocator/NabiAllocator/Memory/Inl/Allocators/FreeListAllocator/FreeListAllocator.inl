@@ -382,6 +382,5 @@ namespace nabi_allocator::free_list_allocator
 		freeListNode->m_Next = nullptr;
 		freeListNode->m_Previous = nullptr;
 #endif // ifdef NABI_ALLOCATOR_DEBUG || NABI_ALLOCATOR_TESTS
-		//memory_operations::ResetMemory(freeListNode);
 	}
 } // namespace nabi_allocator::free_list_allocator

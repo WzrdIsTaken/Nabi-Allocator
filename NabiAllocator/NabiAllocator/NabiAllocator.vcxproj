@@ -25,10 +25,12 @@
     <ClCompile Include="Memory\Src\Allocators\FreeListAllocator\BlockInfo.cpp" />
     <ClCompile Include="Memory\Src\Allocators\FreeListAllocator\SearchAlgorithms.cpp" />
     <ClCompile Include="Memory\Src\HeapZone\HeapZoneBase.cpp" />
+    <ClCompile Include="Tests\Src\Benchmarks\AllocatorBenchmarks.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\BitOperationsTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\FreeListAllocatorTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\HeapZoneTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\MemoryOperationsTests.cpp" />
+    <ClCompile Include="Utils\Src\BenchmarkUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -38,6 +40,8 @@
     <None Include="Memory\Inl\Operations\BitOperations.inl" />
     <None Include="Memory\Inl\Operations\MemoryOperations.inl" />
     <None Include="packages.config" />
+    <None Include="Utils\Inl\BenchmarkUtils.inl" />
+    <None Include="Utils\Inl\TypeUtils.inl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Todo.txt" />
@@ -46,6 +50,7 @@
     <ClInclude Include="Config\Inc\Config.h" />
     <ClInclude Include="Config\Inc\Version.h" />
     <ClInclude Include="Core\Inc\CharacterConstants.h" />
+    <ClInclude Include="Core\Inc\FloatingPointTypes.h" />
     <ClInclude Include="Core\Inc\IntegerTypes.h" />
     <ClInclude Include="Core\Inc\TemplateConcepts.h" />
     <ClInclude Include="Memory\Inc\Allocators\AllocatorBase.h" />
@@ -65,8 +70,10 @@
     <ClInclude Include="Memory\Inc\MemoryConstants.h" />
     <ClInclude Include="Memory\Inc\Operations\BitOperations.h" />
     <ClInclude Include="Memory\Inc\Operations\MemoryOperations.h" />
+    <ClInclude Include="Tests\Inc\TestConstants.h" />
     <ClInclude Include="Utils\Inc\DebugUtils.h" />
     <ClInclude Include="Utils\Inc\MacroUtils.h" />
+    <ClInclude Include="Utils\Inc\BenchmarkUtils.h" />
     <ClInclude Include="Utils\Inc\TypeUtils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -148,7 +155,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)NabiAllocator;$(SolutionDir)NabiAllocator\Config\Inc;$(SolutionDir)NabiAllocator\Core\Inc;$(SolutionDir)NabiAllocator\Memory\Inc;$(SolutionDir)NabiAllocator\Memory\Inl;$(SolutionDir)NabiAllocator\Operations\Inc;$(SolutionDir)NabiAllocator\Operations\Inl;$(SolutionDir)NabiAllocator\Utils\Inc;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NabiAllocator;$(SolutionDir)NabiAllocator\Config\Inc;$(SolutionDir)NabiAllocator\Core\Inc;$(SolutionDir)NabiAllocator\Memory\Inc;$(SolutionDir)NabiAllocator\Memory\Inl;$(SolutionDir)NabiAllocator\Operations\Inc;$(SolutionDir)NabiAllocator\Operations\Inl;$(SolutionDir)NabiAllocator\Tests\Inc;$(SolutionDir)NabiAllocator\Utils\Inc;</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -165,7 +172,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)NabiAllocator;$(SolutionDir)NabiAllocator\Config\Inc;$(SolutionDir)NabiAllocator\Core\Inc;$(SolutionDir)NabiAllocator\Memory\Inc;$(SolutionDir)NabiAllocator\Memory\Inl;$(SolutionDir)NabiAllocator\Operations\Inc;$(SolutionDir)NabiAllocator\Operations\Inl;$(SolutionDir)NabiAllocator\Utils\Inc;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NabiAllocator;$(SolutionDir)NabiAllocator\Config\Inc;$(SolutionDir)NabiAllocator\Core\Inc;$(SolutionDir)NabiAllocator\Memory\Inc;$(SolutionDir)NabiAllocator\Memory\Inl;$(SolutionDir)NabiAllocator\Operations\Inc;$(SolutionDir)NabiAllocator\Operations\Inl;$(SolutionDir)NabiAllocator\Tests\Inc;$(SolutionDir)NabiAllocator\Utils\Inc;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -181,7 +188,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)NabiAllocator;$(SolutionDir)NabiAllocator\Config\Inc;$(SolutionDir)NabiAllocator\Core\Inc;$(SolutionDir)NabiAllocator\Memory\Inc;$(SolutionDir)NabiAllocator\Memory\Inl;$(SolutionDir)NabiAllocator\Operations\Inc;$(SolutionDir)NabiAllocator\Operations\Inl;$(SolutionDir)NabiAllocator\Utils\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NabiAllocator;$(SolutionDir)NabiAllocator\Config\Inc;$(SolutionDir)NabiAllocator\Core\Inc;$(SolutionDir)NabiAllocator\Memory\Inc;$(SolutionDir)NabiAllocator\Memory\Inl;$(SolutionDir)NabiAllocator\Operations\Inc;$(SolutionDir)NabiAllocator\Operations\Inl;$(SolutionDir)NabiAllocator\Tests\Inc;$(SolutionDir)NabiAllocator\Utils\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -198,7 +205,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)NabiAllocator;$(SolutionDir)NabiAllocator\Config\Inc;$(SolutionDir)NabiAllocator\Core\Inc;$(SolutionDir)NabiAllocator\Memory\Inc;$(SolutionDir)NabiAllocator\Memory\Inl;$(SolutionDir)NabiAllocator\Operations\Inc;$(SolutionDir)NabiAllocator\Operations\Inl;$(SolutionDir)NabiAllocator\Utils\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NabiAllocator;$(SolutionDir)NabiAllocator\Config\Inc;$(SolutionDir)NabiAllocator\Core\Inc;$(SolutionDir)NabiAllocator\Memory\Inc;$(SolutionDir)NabiAllocator\Memory\Inl;$(SolutionDir)NabiAllocator\Operations\Inc;$(SolutionDir)NabiAllocator\Operations\Inl;$(SolutionDir)NabiAllocator\Tests\Inc;$(SolutionDir)NabiAllocator\Utils\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -12,6 +12,7 @@
 #include "HeapZone/HeapZoneInfo.h"
 #include "IntegerTypes.h"
 #include "Operations/MemoryOperations.h"
+#include "TestConstants.h"
 
 /**
  * Tests for HeapZoneBase / HeapZone.
@@ -20,7 +21,7 @@
 namespace nabi_allocator::tests
 {
 #ifdef NABI_ALLOCATOR_TESTS
-#	define TEST_FIXTURE_NAME HeapZoneTests
+#	define TEST_FIXTURE_NAME NABI_ALLOCATOR_TEST_FIXTURE_NAME(HeapZoneTests)
 
 	static uInt constexpr c_TestHeapZoneSize = 1u;
 

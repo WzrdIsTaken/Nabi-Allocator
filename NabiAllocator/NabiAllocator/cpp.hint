@@ -1,6 +1,8 @@
 // https://learn.microsoft.com/en-us/cpp/build/reference/hint-files?view=msvc-170
 
 // Config.h
+#define NABI_ALLOCATOR_BENCHMARKS
+#define NABI_ALLOCATOR_BENCHMARK_RUN_COUNT 1
 #define NABI_ALLOCATOR_DEBUG
 #define NABI_ALLOCATOR_MEMORY_TAGGING
 #define NABI_ALLOCATOR_TESTS
@@ -15,6 +17,7 @@
 
 // MacroUtils.h
 #define NABI_ALLOCATOR_CONCAT(arg1, arg2) arg1 ## arg2
+#define NABI_ALLOCATOR_EXPAND(arg) arg
 #define NABI_ALLOCATOR_MACRO_NOT_DEFINED (void(0))
 #define NABI_ALLOCATOR_STR(arg) #arg
 #define NABI_ALLOCATOR_XSTR(arg) NABI_ALLOCATOR_STR(arg)
@@ -22,6 +25,12 @@
 // MemoryOperations.h
 #define NABI_ALLOCATOR_TO_UPTR(arg) reinterpret_cast<nabi_allocator::uPtr>(arg)
 #define NABI_ALLOCATPR_TO_VPTR(arg) reinterpret_cast<void*>(arg)
+
+// TestConstants.h
+#define NABI_ALLOCATOR_BENCHMARK_FIXTURE_NAME(benchmarkFixtureName) NABI_ALLOCATOR_CONCAT(NABI_ALLOCATOR_EXPAND(NABI_ALLOCATOR_BENCHMARK_IDENTIFIER), benchmarkFixtureName)
+#define NABI_ALLOCATOR_BENCHMARK_IDENTIFIER b_
+#define NABI_ALLOCATOR_TEST_FIXTURE_NAME(testFixtureName) NABI_ALLOCATOR_CONCAT(NABI_ALLOCATOR_EXPAND(NABI_ALLOCATOR_TEST_IDENTIFIER), testFixtureName)
+#define NABI_ALLOCATOR_TEST_IDENTIFIER t_
 
 // TypeUtils.h
 #define NABI_ALLOCATOR_NAMEOF(arg) ((decltype(&arg))nullptr, #arg)

@@ -7,6 +7,7 @@
 // Nabi Headers
 #include "IntegerTypes.h"
 #include "Operations/MemoryOperations.h"
+#include "TestConstants.h"
 
 /**
  * Tests for MemoryOperations
@@ -15,7 +16,7 @@
 namespace nabi_allocator::tests
 {
 #ifdef NABI_ALLOCATOR_TESTS
-#	define TEST_FIXTURE_NAME MemoryOperationsTests
+#	define TEST_FIXTURE_NAME NABI_ALLOCATOR_TEST_FIXTURE_NAME(MemoryOperationsTests)
 
 	TEST(TEST_FIXTURE_NAME, RequestAndReleaseMemory)
 	{

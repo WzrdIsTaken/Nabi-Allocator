@@ -17,6 +17,10 @@
 
 namespace nabi_allocator
 {
+	class HeapZoneBase;
+	template<typename T>
+	concept is_heap_zone = std::is_base_of_v<HeapZoneBase, T>;
+
 	class HeapZoneBase abstract
 	{
 	public:

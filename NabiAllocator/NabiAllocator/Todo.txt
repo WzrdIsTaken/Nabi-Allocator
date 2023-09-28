@@ -1,13 +1,16 @@
 This project is my dissertation! (hopefully...)
 
 Resources:
-* Videos
+* Videos / Lectures
 - "What does it take to design a memory allocator?" https://www.youtube.com/watch?v=UTii4dyhR5c (+ the playlist)
 - "Introduction to General Purpose Allocation" https://youtu.be/MvDUe2evkHg?feature=shared (+ the playlist)
+- "Parallelizing the Naughty Dog Engine" https://www.gdcvault.com/play/1022186/Parallelizing-the-Naughty-Dog-Engine (the memory part of this)
 
 * Articles
 - "Writing a memory allocator" http://dmitrysoshnikov.com/compilers/writing-a-memory-allocator/
 - "Writing your own memory allocator" https://screwjankgames.github.io/engine%20programming/2020/09/24/writing-your-own-memory-allocators.html
+- "C++: Custom memory allocation" https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/c-custom-memory-allocation-r3010/
+- "Building a Low Fragmentation Memory Allocator" https://www.gdcvault.com/play/1023005/Building-a-Low-Fragmentation-Memory
 
 * Other
 - Profiling: https://learn.microsoft.com/en-us/visualstudio/profiling/profiling-feature-tour?view=vs-2022
@@ -26,6 +29,9 @@ Tasks:
 
 - Write a python script to display the memory layout as eg a pie chart (free vs allocated blocks).
 	- Is the projects folder structure ok to put this stuff in a place which makes sense?
+	- Also a script to graph out the different allocator's performance? (malloc/free/total vs) (+ vs default malloc)
+
+- Remember C:\Users\Ben\Desktop\Uni\Year 3\Dissertation -> Lots of good stuff in here for the writeup
 
 *General
 - Next up we need to write the segerated list allocator, and also do some more reading into the free list allocator design.
@@ -40,8 +46,23 @@ Tasks:
 		- And the other artciesl on my 300 word doc
 		- That allocator is much faster than mine! Why?
 
+- See:
+  A large block of memory should be allocated when the program starts using malloc (and this should be the only malloc made) this 
+  large block of memory is managed by a global allocator (for example a stack allocator). Each subsystem should then allocate the block of
+  memory it needs to work from the global allocator, and create allocators that will manage that memory.
+	- From the gamedev.net article. Looks like we need a basic allocator as well? We were already going to make an unmanagedalloctor 
+	  (just a wrapper around malloc/free) - but we might need something else below this?
+	- We can also mention this design structure in the dis
+
+- Something to investigate / understand is virtual memory in the context of - when the OS gives memory to an application it gives it in a way
+  that every application thinks it has a block going from 0 -> end..? perhaps..? can this memory be non contigous? eg the application thinks it
+  is but in reality its not?
+
+- Pass std::function by ref of val?
+- Mark 1 arg constructros as explicit
+
 - Thoughts on NA_ rather than NABI_ALLOCATOR_
-	- Would be a lot shorter, then could eg have NA_LOG_[PREP/END] w/o it being too long
+	- Would be a lot shorter, then could eg have NA_LOG_[PREP/END] w/o it being too long <-- DEFO need this. eg for the benchmark logging the file line is ugly
 - Thoughts on sizeT rather than uInt...
 
 - Should MemoryConstants/Operators have its own folder? Also - lower case folder names? 
@@ -49,6 +70,8 @@ Tasks:
 
 - find a fix so we dont have to reintrepret cast nulltpr and add.
 	- yh defo fix this, its jank
+
+- Remove the "test" from variables in the test scripts.. we know its tests!!
 
 - Create the MemoryCommand. If we call it something different, need to update the summary comment in HeapZone.h
 - Create functions to Load/Unload BlockInfo into a struct
@@ -84,6 +107,10 @@ Tasks:
 
 - note the final comment about no debug heap
 	- https://stackoverflow.com/questions/13064850/malloc-vs-custom-allocator-malloc-has-a-lot-of-overhead-why
+	- also /FA or debugger output to view generated assembly
+
+- Once we have done all these todos, we can finally get to the segerated list allocator!!
+	- Then after that, we can optimise both allocators as much as we can
 
 Archive:
 - Write a test for MemoryOperations::IsAlligned. And think - should the memory allignment be different on x64 and x86?
