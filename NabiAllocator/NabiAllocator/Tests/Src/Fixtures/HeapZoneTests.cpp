@@ -62,7 +62,7 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, CreateAndDestroy)
 	{
-		HeapZone<MockAllocator> heapZone{ c_TestHeapZoneSize, "TestHeapZone" };
+		HeapZone<MockAllocator> heapZone{ HeapZoneBase::c_NoParent, c_TestHeapZoneSize, "TestHeapZone" };
 		HeapZoneInfo const& heapZoneInfo = heapZone.GetZoneInfo();
 
 		{
@@ -80,7 +80,7 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, CheckAllocatorCalls)
 	{
-		HeapZone<MockAllocator> heapZone{ c_TestHeapZoneSize, "TestHeapZone" };
+		HeapZone<MockAllocator> heapZone{ HeapZoneBase::c_NoParent, c_TestHeapZoneSize, "TestHeapZone" };
 		MockAllocator const& mockAllocator = heapZone.GetAllocator();
 
 		void* ptr = heapZone.Allocate(1u);

@@ -8,6 +8,7 @@ namespace nabi_allocator
 {
 	inline HeapZoneBase::HeapZoneBase()
 		: m_ZoneInfo{ c_NulluPtr, c_NulluPtr }
+		, m_ParentZone(nullptr)
 #ifdef NABI_ALLOCATOR_DEBUG
 		, m_DebugName("NotAssigned")
 #endif // ifdef NABI_ALLOCATOR_DEBUG

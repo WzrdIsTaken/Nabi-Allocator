@@ -17,7 +17,7 @@ namespace nabi_allocator
 	class HeapZone final : public HeapZoneBase
 	{
 	public:
-		HeapZone(uInt const numBytes, std::string const& debugName);
+		HeapZone(HeapZoneBase* const parentZone, uInt const numBytes, std::string const& debugName);
 		~HeapZone() override;
 
 		[[nodiscard]] inline void* Allocate(uInt const numBytes) override;

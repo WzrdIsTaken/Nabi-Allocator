@@ -89,7 +89,7 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, CreateAndDestroy)
 	{
-		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone(c_SmallTestHeapZoneSize, "TestHeapZone");
+		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone{ HeapZoneBase::c_NoParent, c_SmallTestHeapZoneSize, "TestHeapZone" };
 
 		std::string const expectedLayout = "F64P0";
 		std::string const actualLayout = GetMemoryLayout(heapZone.GetAllocator(), heapZone.GetZoneInfo());
@@ -98,7 +98,7 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, AllocateAndFree)
 	{
-		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone(c_SmallTestHeapZoneSize, "TestHeapZone");
+		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone{ HeapZoneBase::c_NoParent, c_SmallTestHeapZoneSize, "TestHeapZone" };
 		auto const& allocator = heapZone.GetAllocator();
 		auto const& heapZoneInfo = heapZone.GetZoneInfo();
 
@@ -176,7 +176,7 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, CoalesceBlock)
 	{
-		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone(c_LargeTestHeapZoneSize, "TestHeapZone");
+		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone{ HeapZoneBase::c_NoParent, c_LargeTestHeapZoneSize, "TestHeapZone" };
 		auto const& allocator = heapZone.GetAllocator();
 		auto const& heapZoneInfo = heapZone.GetZoneInfo();
 
@@ -265,7 +265,7 @@ namespace nabi_allocator::tests
 
 	TEST(TEST_FIXTURE_NAME, FreeListNodePtrsCorrect)
 	{
-		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone(c_LargeTestHeapZoneSize, "TestHeapZone");
+		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone{ HeapZoneBase::c_NoParent, c_LargeTestHeapZoneSize, "TestHeapZone" };
 		auto const& heapZoneInfo = heapZone.GetZoneInfo();
 
 		// Expected starting free list structure 

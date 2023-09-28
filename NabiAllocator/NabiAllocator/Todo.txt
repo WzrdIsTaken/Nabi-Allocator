@@ -97,6 +97,10 @@ Tasks:
 
 - Make sure there is a default allocator that just uses malloc/free, not even a heap zone. have a heap zone scope for this
 
+- If I manually free memory, do i need to call that memory's destructor? memory->~T();?
+
+- Make the allocations thread safe? std::scoped_lock in HeapZone alloc/free?
+
 - Remember, the HeapZone should have no knwoledge of the memory command
 	- Will probs have to reigster a heap zone with the memory command
 		- Perhaps a macro to do this?
@@ -117,6 +121,7 @@ Tasks:
 	- Then after that, we can optimise both allocators as much as we can
 
 Archive:
+- Add a parent zone functionality to heapzone? This would allow us to only do one large allocation with like a stack or linear allocator more elegantly.
 - Write a test for MemoryOperations::IsAlligned. And think - should the memory allignment be different on x64 and x86?
 	- Depending on the architecture, then eg the FreeList nodes will / won't fit within 8 bytes
 		- Actually, this is ok because we do the if (numBytes < sizeof(FreeListNode)) check. 

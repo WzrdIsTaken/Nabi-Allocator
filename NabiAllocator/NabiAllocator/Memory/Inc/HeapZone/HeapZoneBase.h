@@ -13,6 +13,8 @@
 
 /**
  * The base class for all HeapZones. HeapZones have a base so that they can be grouped regardless of which allocator they use.
+ * If HeapZones have a parent, then their memory will be allocated from the parent rather than using malloc. This allows for
+ * a design where malloc only needs to be called once.
 */
 
 namespace nabi_allocator
@@ -24,10 +26,12 @@ namespace nabi_allocator
 	class HeapZoneBase abstract
 	{
 	public:
+		static HeapZoneBase constexpr* const c_NoParent = nullptr;
+
 		HeapZoneBase();
 		virtual ~HeapZoneBase() = default;
 
-		HeapZoneInfo& Init(uInt const numBytes, std::string const& debugName);
+		HeapZoneInfo& Init(HeapZoneBase* const parentZone, uInt const numBytes, std::string const& debugName);
 		void Deinit();
 
 		[[nodiscard]] inline virtual void* Allocate(uInt const numBytes) = 0;
@@ -42,6 +46,7 @@ namespace nabi_allocator
 
 	protected:
 		HeapZoneInfo m_ZoneInfo;
+		HeapZoneBase* m_ParentZone;
 #ifdef NABI_ALLOCATOR_DEBUG
 		std::string m_DebugName;
 #endif // ifdef NABI_ALLOCATOR_DEBUG
