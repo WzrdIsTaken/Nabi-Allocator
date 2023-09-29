@@ -34,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="Memory\Inl\Allocators\AllocatorBase.inl" />
     <None Include="Memory\Inl\Allocators\FreeListAllocator\FreeListAllocator.inl" />
     <None Include="Memory\Inl\HeapZone\HeapZone.inl" />
     <None Include="Memory\Inl\HeapZone\HeapZoneBase.inl" />

@@ -146,6 +146,9 @@
     <None Include="Utils\Inl\TypeUtils.inl">
       <Filter>Utils\Inl</Filter>
     </None>
+    <None Include="Memory\Inl\Allocators\AllocatorBase.inl">
+      <Filter>Memory\Inl\Allocators</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Todo.txt" />

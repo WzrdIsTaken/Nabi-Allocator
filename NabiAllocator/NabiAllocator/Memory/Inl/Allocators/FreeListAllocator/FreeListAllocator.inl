@@ -27,7 +27,8 @@ namespace nabi_allocator::free_list_allocator
 
 	template<FreeListAllocatorSettings Settings>
 	FreeListAllocator<Settings>::FreeListAllocator(HeapZoneInfo const& heapZoneInfo)
-		: m_FreeList(nullptr)
+		: AllocatorBase{}
+		, m_FreeList(nullptr)
 	{
 		uInt const heapZoneSize = memory_operations::GetMemorySize(heapZoneInfo.m_Start, heapZoneInfo.m_End);
 		NA_ASSERT_DEFAULT(memory_operations::IsAlligned(heapZoneSize, c_BlockAllignment));

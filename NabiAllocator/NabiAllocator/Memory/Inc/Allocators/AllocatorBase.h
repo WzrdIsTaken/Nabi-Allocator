@@ -12,6 +12,7 @@
 // Nabi Headers
 #include "AllocatorStats.h"
 #include "IntegerTypes.h"
+#include "TypeUtils.h"
 
 /**
  * The base class for all allocators. HeapZone's allocator template must comply with is_allocator.
@@ -32,6 +33,9 @@ namespace nabi_allocator
 	class AllocatorBase abstract
 	{
 	public:
+		inline AllocatorBase();
+		virtual ~AllocatorBase() = default;
+
 		[[nodiscard]] virtual void* Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo) = 0;
 		virtual void Free(void* memory, HeapZoneInfo const& heapZoneInfo) = 0;
 
@@ -40,7 +44,13 @@ namespace nabi_allocator
 
 	protected:
 #ifdef NA_TRACK_ALLOCATIONS
-		AllocatorStats m_AllocatorStats = {};
+		AllocatorStats m_AllocatorStats;
 #endif // ifdef NA_TRACK_ALLOCATIONS
+
+	private:
+		NA_SET_COPY_MOVE_CONSTRUCTORS(AllocatorBase, delete);
 	};
 } // namespace nabi_allocator
+
+// Include Inline
+#include "Memory\Inl\Allocators\AllocatorBase.inl"
