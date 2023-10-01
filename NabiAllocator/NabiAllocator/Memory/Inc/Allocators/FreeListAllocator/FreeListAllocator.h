@@ -30,12 +30,12 @@
 namespace nabi_allocator
 {
 	struct AllocatorBlockInfo;
+	struct FreeListNode;
 	struct HeapZoneInfo;
 } // namespace nabi_allocator
 namespace nabi_allocator::free_list_allocator
 {
 	struct BlockHeader;
-	struct FreeListNode;
 } // namespace nabi_allocator::free_list_allocator
 
 namespace nabi_allocator::free_list_allocator
@@ -59,7 +59,6 @@ namespace nabi_allocator::free_list_allocator
 		[[nodiscard]] BlockHeader* const TryFindFreeBlock(uInt const numBytes) const;
 		void TryCoalesceBlock(BlockHeader* const blockHeader, HeapZoneInfo const& heapZoneInfo);
 		
-		void AddFreeListNode(FreeListNode* const node);
 		void AddFreeBlock(void* const blockStartPtr, uInt const numBytes);
 		void RemoveFreeBlock(void* const blockStartPtr);
 

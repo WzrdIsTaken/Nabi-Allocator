@@ -26,6 +26,15 @@ namespace nabi_allocator::segregated_list_allocator
 		// I think the headers can just be 1 byte,.. but then the min bucket would have to be 32..
 		// Or we could use numbers. Will have to research if ptrs or adding is faster... 
 		// probs ptrs idk
+
+		// TODO - leave a comment in FreeListNode about possibly numbers and adding / reintrpet casting to keep the block size down
+		// might be interesting to do anyways to see the difference?
+		//	- could just write a really basic benchmark to see what is faster
+		// ALSO have a section on dis about this - size vs speed block 
+		//	- perhaps could have a define which toggles between the two
+		//		- but then perhaps the values wouldnt be sufficient for some allocations.. idk. just leave a comment about this
+
+		// Also we can pull out the free list node lists into there own fixture? from free list alloc?
 	}
 
 	template<SegregatedListAllocatorSettings Settings>
@@ -65,6 +74,7 @@ namespace nabi_allocator::segregated_list_allocator
 		std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) const
 	{
 		// TODO - ctrl f todo
+		// TODO it might be refactored out anyway, but RemoveFreeBlock in FreeLIstALlocator should really be called RemoveFreeListNode
 		return std::deque<AllocatorBlockInfo>();
 	}
 

@@ -35,6 +35,9 @@
     <ClCompile Include="Utils\Src\BenchmarkUtils.cpp">
       <Filter>Utils\Src</Filter>
     </ClCompile>
+    <ClCompile Include="Memory\Src\Allocators\FreeListNode.cpp">
+      <Filter>Memory\Src\Allocators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tests">
@@ -158,6 +161,9 @@
     <None Include="Memory\Inl\Allocators\SegregatedListAllocator\SegregatedListAllocator.inl">
       <Filter>Memory\Inl\Allocators\SegregatedListAllocator</Filter>
     </None>
+    <None Include="Memory\Inl\Allocators\FreeListNode.inl">
+      <Filter>Memory\Inl\Allocators</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Todo.txt" />
@@ -217,9 +223,6 @@
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockInfoIndex.h">
       <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
     </ClInclude>
-    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListNode.h">
-      <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
-    </ClInclude>
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockPadding.h">
       <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
     </ClInclude>
@@ -255,6 +258,9 @@
     </ClInclude>
     <ClInclude Include="Memory\Inc\Allocators\SegregatedListAllocator\SegregatedListAllocatorSettings.h">
       <Filter>Memory\Inc\Allocators\SegregatedListAllocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Allocators\FreeListNode.h">
+      <Filter>Memory\Inc\Allocators</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

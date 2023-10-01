@@ -12,10 +12,13 @@
  *   chockablocked/fragmented memory layout.
 */
 
+namespace nabi_allocator
+{
+	struct FreeListNode;
+} // namespace nabi_allocator
 namespace nabi_allocator::free_list_allocator
 {
 	struct BlockHeader;
-	struct FreeListNode;
 } // namespace nabi_allocator::free_list_allocator
 
 namespace nabi_allocator::free_list_allocator
