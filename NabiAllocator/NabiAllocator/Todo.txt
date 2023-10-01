@@ -69,6 +69,8 @@ Tasks:
 				- Macro can construct the heap zone and register with the supplied tag (for the heap zone scope)
 - Make the allocations thread safe? std::scoped_lock in HeapZone alloc/free?
 
+- Make sure there is a default allocator that just uses malloc/free, not even a heap zone. have a heap zone scope for this
+- We also need a stack allocator / linear allocator. something basic just to be the parent of the other allocators
 - Write a test for heap zone parent functionality. This can be done once we have an unmanged allocator or something in heap zone tests
 
 - If I manually free memory, do i need to call that memory's destructor?
@@ -77,18 +79,14 @@ Tasks:
 	- Think about the best place to do this. Would it be in ReleaseMemoryToOS and HeapZone->Free? Then RequestMemoryFromOS and HeapZone->Allocate..?
 		- With constructors, would we have to perfect forward the constructors arguements?
 
-
 - Thoughts on sizeT rather than uInt...
 
 - Lower case folder names? 
 
-- should things like AllocatorUtils have there own namespace? and allocatorstats?
-
-- Make sure there is a default allocator that just uses malloc/free, not even a heap zone. have a heap zone scope for this
-
-- Should GetMemoryLayout be in its own namespace and be debug only?
+- should things like AllocatorUtils have there own namespace? and allocatorstats? [honestly, i think i like it the way it is..?]
 
 Archive:
+- Should GetMemoryLayout be in its own namespace and be debug only? [no(?) and no]
 - Should defines, like NA_TRACK_ALLOCATIONS toggle if headers are included or not? eg AllocatorStats in AllocatorBase.h
 	- [I think this is a slippery slope with includes and probs just not worth it. could end up with end ifs everywhere. besides, matt said not to do it i think]
 - debug_[method name/var name] for debug stuff (eg heapzone getdebugname), same with test stuff? test_? [i think its ok tbh]

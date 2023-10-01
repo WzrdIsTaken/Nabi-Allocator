@@ -49,6 +49,8 @@ namespace nabi_allocator::free_list_allocator
 	template<FreeListAllocatorSettings Settings>
 	void* FreeListAllocator<Settings>::Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo)
 	{
+		NA_ASSERT(numBytes > 0u, "Allocating 0 bytes");
+
 		// Search for a free block. If one can't be found, the allocator is out of memory
 		BlockHeader* blockHeader = nullptr;
 		uInt allocatedBytes = 0u;
@@ -153,7 +155,7 @@ namespace nabi_allocator::free_list_allocator
 	}
 
 	template<FreeListAllocatorSettings Settings>
-	inline std::deque<AllocatorBlockInfo> FreeListAllocator<Settings>::IterateThroughHeapZone(
+	std::deque<AllocatorBlockInfo> FreeListAllocator<Settings>::IterateThroughHeapZone(
 		std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) const
 	{
 		std::deque<AllocatorBlockInfo> allocatorBlocks = {};
