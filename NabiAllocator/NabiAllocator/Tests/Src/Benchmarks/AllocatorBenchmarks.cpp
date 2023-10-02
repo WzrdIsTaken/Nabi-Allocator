@@ -157,7 +157,7 @@ namespace nabi_allocator::tests
 		VaryingSizeAllocThenFree(test);
 	}
 
-	// --- FreeListAllocator ---
+	// --- Free List Allocator ---
 
 	free_list_allocator::FreeListAllocatorSettings constexpr c_FreeListAllocatorSettings =
 	{

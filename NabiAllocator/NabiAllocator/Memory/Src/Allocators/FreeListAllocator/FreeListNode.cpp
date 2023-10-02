@@ -1,11 +1,11 @@
 // cpp's Header
-#include "Allocators\FreeListNode.h"
+#include "Allocators\FreeListAllocator\FreeListNode.h"
 
 // Nabi Headers
 #include "DebugUtils.h"
 #include "Operations\MemoryOperations.h"
 
-namespace nabi_allocator
+namespace nabi_allocator::free_list_allocator
 {
 	void AddFreeListNode(FreeListNode*& freelist, FreeListNode* const& node)
 	{
@@ -92,4 +92,4 @@ namespace nabi_allocator
 		ResetFreeListNode(node);
 #endif // ifdef NA_DEBUG || NA_TESTS
 	}
-} // namespace nabi_allocator
+} // namespace nabi_allocator::free_list_allocator

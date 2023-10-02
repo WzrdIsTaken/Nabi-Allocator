@@ -54,6 +54,7 @@ Tasks:
 
 *General
 - Next up we need to write the segerated list allocator, and also do some more reading into the free list allocator design.
+	- If we dont implement it (see the disseration folder on pc for notes for both coding it and disseration writeup)
 	- The basic interface tests for the free list allocator (eg, allocating/freeing/usage with heapzone) will be the same for all allocators.
 	  Therefore, once we have written / tested the tests perhaps package them up into a macro or something. We could do like
       NA_IMPLEMENT_ALLOCATOR_BASIC_TESTS(testFixtureName, allocType) and this would create the gTest TEST macros
@@ -84,6 +85,12 @@ Tasks:
 - Lower case folder names? 
 
 - should things like AllocatorUtils have there own namespace? and allocatorstats? [honestly, i think i like it the way it is..?]
+
+- Make sure you implement the other free list node implementation
+- Stack allocator
+- MemoryCommand, heap zone scopes, memory tag scope, all this stuff.
+- Python ultities
+- ^ These are the focus rn. Get the project into a submittable state!
 
 Archive:
 - Should GetMemoryLayout be in its own namespace and be debug only? [no(?) and no]

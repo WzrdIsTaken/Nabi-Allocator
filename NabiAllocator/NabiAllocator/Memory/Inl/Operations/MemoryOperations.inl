@@ -3,6 +3,7 @@
 
 // STD Headers
 #include <cstdlib>
+#include <cstring>
 
 // Nabi Headers
 #include "DebugUtils.h"
