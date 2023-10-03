@@ -124,6 +124,12 @@
     <Filter Include="Tests\Inc">
       <UniqueIdentifier>{6fe5104e-534c-4a04-9549-fcc94d807da5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Memory\Inc\Allocators\StackAllocator">
+      <UniqueIdentifier>{e908259e-3cbb-4e32-bc53-4efbf3235d44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory\Inl\Allocators\StackAllocator">
+      <UniqueIdentifier>{f484fbc2-02a4-491e-82cf-5138ffdc6a4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -154,6 +160,9 @@
     </None>
     <None Include="Memory\Inl\Allocators\FreeListAllocator\FreeListNode.inl">
       <Filter>Memory\Inl\Allocators\FreeListAllocator</Filter>
+    </None>
+    <None Include="Memory\Inl\Allocators\StackAllocator\StackAllocator.inl">
+      <Filter>Memory\Inl\Allocators\StackAllocator</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -246,6 +255,12 @@
     </ClInclude>
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListNode.h">
       <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Allocators\StackAllocator\StackAllocator.h">
+      <Filter>Memory\Inc\Allocators\StackAllocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Allocators\StackAllocator\StackAllocatorSettings.h">
+      <Filter>Memory\Inc\Allocators\StackAllocator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

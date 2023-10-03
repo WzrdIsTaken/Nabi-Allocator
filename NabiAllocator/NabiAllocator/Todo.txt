@@ -87,7 +87,8 @@ Tasks:
 - should things like AllocatorUtils have there own namespace? and allocatorstats? [honestly, i think i like it the way it is..?]
 
 - Make sure you implement the other free list node implementation
-- Stack allocator
+- Stack allocator (this way it will still work with the benchmarks, rather than a linear allocaotr)
+- Add clear call to allocators..? 
 - MemoryCommand, heap zone scopes, memory tag scope, all this stuff.
 - Python ultities
 - ^ These are the focus rn. Get the project into a submittable state!

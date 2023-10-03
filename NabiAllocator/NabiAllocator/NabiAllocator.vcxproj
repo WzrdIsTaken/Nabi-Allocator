@@ -38,6 +38,7 @@
     <None Include="Memory\Inl\Allocators\AllocatorBase.inl" />
     <None Include="Memory\Inl\Allocators\FreeListAllocator\FreeListAllocator.inl" />
     <None Include="Memory\Inl\Allocators\FreeListAllocator\FreeListNode.inl" />
+    <None Include="Memory\Inl\Allocators\StackAllocator\StackAllocator.inl" />
     <None Include="Memory\Inl\HeapZone\HeapZone.inl" />
     <None Include="Memory\Inl\HeapZone\HeapZoneBase.inl" />
     <None Include="Memory\Inl\Operations\BitOperations.inl" />
@@ -67,6 +68,8 @@
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListAllocatorSettings.h" />
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListNode.h" />
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\SearchAlgorithms.h" />
+    <ClInclude Include="Memory\Inc\Allocators\StackAllocator\StackAllocator.h" />
+    <ClInclude Include="Memory\Inc\Allocators\StackAllocator\StackAllocatorSettings.h" />
     <ClInclude Include="Memory\Inc\HeapZone\HeapZone.h" />
     <ClInclude Include="Memory\Inc\HeapZone\HeapZoneBase.h" />
     <ClInclude Include="Memory\Inc\HeapZone\HeapZoneInfo.h" />
