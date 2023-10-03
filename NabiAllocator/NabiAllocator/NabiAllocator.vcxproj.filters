@@ -14,9 +14,6 @@
     <ClCompile Include="Memory\Src\HeapZone\HeapZoneBase.cpp">
       <Filter>Memory\Src\HeapZone</Filter>
     </ClCompile>
-    <ClCompile Include="Memory\Src\Allocators\FreeListAllocator\BlockInfo.cpp">
-      <Filter>Memory\Src\Allocators\FreeListAllocator</Filter>
-    </ClCompile>
     <ClCompile Include="Memory\Src\Allocators\AllocatorStats.cpp">
       <Filter>Memory\Src\Allocators</Filter>
     </ClCompile>
@@ -37,6 +34,9 @@
     </ClCompile>
     <ClCompile Include="Memory\Src\Allocators\FreeListAllocator\FreeListNode.cpp">
       <Filter>Memory\Src\Allocators\FreeListAllocator</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\Src\Allocators\BlockInfo.cpp">
+      <Filter>Memory\Src\Allocators</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -217,15 +217,6 @@
     <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\FreeListAllocator.h">
       <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
     </ClInclude>
-    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockInfo.h">
-      <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockInfoIndex.h">
-      <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory\Inc\Allocators\FreeListAllocator\BlockPadding.h">
-      <Filter>Memory\Inc\Allocators\FreeListAllocator</Filter>
-    </ClInclude>
     <ClInclude Include="Memory\Inc\Allocators\AllocatorStats.h">
       <Filter>Memory\Inc\Allocators</Filter>
     </ClInclude>
@@ -261,6 +252,15 @@
     </ClInclude>
     <ClInclude Include="Memory\Inc\Allocators\StackAllocator\StackAllocatorSettings.h">
       <Filter>Memory\Inc\Allocators\StackAllocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Allocators\BlockInfo.h">
+      <Filter>Memory\Inc\Allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Allocators\BlockInfoIndex.h">
+      <Filter>Memory\Inc\Allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Allocators\BlockPadding.h">
+      <Filter>Memory\Inc\Allocators</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

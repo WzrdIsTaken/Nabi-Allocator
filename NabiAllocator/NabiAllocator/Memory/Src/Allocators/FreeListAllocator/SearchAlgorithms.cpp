@@ -5,8 +5,8 @@
 #include <limits>
 
 // Nabi Headers
-#include "Allocators\FreeListAllocator\BlockInfo.h"
-#include "Allocators\FreeListAllocator\BlockInfoIndex.h"
+#include "Allocators\BlockInfo.h"
+#include "Allocators\BlockInfoIndex.h"
 #include "Allocators\FreeListAllocator\FreeListNode.h"
 #include "DebugUtils.h"
 #include "Operations\BitOperations.h"

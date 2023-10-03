@@ -15,7 +15,7 @@
 * - Its important to keep the sizes of the blocks as small as possible and allignment friendly.
 */
 
-namespace nabi_allocator::free_list_allocator
+namespace nabi_allocator
 {
 	struct BlockBase abstract
 	{
@@ -76,4 +76,4 @@ namespace nabi_allocator::free_list_allocator
 
 	void LoadBlockInfo(BlockInfoContent const& blockInfoContent, BlockBase& blockOne, BlockBase* const blockTwo = nullptr) noexcept; // This function can take in two blocks (ie, a header and footer)
 	void UnloadBlockInfo(BlockInfoContent& blockInfoContent, BlockBase const& block) noexcept;
-} // namespace nabi_allocator::free_list_allocator
+} // namespace nabi_allocator

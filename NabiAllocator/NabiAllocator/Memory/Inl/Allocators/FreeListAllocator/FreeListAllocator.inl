@@ -6,9 +6,9 @@
 
 // Nabi Headers
 #include "Allocators\AllocatorBlockInfo.h"
-#include "Allocators\FreeListAllocator\BlockInfo.h"
-#include "Allocators\FreeListAllocator\BlockInfoIndex.h"
-#include "Allocators\FreeListAllocator\BlockPadding.h"
+#include "Allocators\BlockInfo.h"
+#include "Allocators\BlockInfoIndex.h"
+#include "Allocators\BlockPadding.h"
 #include "Allocators\FreeListAllocator\FreeListNode.h"
 #include "Allocators\FreeListAllocator\SearchAlgorithms.h"
 #include "DebugUtils.h"

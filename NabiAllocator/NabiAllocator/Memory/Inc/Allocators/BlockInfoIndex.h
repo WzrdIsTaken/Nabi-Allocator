@@ -8,7 +8,7 @@
  * As the block size is guaranteed to always be a multiple of 8, we can always safely mask of the first 3 bits and still hold the size.
 */
 
-namespace nabi_allocator::free_list_allocator
+namespace nabi_allocator
 {
 	enum class BlockInfoIndex : u32
 	{
@@ -18,4 +18,4 @@ namespace nabi_allocator::free_list_allocator
 
 		ENUM_COUNT = 4u
 	};
-} // namespace nabi_allocator::free_list_allocator
+} // namespace nabi_allocator

@@ -1,12 +1,12 @@
 // cpp's Header
-#include "Allocators\FreeListAllocator\BlockInfo.h"
+#include "Allocators\BlockInfo.h"
 
 // Nabi Headers
-#include "Allocators\FreeListAllocator\BlockInfoIndex.h"
+#include "Allocators\BlockInfoIndex.h"
 #include "Operations\BitOperations.h"
 #include "TypeUtils.h"
 
-namespace nabi_allocator::free_list_allocator
+namespace nabi_allocator
 {
 	void LoadBlockInfo(BlockInfoContent const& blockInfoContent, BlockBase& blockOne, BlockBase* const blockTwo) noexcept
 	{
@@ -31,4 +31,4 @@ namespace nabi_allocator::free_list_allocator
 		blockInfoContent.m_Padded = bit_operations::GetBit(blockInfo, type_utils::ToUnderlying(BlockInfoIndex::Padded));
 		blockInfoContent.m_NumBytes = bit_operations::RightShiftBit(blockInfo, type_utils::ToUnderlying(BlockInfoIndex::SizeStart));
 	}
-} // namespace nabi_allocator::free_list_allocator
+} // namespace nabi_allocator
