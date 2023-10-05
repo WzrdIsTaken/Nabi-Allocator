@@ -38,6 +38,9 @@
     <ClCompile Include="Memory\Src\Allocators\BlockInfo.cpp">
       <Filter>Memory\Src\Allocators</Filter>
     </ClCompile>
+    <ClCompile Include="Tests\Src\Fixtures\StackAllocatorTests.cpp">
+      <Filter>Tests\Src\Fixtures</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tests">
@@ -130,6 +133,15 @@
     <Filter Include="Memory\Inl\Allocators\StackAllocator">
       <UniqueIdentifier>{f484fbc2-02a4-491e-82cf-5138ffdc6a4d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tests\Inl">
+      <UniqueIdentifier>{ad553308-050d-4619-99ee-c0b369ac391e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Inl\Blueprints">
+      <UniqueIdentifier>{0f05f599-f34a-4246-9a11-6ced5ae95cf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Inc\Blueprints">
+      <UniqueIdentifier>{d0e18da6-ecbc-4fbc-a617-9b76e722126f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -163,6 +175,9 @@
     </None>
     <None Include="Memory\Inl\Allocators\StackAllocator\StackAllocator.inl">
       <Filter>Memory\Inl\Allocators\StackAllocator</Filter>
+    </None>
+    <None Include="Tests\Inl\Blueprints\AllocatorDefaultTests.inl">
+      <Filter>Tests\Inl\Blueprints</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -261,6 +276,9 @@
     </ClInclude>
     <ClInclude Include="Memory\Inc\Allocators\BlockPadding.h">
       <Filter>Memory\Inc\Allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="Tests\Inc\Blueprints\AllocatorDefaultTests.h">
+      <Filter>Tests\Inc\Blueprints</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -31,6 +31,7 @@
     <ClCompile Include="Tests\Src\Fixtures\FreeListAllocatorTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\HeapZoneTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\MemoryOperationsTests.cpp" />
+    <ClCompile Include="Tests\Src\Fixtures\StackAllocatorTests.cpp" />
     <ClCompile Include="Utils\Src\BenchmarkUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -44,6 +45,7 @@
     <None Include="Memory\Inl\Operations\BitOperations.inl" />
     <None Include="Memory\Inl\Operations\MemoryOperations.inl" />
     <None Include="packages.config" />
+    <None Include="Tests\Inl\Blueprints\AllocatorDefaultTests.inl" />
     <None Include="Utils\Inl\BenchmarkUtils.inl" />
     <None Include="Utils\Inl\TypeUtils.inl" />
   </ItemGroup>
@@ -76,6 +78,7 @@
     <ClInclude Include="Memory\Inc\MemoryConstants.h" />
     <ClInclude Include="Memory\Inc\Operations\BitOperations.h" />
     <ClInclude Include="Memory\Inc\Operations\MemoryOperations.h" />
+    <ClInclude Include="Tests\Inc\Blueprints\AllocatorDefaultTests.h" />
     <ClInclude Include="Tests\Inc\TestConstants.h" />
     <ClInclude Include="Utils\Inc\DebugUtils.h" />
     <ClInclude Include="Utils\Inc\MacroUtils.h" />

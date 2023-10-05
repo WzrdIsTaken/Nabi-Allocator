@@ -18,7 +18,7 @@ namespace nabi_allocator
 
 namespace nabi_allocator
 {
-	std::string GetMemoryLayout(AllocatorBase const& allocator, HeapZoneInfo const& heapZoneInfo);
+	[[nodiscard]] std::string GetMemoryLayout(AllocatorBase const& allocator, HeapZoneInfo const& heapZoneInfo);
 
 #ifdef NA_MEMORY_TAGGING
 	// TODO - Write a function to output the memory usage by memory tag

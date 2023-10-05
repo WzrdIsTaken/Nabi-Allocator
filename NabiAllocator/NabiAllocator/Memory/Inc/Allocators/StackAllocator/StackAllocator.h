@@ -15,7 +15,17 @@
 #include "TypeUtils.h"
 
 /**
- * TODO desc
+ * A stack allocator works, as you might guess, exactly like a stack. It has the advantages of being faster and 
+ * having lower memory overhead compaired to something like a free list allocator as we don't have to store as 
+ * much infomation about a block or manage free memory. However, it is much less flexible as memory can only be
+ * allocated and freed from the top of the stack.
+ * 
+ * The memory layout of a block is as follows:
+ * - Payload -> Padding -> BlockPadding Struct -> BlockHeader Struct
+ * 
+ * Notes:
+ *	- m_PreviousPosition is not the last value m_CurrentPosition was set to, but the previous block's position.
+ *    It is used to make sure that freed memory always comes from the top of the stack.
 */
 
 namespace nabi_allocator
@@ -23,10 +33,6 @@ namespace nabi_allocator
 	struct AllocatorBlockInfo;
 	struct HeapZoneInfo;
 } // namespace nabi_allocator
-namespace nabi_allocator::stack_allocator
-{
-
-} // namespace nabi_allocator::stack_allocator
 
 namespace nabi_allocator::stack_allocator
 {
@@ -46,9 +52,12 @@ namespace nabi_allocator::stack_allocator
 	private:
 		NA_SET_COPY_MOVE_CONSTRUCTORS(StackAllocator, delete);
 
-		void* m_CurrentPosition;
+		uPtr m_CurrentPosition;
 #ifdef NA_DEBUG
-		void* m_PreviousPosition;
+		uPtr m_PreviousPosition;
 #endif // ifdef NA_DEBUG
 	};
 } // namespace nabi_allocator::stack_allocator
+
+// Include Include
+#include "Memory\Inl\Allocators\StackAllocator\StackAllocator.inl"
