@@ -37,6 +37,10 @@ namespace nabi_allocator
 namespace nabi_allocator::stack_allocator
 {
 	template<StackAllocatorSettings Settings>
+	class StackAllocator;
+	using DefaultStackAllocator = StackAllocator<c_StackAllocatorDefaultSettings>;
+
+	template<StackAllocatorSettings Settings>
 	class StackAllocator final : public AllocatorBase
 	{
 	public:
@@ -45,12 +49,15 @@ namespace nabi_allocator::stack_allocator
 
 		[[nodiscard]] void* Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo) override;
 		void Free(void* memory, HeapZoneInfo const& heapZoneInfo) override;
+		void Reset(HeapZoneInfo const& heapZoneInfo) override;
 
 		std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
 			std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) const override;
 
 	private:
 		NA_SET_COPY_MOVE_CONSTRUCTORS(StackAllocator, delete);
+
+		void InitMemory(HeapZoneInfo const& heapZoneInfo);
 
 		uPtr m_CurrentPosition;
 #ifdef NA_DEBUG

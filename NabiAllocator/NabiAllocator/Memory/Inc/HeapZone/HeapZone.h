@@ -22,6 +22,7 @@ namespace nabi_allocator
 
 		[[nodiscard]] inline void* Allocate(uInt const numBytes) override;
 		inline void Free(void* const memory) override;
+		inline void Reset() override;
 
 		[[nodiscard]] inline T& GetAllocator() noexcept;
 

@@ -15,6 +15,7 @@
 #include "Allocators\FreeListAllocator\FreeListAllocator.h"
 #include "Allocators\FreeListAllocator\FreeListAllocatorSettings.h"
 #include "Allocators\FreeListAllocator\SearchAlgorithms.h"
+#include "Blueprints\AllocatorDefaultTests.h"
 #include "HeapZone\HeapZone.h"
 #include "HeapZone\HeapZoneInfo.h"
 #include "Operations\BitOperations.h"
@@ -35,6 +36,7 @@ namespace nabi_allocator::tests
 #	define NA_FIXTURE_NAME NA_TEST_FIXTURE_NAME(FreeListAllocatorTests)
 
 	using namespace free_list_allocator;
+	using HeapZoneType = HeapZone<DefaultFreeListAllocator>;
 
 	uInt constexpr c_SmallHeapZoneSize = 64u;
 	uInt constexpr c_LargeHeapZoneSize = 256u;
@@ -89,48 +91,30 @@ namespace nabi_allocator::tests
 
 	TEST(NA_FIXTURE_NAME, CreateAndDestroy)
 	{
-		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone{ HeapZoneBase::c_NoParent, c_SmallHeapZoneSize, "TestHeapZone" };
-
-		std::string const expectedLayout = "F64P0";
-		std::string const actualLayout = GetMemoryLayout(heapZone.GetAllocator(), heapZone.GetZoneInfo());
-		EXPECT_EQ(expectedLayout, actualLayout);
+		blueprints::AllocatorCreateAndDestroyTest<HeapZoneType>(
+			c_SmallHeapZoneSize,  // Heap zone size
+			"F64P0"               // Expected init layout
+		);
 	}
 
 	TEST(NA_FIXTURE_NAME, AllocateAndFree)
 	{
-		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone{ HeapZoneBase::c_NoParent, c_SmallHeapZoneSize, "TestHeapZone" };
-		auto const& allocator = heapZone.GetAllocator();
-		auto const& heapZoneInfo = heapZone.GetZoneInfo();
+		blueprints::AllocatorAllocateAndFreeTest<HeapZoneType>(
+			c_SmallHeapZoneSize,  // Heap zone size
+			"A64P36",             // Expected x64 + memory tagging layout
+			"A32P12 F32P0",       // Expected x64 layout
+			"A24P8 F40P0",        // Expected x86 + memory tagging layout
+			"A16P4 F48P0",        // Expected x86 layout
+			"F64P0"               // Expected init layout
+		);
+	}
 
-		void* const ptr = heapZone.Allocate(4u);
-		{
-			std::string const expectedLayout =
-#ifdef _M_X64
-#	ifdef NA_MEMORY_TAGGING
-				"A64P36"
-#	else
-				"A32P12 F32P0"
-#	endif // ifdef NA_MEMORY_TAGGING 
-#elif _M_IX86
-#	ifdef NA_MEMORY_TAGGING
-				"A24P8 F40P0"
-#	else
-				"A16P4 F48P0"
-#	endif // ifdef NA_MEMORY_TAGGING 
-#else
-#	error "Unsupported architecture"
-#endif // ifdef _M_IX86, elif _M_IX86
-				;
-			std::string const actualLayout = GetMemoryLayout(allocator, heapZoneInfo);
-			EXPECT_EQ(expectedLayout, actualLayout);
-		}
-
-		heapZone.Free(ptr);
-		{
-			std::string const expectedLayout = "F64P0";
-			std::string const actualLayout = GetMemoryLayout(allocator, heapZoneInfo);
-			EXPECT_EQ(expectedLayout, actualLayout);
-		}
+	TEST(NA_FIXTURE_NAME, Reset)
+	{
+		blueprints::AllocatorResetTest<HeapZoneType>(
+			c_SmallHeapZoneSize,  // Heap zone size
+			"F64P0"               // Expected reset layout
+		);
 	}
 
 	TEST(NA_FIXTURE_NAME, BestFitSearch)
@@ -176,7 +160,7 @@ namespace nabi_allocator::tests
 
 	TEST(NA_FIXTURE_NAME, CoalesceBlock)
 	{
-		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone{ HeapZoneBase::c_NoParent, c_LargeHeapZoneSize, "TestHeapZone" };
+		HeapZoneType heapZone{ HeapZoneBase::c_NoParent, c_LargeHeapZoneSize, "TestHeapZone" };
 		auto const& allocator = heapZone.GetAllocator();
 		auto const& heapZoneInfo = heapZone.GetZoneInfo();
 
@@ -265,7 +249,7 @@ namespace nabi_allocator::tests
 
 	TEST(NA_FIXTURE_NAME, FreeListNodePtrsCorrect)
 	{
-		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone{ HeapZoneBase::c_NoParent, c_LargeHeapZoneSize, "TestHeapZone" };
+		HeapZoneType heapZone{ HeapZoneBase::c_NoParent, c_LargeHeapZoneSize, "TestHeapZone" };
 		auto const& heapZoneInfo = heapZone.GetZoneInfo();
 
 		// Expected starting free list structure 

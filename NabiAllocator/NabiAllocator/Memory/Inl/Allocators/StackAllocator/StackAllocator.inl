@@ -23,16 +23,12 @@ namespace nabi_allocator::stack_allocator
 	template<StackAllocatorSettings Settings>
 	StackAllocator<Settings>::StackAllocator(HeapZoneInfo const& heapZoneInfo)
 		: AllocatorBase{}
-		, m_CurrentPosition(heapZoneInfo.m_Start)
+		, m_CurrentPosition(c_NulluPtr)
 #ifdef NA_DEBUG
 		, m_PreviousPosition(c_NulluPtr)
 #endif // ifdef NA_DEBUG
 	{
-#ifdef NA_DEBUG
-		uInt const heapZoneSize = memory_operations::GetMemorySize(heapZoneInfo.m_Start, heapZoneInfo.m_End);
-		NA_ASSERT_DEFAULT(memory_operations::IsAlligned(heapZoneSize, c_BlockAllignment));
-		NA_ASSERT_DEFAULT(heapZoneSize > c_MinBlockSize);
-#endif // ifdef NA_DEBUG
+		InitMemory(heapZoneInfo);
 	}
 
 	template<StackAllocatorSettings Settings>
@@ -42,26 +38,14 @@ namespace nabi_allocator::stack_allocator
 		NA_ASSERT(m_AllocatorStats.m_ActiveAllocationCount == 0u && m_AllocatorStats.m_ActiveBytesAllocated == 0u,
 			NA_NAMEOF_LITERAL(StackAllocator) << "'s destructor was called, but objects it allocated are still active");
 #endif // ifdef NA_TRACK_ALLOCATIONS
-
-		// ctrl f todo
-		// todo comment up this class
-
-		// TODO can we pull out the padding calculation logic into its own function?
-		// And the allocate padding stuff?
-
-		// TODO block info content should really contain the memory tag infomation. Rather than having a seperate bit after which does it
-		// if we make this change, then also in IterateThroughHeapZone it should be updated
-
-		// can iteratethroughheapzone func be funcationaltised?
 	}
 
 	template<StackAllocatorSettings Settings>
 	void* StackAllocator<Settings>::Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo)
 	{
-		// TODO go through this and clean up etc
-
 		NA_ASSERT(numBytes > 0u, "Allocating 0 bytes");
 
+		// Check if the remaining space in the allocator is sufficient
 		uInt requiredBlockSize = numBytes + c_BlockHeaderSize;
 		uInt const padding = requiredBlockSize % c_BlockAllignment;
 		requiredBlockSize += padding;
@@ -72,31 +56,29 @@ namespace nabi_allocator::stack_allocator
 
 		uInt allocatedBytes = 0u;
 
+		// In the stack allocator, the payload comes first
 		void* const payloadPtr = NA_TO_VPTR(m_CurrentPosition);
 		allocatedBytes += numBytes;
 
-		// Allocate the padding if needed
+		// Allocate padding if needed
 		if (requiresPadding)
 		{
-			uInt const blockPaddingStructPosition = padding - c_BlockPaddingSize;
-			BlockPadding* const blockPadding = NA_REINTERPRET_MEMORY(BlockPadding, m_CurrentPosition, +, (allocatedBytes + blockPaddingStructPosition));
-
-			blockPadding->m_Padding = static_cast<u8>(padding);
+			AllocateBlockPadding((m_CurrentPosition + allocatedBytes), padding);
 			allocatedBytes += padding;
 		}
 
+		// Allocate the block header at the end of the block so it can be found with (m_CurrentPosition - c_BlockHeaderSize)
 		BlockHeader* const blockHeader = NA_REINTERPRET_MEMORY(BlockHeader, m_CurrentPosition, +, allocatedBytes);
 
-		// Allocate the block header
 		BlockInfoContent blockInfoContent = {};
 		blockInfoContent.m_Allocated = true;
 		blockInfoContent.m_Padded = requiresPadding;
 		blockInfoContent.m_NumBytes = requiredBlockSize;
-		LoadBlockInfo(blockInfoContent, *blockHeader);
-
 #ifdef NA_MEMORY_TAGGING
-		// TODO Memory Tagging here (MemoryTagScope, get from the MemoryCommand singleton) (see above, this should really be part of blockinfocontent)
+		// TODO Memory Tagging here (MemoryTagScope, get from the MemoryCommand singleton) 
+		// blockInfoContent.m_MemoryTag = 
 #endif // ifdef NA_MEMORY_TAGGING
+		LoadBlockInfo(blockInfoContent, *blockHeader);
 		allocatedBytes += c_BlockHeaderSize;
 
 		// Update stats
@@ -143,6 +125,16 @@ namespace nabi_allocator::stack_allocator
 	}
 
 	template<StackAllocatorSettings Settings>
+	void StackAllocator<Settings>::Reset(HeapZoneInfo const& heapZoneInfo)
+	{
+#ifdef NA_TRACK_ALLOCATIONS
+		ResetAllocatorStats(m_AllocatorStats, AllocatorStatsResetType::Active);
+#endif // #ifdef NA_TRACK_ALLOCATIONS
+
+		InitMemory(heapZoneInfo);
+	}
+
+	template<StackAllocatorSettings Settings>
 	std::deque<AllocatorBlockInfo> StackAllocator<Settings>::IterateThroughHeapZone(
 		std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) const
 	{
@@ -151,8 +143,6 @@ namespace nabi_allocator::stack_allocator
 
 		std::deque<AllocatorBlockInfo> allocatorBlocks = {};
 		uInt progressThroughHeapZone = static_cast<uInt>(m_CurrentPosition);
-		BlockHeader const* blockHeader = nullptr;
-		BlockInfoContent blockInfoContent = {};
 
 		// There is no concept of 'free blocks' in a stack allocator, so check if there is any unused space
 		uInt const freeMemoryNumBytes = static_cast<uInt>(heapZoneInfo.m_End - m_CurrentPosition);
@@ -167,31 +157,14 @@ namespace nabi_allocator::stack_allocator
 		// Iterate though each block, starting from the back
 		while (progressThroughHeapZone > heapZoneInfo.m_Start)
 		{
-			blockHeader = NA_REINTERPRET_MEMORY(BlockHeader, progressThroughHeapZone, -, c_BlockHeaderSize);
-			UnloadBlockInfo(blockInfoContent, *blockHeader);
-			progressThroughHeapZone -= blockInfoContent.m_NumBytes;
-
-			// Store the block's infomation in allocatorBlockInfo
-			AllocatorBlockInfo& allocatorBlockInfo = allocatorBlocks.emplace_back();
-			allocatorBlockInfo.m_MemoryAddress = NA_TO_UPTR(blockHeader);
-#ifdef NA_MEMORY_TAGGING
-			allocatorBlockInfo.m_MemoryTag = blockHeader->m_MemoryTag;
-#endif // ifdef NA_MEMORY_TAGGING
-
-			allocatorBlockInfo.m_PayloadPtr = NA_REINTERPRET_MEMORY(void, blockHeader, +, c_BlockHeaderSize);
-			allocatorBlockInfo.m_Allocated = blockInfoContent.m_Allocated;
-			allocatorBlockInfo.m_Padded = blockInfoContent.m_Padded;
-
-			u32 padding = 0u;
-			if (allocatorBlockInfo.m_Padded)
-			{
-				BlockPadding const* const blockPadding =
-					NA_REINTERPRET_MEMORY(BlockPadding, blockHeader, -, c_BlockPaddingSize);
-				padding = static_cast<u32>(blockPadding->m_Padding);
-			}
-
-			allocatorBlockInfo.m_NumBytes = blockInfoContent.m_NumBytes;
-			allocatorBlockInfo.m_Padding = padding;
+			AllocatorBlockInfo const allocatorBlockInfo =
+				IterateThroughHeapZoneHelper((progressThroughHeapZone - c_BlockHeaderSize),
+					[](uInt blockNumBytes) -> s32
+					{
+						return -static_cast<s32>(c_BlockPaddingSize);
+					});
+			progressThroughHeapZone -= allocatorBlockInfo.m_NumBytes;
+			allocatorBlocks.emplace_back(std::move(allocatorBlockInfo));
 		}
 		
 		// Reverse because we were iterating backwards through the heapzone and call the action
@@ -206,5 +179,19 @@ namespace nabi_allocator::stack_allocator
 		}
 
 		return allocatorBlocks;
+	}
+
+	template<StackAllocatorSettings Settings>
+	void StackAllocator<Settings>::InitMemory(HeapZoneInfo const& heapZoneInfo)
+	{
+#ifdef NA_DEBUG
+		uInt const heapZoneSize = memory_operations::GetMemorySize(heapZoneInfo.m_Start, heapZoneInfo.m_End);
+		NA_ASSERT_DEFAULT(memory_operations::IsAlligned(heapZoneSize, c_BlockAllignment));
+		NA_ASSERT_DEFAULT(heapZoneSize > c_MinBlockSize);
+
+		m_PreviousPosition = c_NulluPtr;
+#endif // ifdef NA_DEBUG
+
+		m_CurrentPosition = heapZoneInfo.m_Start;
 	}
 } // namespace nabi_allocator::stack_allocator

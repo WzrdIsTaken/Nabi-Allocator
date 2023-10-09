@@ -1,6 +1,5 @@
 // STD Headers
 #include <cstdlib>
-#include <vector>
 
 // Library Headers
 #include "gtest\gtest.h"
@@ -13,8 +12,10 @@
 #include "Allocators\FreeListAllocator\FreeListAllocator.h"
 #include "Allocators\FreeListAllocator\FreeListAllocatorSettings.h"
 #include "Allocators\FreeListAllocator\SearchAlgorithms.h"
+#include "Allocators\StackAllocator\StackAllocator.h"
+#include "Allocators\StackAllocator\StackAllocatorSettings.h"
 #include "BenchmarkUtils.h"
-#include "DebugUtils.h"
+#include "Blueprints\AllocatorDefaultBenchmarks.h"
 #include "HeapZone\HeapZone.h"
 #include "HeapZone\HeapZoneBase.h"
 #include "IntegerTypes.h"
@@ -24,6 +25,10 @@
 /**
  * Benchmarks for all the allocators. 
  * Running these tests can be toggled on/off by the NA_BENCHMARKS define in Config.h.
+ * 
+ * We could use the Default[AllocatorName]Allocator typedef in this file, but sometimes the default
+ * allocator settings are not the fastest ones, and thats what we are testing here. Plus the 
+ * explicitness is good I recon...
 */
 
 namespace nabi_allocator::tests
@@ -46,115 +51,25 @@ namespace nabi_allocator::tests
 		{
 			std::free(memory);
 		}
+
+		inline void Reset() override
+		{
+			// Can't use NA_FUNCTION_NOT_IMPLEMENTED because its called in the benchmarks
+		}
 	};
-
-	template<is_heap_zone HeapZoneType>
-	void AllocThenFree(HeapZoneType& heapZone)
-	{
-		// 10k 4 byte allocations + 10k frees
-
-		using namespace benchmark_utils;
-
-		u32 constexpr allocationCount = 10'000;
-		uInt constexpr allocationSize = 4u;
-
-		std::vector<void*> allocations;
-		allocations.reserve(allocationCount);
-
-		BenchmarkResults const results = RunBenchmark(
-			[&]() -> void
-			{
-				for (u32 i = 0; i < allocationCount; ++i)
-				{
-					void* ptr = heapZone.Allocate(allocationSize);
-					allocations.push_back(ptr);
-				}
-
-				for (u32 i = 0; i < allocationCount; ++i)
-				{
-					heapZone.Free(allocations.at(i));
-				}
-			},
-			[&]() -> void
-			{
-				allocations.clear();
-			});
-
-		
-		BenchmarkResultsToString(results, c_PrintBenchmarkResults);
-	}
-
-	template<is_heap_zone HeapZoneType>
-	void VaryingSizeAllocThenFree(HeapZoneType& heapZone)
-	{
-		// 10k 16 bytes allocations + 1k 256 bytes allocations + 50 2Mb allocations/frees
-
-		using namespace benchmark_utils;
-
-		u32 constexpr allocationCount16Byte = 10'000;
-		uInt constexpr allocationSize16Byte = 16u;
-
-		u32 constexpr allocationCount256Byte = 1000;
-		uInt constexpr allocationSize256Byte = 256u;
-
-		u32 constexpr allocationCount2Mb = 50;
-		uInt constexpr allocationSize2Mb = 2_MB;
-
-		std::vector<void*> allocations;
-		allocations.reserve(allocationCount16Byte + allocationCount256Byte + allocationCount2Mb);
-
-		BenchmarkResults const results = RunBenchmark(
-			[&]() -> void
-			{
-				// 10k 16 bytes allocations
-				for (u32 i = 0; i < allocationCount16Byte; ++i)
-				{
-					void* ptr = heapZone.Allocate(allocationSize16Byte);
-					allocations.push_back(ptr);
-				}
-
-
-				// 1k 256 bytes allocations
-				for (u32 i = 0; i < allocationCount256Byte; ++i)
-				{
-					void* ptr = heapZone.Allocate(allocationSize256Byte);
-					allocations.push_back(ptr);
-				}
-
-				// 50 2Mb allocations/deallocations
-				for (u32 i = 0; i < allocationCount2Mb; ++i)
-				{
-					void* ptr = heapZone.Allocate(allocationSize2Mb);
-					heapZone.Free(ptr);
-				}
-			},
-			[&]() -> void
-			{
-				uInt const allocationsSize = allocations.size();
-				for (u32 i = 0; i < allocationsSize; ++i)
-				{
-					heapZone.Free(allocations.at(i));
-				}
-
-				allocations.clear();
-			});
-
-
-		BenchmarkResultsToString(results, c_PrintBenchmarkResults);
-	}
 
 	// --- Unmanaged Allocator ---
 
 	NA_BENCHMARK(NA_FIXTURE_NAME, UnmanagedAllocatorAllocThenFree)
 	{
 		UntilWeWriteAnUnmangedAllocator test = {};
-		AllocThenFree(test);
+		blueprints::AllocatorAllocThenFree(test, c_PrintBenchmarkResults);
 	}
 
 	NA_BENCHMARK(NA_FIXTURE_NAME, UnmanagedAllocatorVaryingSizeAllocThenFree)
 	{
 		UntilWeWriteAnUnmangedAllocator test = {};
-		VaryingSizeAllocThenFree(test);
+		blueprints::AllocatorVaryingSizeAllocThenFree(test, c_PrintBenchmarkResults);
 	}
 
 	// --- Free List Allocator ---
@@ -164,17 +79,37 @@ namespace nabi_allocator::tests
 		.m_SearchAlgorithm = free_list_allocator::SearchAlgorithm::FirstFit,
 		.m_BestFitLeniency = 0u
 	};
+	using FreeListAllocator = HeapZone<free_list_allocator::FreeListAllocator<c_FreeListAllocatorSettings>>; 
 
 	NA_BENCHMARK(NA_FIXTURE_NAME, FreeListAllocatorAllocThenFree)
 	{
-		HeapZone<free_list_allocator::FreeListAllocator<c_FreeListAllocatorSettings>> heapZone = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
-		AllocThenFree(heapZone);
+		FreeListAllocator allocator = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
+		blueprints::AllocatorAllocThenFree(allocator, c_PrintBenchmarkResults);
 	}
 
 	NA_BENCHMARK(NA_FIXTURE_NAME, FreeListAllocatorVaryingSizeAllocThenFree)
 	{
-		HeapZone<free_list_allocator::FreeListAllocator<c_FreeListAllocatorSettings>> heapZone = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
-		VaryingSizeAllocThenFree(heapZone);
+		FreeListAllocator allocator = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
+		blueprints::AllocatorVaryingSizeAllocThenFree(allocator, c_PrintBenchmarkResults);
+	}
+
+	// --- Stack Allocator ---
+
+	stack_allocator::StackAllocatorSettings constexpr c_StackAllocatorSettings =
+	{
+	};
+	using StackAllocator = HeapZone<stack_allocator::StackAllocator<c_StackAllocatorSettings>>;
+
+	NA_BENCHMARK(NA_FIXTURE_NAME, StackAllocatorAllocThenFree)
+	{
+		StackAllocator allocator = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
+		blueprints::AllocatorAllocThenFree(allocator, c_PrintBenchmarkResults);
+	}
+
+	NA_BENCHMARK(NA_FIXTURE_NAME, StackAllocatorVaryingSizeAllocThenFree)
+	{
+		StackAllocator allocator = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
+		blueprints::AllocatorVaryingSizeAllocThenFree(allocator, c_PrintBenchmarkResults);
 	}
 
 #	undef NA_FIXTURE_NAME

@@ -36,6 +36,7 @@ namespace nabi_allocator
 
 		[[nodiscard]] inline virtual void* Allocate(uInt const numBytes) = 0;
 		inline virtual void Free(void* const memory) = 0;
+		inline virtual void Reset() = 0;
 
 		inline HeapZoneInfo const& GetZoneInfo() const noexcept;
 #ifdef NA_DEBUG

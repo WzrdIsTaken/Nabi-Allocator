@@ -30,7 +30,16 @@ namespace nabi_allocator
 		ENUM_COUNT
 	};
 
+	enum class AllocatorStatsResetType : u32
+	{
+		Active,
+		Total,
+
+		ENUM_COUNT
+	};
+
 	void UpdateAllocatorStats(AllocatorStats& allocatorStats, AllocatorStatsUpdateType const updateType,
 		u64 const& allocationCountAdjustment, u64 const& allocationByteAdjustment);
+	void ResetAllocatorStats(AllocatorStats& allocatorStats, AllocatorStatsResetType const resetType);
 #endif // ifdef NA_TRACK_ALLOCATIONS
 } // namespace nabi_allocator

@@ -23,4 +23,6 @@ namespace nabi_allocator
 	uInt constexpr c_BlockPaddingSize = sizeof(BlockPadding);
 
 	static_assert(c_BlockPaddingSize == 1u, NA_NAMEOF_LITERAL(BlockPadding) "is not the expected size");
+
+	void AllocateBlockPadding(uPtr const currentPosition, uInt const padding);
 } // namespace nabi_allocator

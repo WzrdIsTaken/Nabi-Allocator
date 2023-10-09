@@ -33,6 +33,12 @@ namespace nabi_allocator
 	}
 
 	template<is_allocator T>
+	inline void HeapZone<T>::Reset()
+	{
+		return m_Allocator.Reset(m_ZoneInfo);
+	}
+
+	template<is_allocator T>
 	inline T& HeapZone<T>::GetAllocator() noexcept
 	{
 		return m_Allocator;

@@ -42,6 +42,10 @@ namespace nabi_allocator
 		bool m_Allocated;
 		bool m_Padded;
 		uInt m_NumBytes;
+
+#ifdef NA_MEMORY_TAGGING
+		u32 m_MemoryTag;
+#endif // ifdef NA_MEMORY_TAGGING
 	};
 
 	uInt constexpr c_BlockHeaderSize = sizeof(BlockHeader);
@@ -74,6 +78,7 @@ namespace nabi_allocator
 #endif // ifdef _M_IX86, elif _M_IX86
 		, NA_NAMEOF_LITERAL(BlockFooter) " is not the expected size");
 
-	void LoadBlockInfo(BlockInfoContent const& blockInfoContent, BlockBase& blockOne, BlockBase* const blockTwo = nullptr) noexcept; // This function can take in two blocks (ie, a header and footer)
-	void UnloadBlockInfo(BlockInfoContent& blockInfoContent, BlockBase const& block) noexcept;
+	void LoadBlockInfo(BlockInfoContent const& blockInfoContent, BlockHeader& blockHeader, BlockFooter* const blockFooter = nullptr) noexcept;
+	void UnloadBlockInfo(BlockInfoContent& blockInfoContent, BlockHeader const& blockHeader) noexcept;
+	void UnloadBlockInfo(BlockInfoContent& blockInfoContent, BlockFooter const& blockFooter) noexcept;
 } // namespace nabi_allocator

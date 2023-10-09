@@ -86,6 +86,9 @@ Tasks:
 
 - should things like AllocatorUtils have there own namespace? and allocatorstats? [honestly, i think i like it the way it is..?]
 
+- take free list allocator / stack allocator out of there namespaces? its a little clunky i think...
+- do the test blueprints need the extra namespace as well..?
+
 - Make sure you implement the other free list node implementation
 - Stack allocator (this way it will still work with the benchmarks, rather than a linear allocaotr)
 - Add clear call to allocators..? [reset]

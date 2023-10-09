@@ -10,6 +10,7 @@
 #include "Config.h"
 
 // Nabi Headers
+#include "AllocatorBlockInfo.h"
 #include "AllocatorStats.h"
 #include "IntegerTypes.h"
 #include "TypeUtils.h"
@@ -20,7 +21,6 @@
 
 namespace nabi_allocator
 {
-	struct AllocatorBlockInfo;
 	struct HeapZoneInfo;
 } // namespace nabi_allocator
 
@@ -38,11 +38,15 @@ namespace nabi_allocator
 
 		[[nodiscard]] virtual void* Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo) = 0;
 		virtual void Free(void* memory, HeapZoneInfo const& heapZoneInfo) = 0;
+		virtual void Reset(HeapZoneInfo const& heapZoneInfo) = 0;
 
 		virtual std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
 			std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) const = 0;
 
 	protected:
+		[[nodiscard]] AllocatorBlockInfo IterateThroughHeapZoneHelper(
+			uInt const blockHeaderPosition, std::function<s32(uInt const)> calculateBlockPaddingAdjustment) const;
+
 #ifdef NA_TRACK_ALLOCATIONS
 		AllocatorStats m_AllocatorStats;
 #endif // ifdef NA_TRACK_ALLOCATIONS

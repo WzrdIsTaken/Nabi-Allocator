@@ -21,9 +21,9 @@ namespace nabi_allocator
 			break;
 		case AllocatorStatsUpdateType::Free:
 			NA_ASSERT(allocatorStats.m_ActiveAllocationCount >= allocationCountAdjustment &&
-			                      allocatorStats.m_ActiveBytesAllocated  >= allocationByteAdjustment  &&
-				                  allocatorStats.m_TotalAllocationCount  >= allocationCountAdjustment &&
-				                  allocatorStats.m_TotalBytesAllocated   >= allocationByteAdjustment,
+			          allocatorStats.m_ActiveBytesAllocated  >= allocationByteAdjustment  &&
+				      allocatorStats.m_TotalAllocationCount  >= allocationCountAdjustment &&
+				      allocatorStats.m_TotalBytesAllocated   >= allocationByteAdjustment,
 				"Free operation results in a negative allocation or byte count. What has gone wrong?");
 
 			allocatorStats.m_ActiveAllocationCount -= allocationCountAdjustment;
@@ -31,6 +31,27 @@ namespace nabi_allocator
 			break;
 		default:
 			NA_ASSERT_FAIL("Using an unexpected " << NA_NAMEOF_LITERAL(AllocatorStatsUpdateType));
+			break;
+		}
+	}
+
+	void ResetAllocatorStats(AllocatorStats& allocatorStats, AllocatorStatsResetType const resetType)
+	{
+		switch (resetType)
+		{
+		case AllocatorStatsResetType::Active:
+			// For active stats resets, route through UpdateAllocatorStats so the assert catches any weirdness
+			UpdateAllocatorStats(allocatorStats, AllocatorStatsUpdateType::Free,
+				allocatorStats.m_ActiveAllocationCount, allocatorStats.m_ActiveBytesAllocated);
+			break;
+		case AllocatorStatsResetType::Total:
+			allocatorStats.m_ActiveAllocationCount = 0ull;
+			allocatorStats.m_ActiveBytesAllocated  = 0ull;
+			allocatorStats.m_TotalAllocationCount  = 0ull;
+			allocatorStats.m_TotalBytesAllocated   = 0ull;
+			break;
+		default:
+			NA_ASSERT_FAIL("Using an unexpected " << NA_NAMEOF_LITERAL(AllocatorStatsResetType));
 			break;
 		}
 	}

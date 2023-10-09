@@ -1,5 +1,8 @@
 #pragma once
 
+// STD Headers
+#include <type_traits>
+
 // Nabi Headers
 #include "IntegerTypes.h"
 #include "TemplateConcepts.h"
@@ -10,7 +13,8 @@
 */
 
 #define NA_REINTERPRET_MEMORY(returnPtrType, startPtr, operation, numBytes) \
-	reinterpret_cast<returnPtrType*>(nabi_allocator::type_utils::ReinterpretCastIfNeeded<decltype(startPtr), nabi_allocator::uPtr>(startPtr) operation numBytes)
+	reinterpret_cast<returnPtrType*>(nabi_allocator::type_utils::ReinterpretCastIfNeeded \
+		<std::remove_const_t<decltype(startPtr)>, nabi_allocator::uPtr>(startPtr) operation numBytes)
 #define NA_REINTERPRET_MEMORY_DEFAULT(returnPtrType, startPtr) \
 	NA_REINTERPRET_MEMORY(returnPtrType, startPtr, +, 0u)
 

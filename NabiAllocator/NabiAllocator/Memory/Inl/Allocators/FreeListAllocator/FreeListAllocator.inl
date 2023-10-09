@@ -30,11 +30,7 @@ namespace nabi_allocator::free_list_allocator
 		: AllocatorBase{}
 		, m_FreeList(nullptr)
 	{
-		uInt const heapZoneSize = memory_operations::GetMemorySize(heapZoneInfo.m_Start, heapZoneInfo.m_End);
-		NA_ASSERT_DEFAULT(memory_operations::IsAlligned(heapZoneSize, c_BlockAllignment));
-		NA_ASSERT_DEFAULT(heapZoneSize > c_MinBlockSize);
-
-		AddFreeBlock(NA_TO_VPTR(heapZoneInfo.m_Start), heapZoneSize);
+		InitMemory(heapZoneInfo);
 	}
 
 	template<FreeListAllocatorSettings Settings>
@@ -89,26 +85,21 @@ namespace nabi_allocator::free_list_allocator
 		blockInfoContent.m_Allocated = true;
 		blockInfoContent.m_Padded = requiresPadding;
 		blockInfoContent.m_NumBytes = requiredBlockSize;
-		LoadBlockInfo(blockInfoContent, *blockHeader);
-
 #ifdef NA_MEMORY_TAGGING
 		// TODO Memory Tagging here (MemoryTagScope, get from the MemoryCommand singleton)
+		// blockInfoContent.m_MemoryTag =
 #endif // ifdef NA_MEMORY_TAGGING
+		LoadBlockInfo(blockInfoContent, *blockHeader);
 		allocatedBytes += c_BlockHeaderSize;
 
 		// Store the pointer to where the payload will be allocated
 		void* const payloadPtr = NA_REINTERPRET_MEMORY(void, blockHeader, +, allocatedBytes);
 		allocatedBytes += numBytes;
 
-		// Allocate the padding if needed
+		// Allocate padding if needed
 		if (requiresPadding)
 		{
-			// We want to allocate the padding one byte before the footer. 
-			// Its ok to do padding - c_BlockPaddingSize, because if "requiresPadding" is true, "padding" will always be > 1 and c_BlockPaddingSize is 1.
-			uInt const blockPaddingStructPosition = padding - c_BlockPaddingSize;
-			BlockPadding* const blockPadding = NA_REINTERPRET_MEMORY(BlockPadding, blockHeader, +, (allocatedBytes + blockPaddingStructPosition));
-
-			blockPadding->m_Padding = static_cast<u8>(padding);
+			AllocateBlockPadding((NA_TO_UPTR(blockHeader) + allocatedBytes), padding);
 			allocatedBytes += padding;
 		}
 
@@ -155,42 +146,33 @@ namespace nabi_allocator::free_list_allocator
 	}
 
 	template<FreeListAllocatorSettings Settings>
+	void FreeListAllocator<Settings>::Reset(HeapZoneInfo const& heapZoneInfo)
+	{
+#ifdef NA_TRACK_ALLOCATIONS
+		ResetAllocatorStats(m_AllocatorStats, AllocatorStatsResetType::Active);
+#endif // #ifdef NA_TRACK_ALLOCATIONS
+
+		InitMemory(heapZoneInfo);
+	}
+
+	template<FreeListAllocatorSettings Settings>
 	std::deque<AllocatorBlockInfo> FreeListAllocator<Settings>::IterateThroughHeapZone(
 		std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) const
 	{
 		std::deque<AllocatorBlockInfo> allocatorBlocks = {};
 		uInt progressThroughHeapZone = static_cast<uInt>(heapZoneInfo.m_Start);
-		BlockHeader const* blockHeader = nullptr;
-		BlockInfoContent blockInfoContent = {};
 
 		// Loop through all the blocks in the heap zone until the end or "action" returns false
 		do
 		{
-			blockHeader = NA_REINTERPRET_MEMORY_DEFAULT(BlockHeader, static_cast<uPtr>(progressThroughHeapZone));
-			UnloadBlockInfo(blockInfoContent, *blockHeader);
-			progressThroughHeapZone += blockInfoContent.m_NumBytes;
-
-			// Store the block's infomation in allocatorBlockInfo
-			AllocatorBlockInfo& allocatorBlockInfo = allocatorBlocks.emplace_back();
-			allocatorBlockInfo.m_MemoryAddress = NA_TO_UPTR(blockHeader);
-#ifdef NA_MEMORY_TAGGING
-			allocatorBlockInfo.m_MemoryTag = blockHeader->m_MemoryTag;
-#endif // ifdef NA_MEMORY_TAGGING
-
-			allocatorBlockInfo.m_PayloadPtr = NA_REINTERPRET_MEMORY(void, blockHeader, +, c_BlockHeaderSize);
-			allocatorBlockInfo.m_Allocated = blockInfoContent.m_Allocated;
-			allocatorBlockInfo.m_Padded = blockInfoContent.m_Padded;
-			
-			u32 padding = 0u;
-			if (allocatorBlockInfo.m_Padded)
-			{
-				BlockPadding const* const blockPadding = 
-					NA_REINTERPRET_MEMORY(BlockPadding, blockHeader, +, (blockInfoContent.m_NumBytes - c_BlockFooterSize - c_BlockPaddingSize));
-				padding = static_cast<u32>(blockPadding->m_Padding);
-			}
-
-			allocatorBlockInfo.m_NumBytes = blockInfoContent.m_NumBytes;
-			allocatorBlockInfo.m_Padding = padding;
+			AllocatorBlockInfo const allocatorBlockInfo = 
+				IterateThroughHeapZoneHelper(progressThroughHeapZone,
+					[](uInt blockNumBytes) -> s32
+					{
+						return blockNumBytes - c_BlockFooterSize - c_BlockPaddingSize;
+					});
+			progressThroughHeapZone += allocatorBlockInfo.m_NumBytes;
+			allocatorBlocks.push_back(allocatorBlockInfo);
 
 			// Check if the loop should continue
 			bool const continueLooping = action ? (*action)(allocatorBlockInfo) : true;
@@ -202,6 +184,17 @@ namespace nabi_allocator::free_list_allocator
 		while (progressThroughHeapZone < heapZoneInfo.m_End);
 
 		return allocatorBlocks;
+	}
+
+	template<FreeListAllocatorSettings Settings>
+	void FreeListAllocator<Settings>::InitMemory(HeapZoneInfo const& heapZoneInfo)
+	{
+		uInt const heapZoneSize = memory_operations::GetMemorySize(heapZoneInfo.m_Start, heapZoneInfo.m_End);
+		NA_ASSERT_DEFAULT(memory_operations::IsAlligned(heapZoneSize, c_BlockAllignment));
+		NA_ASSERT_DEFAULT(heapZoneSize > c_MinBlockSize);
+
+		m_FreeList = nullptr;
+		AddFreeBlock(NA_TO_VPTR(heapZoneInfo.m_Start), heapZoneSize);
 	}
 
 	template<FreeListAllocatorSettings Settings>

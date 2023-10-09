@@ -1,5 +1,8 @@
 // https://learn.microsoft.com/en-us/cpp/build/reference/hint-files?view=msvc-170
 
+// BenchmarkUtils.h
+define NA_BENCHMARK(benchmarkFixtureName, benchmarkCaseName) TEST(benchmarkFixtureName, benchmarkCaseName)
+
 // Config.h
 #define NA_BENCHMARKS
 #define NA_BENCHMARK_RUN_COUNT 1

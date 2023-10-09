@@ -20,11 +20,13 @@
  * There is also a google benchmark library I think - so we could perhaps use that? 
 */
 
+#ifdef NA_BENCHMARKS
+#	define NA_BENCHMARK(benchmarkFixtureName, benchmarkCaseName) TEST(benchmarkFixtureName, benchmarkCaseName)
+#endif // ifdef NA_BENCHMARKS
+
 namespace nabi_allocator::benchmark_utils
 {
 #ifdef NA_BENCHMARKS
-#	define NA_BENCHMARK(benchmarkFixtureName, benchmarkCaseName) TEST(benchmarkFixtureName, benchmarkCaseName)
-
 	static_assert(NA_BENCHMARK_RUN_COUNT > 0u);
 
 	class StopWatch final

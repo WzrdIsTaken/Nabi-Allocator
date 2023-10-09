@@ -41,6 +41,10 @@ namespace nabi_allocator::free_list_allocator
 namespace nabi_allocator::free_list_allocator
 {
 	template<FreeListAllocatorSettings Settings>
+	class FreeListAllocator;
+	using DefaultFreeListAllocator = FreeListAllocator<c_FreeListAllocatorDefaultSettings>;
+
+	template<FreeListAllocatorSettings Settings>
 	class FreeListAllocator final : public AllocatorBase
 	{
 	public:
@@ -49,12 +53,15 @@ namespace nabi_allocator::free_list_allocator
 
 		[[nodiscard]] void* Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo) override;
 		void Free(void* memory, HeapZoneInfo const& heapZoneInfo) override;
+		void Reset(HeapZoneInfo const& heapZoneInfo) override;
 
 		std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
 			std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) const override;
 
 	private:
 		NA_SET_COPY_MOVE_CONSTRUCTORS(FreeListAllocator, delete);
+
+		void InitMemory(HeapZoneInfo const& heapZoneInfo);
 
 		[[nodiscard]] BlockHeader* const TryFindFreeBlock(uInt const numBytes) const;
 		void TryCoalesceBlock(BlockHeader* const blockHeader, HeapZoneInfo const& heapZoneInfo);

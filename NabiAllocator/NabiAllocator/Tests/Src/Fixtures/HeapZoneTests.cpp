@@ -44,6 +44,11 @@ namespace nabi_allocator::tests
 			--m_AllocationCount;
 		}
 
+		void Reset(HeapZoneInfo const& /*heapZoneInfo*/) override
+		{
+			m_AllocationCount = 0;
+		}
+
 		std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
 			std::optional<std::function<bool(AllocatorBlockInfo const&)>> /*action*/, HeapZoneInfo const& /*heapZoneInfo*/) const override
 		{
@@ -83,10 +88,14 @@ namespace nabi_allocator::tests
 		HeapZone<MockAllocator> heapZone{ HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		MockAllocator const& mockAllocator = heapZone.GetAllocator();
 
-		void* ptr = heapZone.Allocate(1u);
+		void* const ptr1 = heapZone.Allocate(1u);
+		void const* const ptr2 = heapZone.Allocate(1u);
+		EXPECT_EQ(2u, mockAllocator.GetAllocationCount());
+
+		heapZone.Free(ptr1);
 		EXPECT_EQ(1u, mockAllocator.GetAllocationCount());
 
-		heapZone.Free(ptr);
+		heapZone.Reset();
 		EXPECT_EQ(0u, mockAllocator.GetAllocationCount());
 	}
 
