@@ -19,19 +19,13 @@ namespace nabi_allocator::free_list_allocator
 {
 	struct FreeListNode final
 	{
-#ifdef NA_FREE_LIST_NODE_PTRS
 		FreeListNode* m_Previous;
 		FreeListNode* m_Next;
-#else
-		u32 m_Previous;
-		u32 m_Next;
-#endif // ifdef NA_FREE_LIST_NODE_PTRS
 	};
 
 	uInt constexpr c_FreeListNodeSize = sizeof(FreeListNode);
 
 	static_assert(c_FreeListNodeSize == 
-#ifdef NA_FREE_LIST_NODE_PTRS
 #	ifdef _M_X64
 		16u
 #	elif _M_IX86
@@ -39,9 +33,6 @@ namespace nabi_allocator::free_list_allocator
 #	else
 #		error "Unsupported architecture"
 #	endif // ifdef _M_IX86, elif _M_IX86
-#else
-		8u
-#endif // ifdef NA_FREE_LIST_NODE_PTRS
 		, NA_NAMEOF_LITERAL(FreeListNode) "is not the expected size");
 
 	void AddFreeListNode(FreeListNode*& freelist, FreeListNode* const& node);
@@ -51,4 +42,3 @@ namespace nabi_allocator::free_list_allocator
 
 // Include Inline
 #include "Memory\Inl\Allocators\FreeListAllocator\FreeListNode.inl"
-

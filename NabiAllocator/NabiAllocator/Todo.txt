@@ -89,14 +89,16 @@ Tasks:
 - take free list allocator / stack allocator out of there namespaces? its a little clunky i think...
 - do the test blueprints need the extra namespace as well..?
 
-- Make sure you implement the other free list node implementation
-- Stack allocator (this way it will still work with the benchmarks, rather than a linear allocaotr)
-- Add clear call to allocators..? [reset]
 - MemoryCommand, heap zone scopes, memory tag scope, all this stuff.
 - Python ultities
 - ^ These are the focus rn. Get the project into a submittable state!
 
 Archive:
+- Make sure you implement the other free list node implementation
+	- Wasn't worth doing. See "random engine ideas" -> NA_FREE_LIST_NODE_PTRs. Sure this would have made the size smaller on x64.. but then we could run out of range.
+	  Plus, its very error prone.
+- Stack allocator (this way it will still work with the benchmarks, rather than a linear allocaotr)
+- Add clear call to allocators..? [reset]
 - Should GetMemoryLayout be in its own namespace and be debug only? [no(?) and no]
 - Should defines, like NA_TRACK_ALLOCATIONS toggle if headers are included or not? eg AllocatorStats in AllocatorBase.h
 	- [I think this is a slippery slope with includes and probs just not worth it. could end up with end ifs everywhere. besides, matt said not to do it i think]

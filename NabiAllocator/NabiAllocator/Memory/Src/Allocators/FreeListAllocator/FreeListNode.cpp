@@ -66,11 +66,7 @@ namespace nabi_allocator::free_list_allocator
 			// Not necessary, but makes the debug output easier to reason
 			if (freelist)
 			{
-#	ifdef NA_FREE_LIST_NODE_PTRS
 				freelist->m_Previous = nullptr;
-#	else
-				freelist->m_Previous = static_cast<u32>(NULL);
-#	endif // ifdef NA_FREE_LIST_NODE_PTRS
 			}
 #endif // ifdef NA_DEBUG || NA_TESTS
 		}

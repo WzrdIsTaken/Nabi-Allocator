@@ -9,13 +9,13 @@
 
 namespace nabi_allocator::tests::blueprints
 {
-#ifdef NA_TESTS
+#ifdef NA_BENCHMARKS
 	template<is_heap_zone HeapZoneType>
 	void AllocatorAllocThenFree(HeapZoneType& heapZone, bool const printBenchmarkResults);
 
 	template<is_heap_zone HeapZoneType>
 	void AllocatorVaryingSizeAllocThenFree(HeapZoneType& heapZone, bool const printBenchmarkResults);
-#endif // ifdef NA_TESTS
+#endif // ifdef NA_BENCHMARKS
 } // namespace nabi_allocator::tests::blueprints
 
 // Include Inline
