@@ -1,7 +1,10 @@
 // https://learn.microsoft.com/en-us/cpp/build/reference/hint-files?view=msvc-170
 
+// AllocationInfo.h
+#define NA_MAKE_ALLOCATION_INFO(numBytes, memoryTag) { numBytes }
+
 // BenchmarkUtils.h
-define NA_BENCHMARK(benchmarkFixtureName, benchmarkCaseName) TEST(benchmarkFixtureName, benchmarkCaseName)
+#define NA_BENCHMARK(benchmarkFixtureName, benchmarkCaseName) TEST(benchmarkFixtureName, benchmarkCaseName)
 
 // Config.h
 #define NA_BENCHMARKS

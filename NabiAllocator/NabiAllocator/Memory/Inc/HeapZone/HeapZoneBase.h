@@ -19,6 +19,11 @@
 
 namespace nabi_allocator
 {
+	struct AllocationInfo;
+} // namespace nabi_allocator
+
+namespace nabi_allocator
+{
 	class HeapZoneBase;
 	template<typename T>
 	concept is_heap_zone = std::is_base_of_v<HeapZoneBase, T>;
@@ -34,7 +39,7 @@ namespace nabi_allocator
 		HeapZoneInfo& Init(HeapZoneBase* const parentZone, uInt const numBytes, std::string const& debugName);
 		void Deinit();
 
-		[[nodiscard]] inline virtual void* Allocate(uInt const numBytes) = 0;
+		[[nodiscard]] inline virtual void* Allocate(AllocationInfo const& allocationInfo) = 0;
 		inline virtual void Free(void* const memory) = 0;
 		inline virtual void Reset() = 0;
 

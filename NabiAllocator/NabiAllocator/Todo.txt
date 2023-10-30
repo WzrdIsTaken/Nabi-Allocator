@@ -94,6 +94,7 @@ Tasks:
 - do the test blueprints need the extra namespace as well..?
 
 - MemoryCommand, heap zone scopes, memory tag scope, all this stuff.
+	- For the memory tag tests, make sure the memory tag enum's type is MemoryConstant.h's MemoryTag
 - Python ultities
 - ^ These are the focus rn. Get the project into a submittable state!
 

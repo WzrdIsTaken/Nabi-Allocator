@@ -28,7 +28,7 @@ namespace nabi_allocator::tests
 	TEST(NA_FIXTURE_NAME, PushAndPopScope)
 	{
 		MemoryCommand memoryCommand = {};
-		HeapZoneScope scope = {};
+		HeapZoneScope scope = { /*heapZone*/ nullptr, /*memoryTag*/ nullptr, /*registerWithMemoryCommand*/ false};
 
 		memoryCommand.PushHeapZoneScope(scope);
 		EXPECT_EQ(memoryCommand.GetTopHeapZoneScope(), &scope);
@@ -40,8 +40,8 @@ namespace nabi_allocator::tests
 	TEST(NA_FIXTURE_NAME, PushTwoScopesThenReset)
 	{
 		MemoryCommand memoryCommand = {};
-		HeapZoneScope scope1 = {};
-		HeapZoneScope scope2 = {};
+		HeapZoneScope scope1 = { nullptr, nullptr, false };
+		HeapZoneScope scope2 = { nullptr, nullptr, false };
 
 		memoryCommand.PushHeapZoneScope(scope1);
 		memoryCommand.PushHeapZoneScope(scope2);

@@ -2,7 +2,9 @@
 #include "HeapZone/HeapZoneBase.h"
 
 // Nabi Headers
+#include "AllocationInfo.h"
 #include "DebugUtils.h"
+#include "MemoryConstants.h"
 #include "Operations/MemoryOperations.h"
 #include "TypeUtils.h"
 
@@ -14,7 +16,7 @@ namespace nabi_allocator
 
 		if (parentZone)
 		{
-			m_ZoneInfo.m_Start = NA_TO_UPTR(parentZone->Allocate(numBytes));
+			m_ZoneInfo.m_Start = NA_TO_UPTR(parentZone->Allocate(NA_MAKE_ALLOCATION_INFO(numBytes, c_NullMemoryTag)));
 		}
 		else
 		{

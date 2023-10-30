@@ -11,6 +11,7 @@
 #include "Config.h"
 
 // Nabi Headers
+#include "AllocationInfo.h"
 #include "Allocators\AllocatorUtils.h"
 #include "Allocators\FreeListAllocator\FreeListAllocator.h"
 #include "Allocators\FreeListAllocator\FreeListAllocatorSettings.h"
@@ -18,6 +19,7 @@
 #include "Blueprints\AllocatorDefaultTests.h"
 #include "HeapZone\HeapZone.h"
 #include "HeapZone\HeapZoneInfo.h"
+#include "MemoryConstants.h"
 #include "Operations\BitOperations.h"
 #include "Operations\MemoryOperations.h"
 #include "TestConstants.h"
@@ -165,9 +167,9 @@ namespace nabi_allocator::tests
 		auto const& heapZoneInfo = heapZone.GetZoneInfo();
 
 		// Expected layout after three allocations
-		void* const ptr1 = heapZone.Allocate(4u);
-		void* const ptr2 = heapZone.Allocate(4u);
-		void* const ptr3 = heapZone.Allocate(4u);
+		void* const ptr1 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
+		void* const ptr2 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
+		void* const ptr3 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
 		{
 			std::string const expectedLayout =
 #ifdef _M_X64
@@ -258,10 +260,10 @@ namespace nabi_allocator::tests
 		EXPECT_FALSE(firstFreeListNode->m_Previous);
 		
 		// Force a memory layout of F-A-F-A-F to create a free list
-		void* const ptr1 = heapZone.Allocate(4u);
-		void* const ptr2 = heapZone.Allocate(4u);
-		void* const ptr3 = heapZone.Allocate(4u);
-		void* const ptr4 = heapZone.Allocate(4u);
+		void* const ptr1 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
+		void* const ptr2 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
+		void* const ptr3 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
+		void* const ptr4 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
 
 		heapZone.Free(ptr1);
 		heapZone.Free(ptr3);
@@ -279,11 +281,11 @@ namespace nabi_allocator::tests
 		EXPECT_EQ(freeListNode3->m_Previous, freeListNode1);
 		
 		// Allocate into the first free block, and check that the free list updates
-		void* const ptr5 = heapZone.Allocate(4u);
+		void* const ptr5 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
 		EXPECT_FALSE(freeListNode3->m_Previous);	
 
 		// Allocate into the second free block so only the last free block remains and check that the free list is one element again
-		void* const ptr6 = heapZone.Allocate(4u);
+		void* const ptr6 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
 		EXPECT_FALSE(lastFreeListNode->m_Previous);
 		EXPECT_FALSE(lastFreeListNode->m_Next);
 

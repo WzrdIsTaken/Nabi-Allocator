@@ -1,6 +1,9 @@
 // inl's Header
 #include "HeapZone/HeapZone.h"
 
+// Nabi Headers
+#include "AllocationInfo.h"
+
 namespace nabi_allocator
 {
 	template<is_allocator T>
@@ -20,9 +23,9 @@ namespace nabi_allocator
 	}
 
 	template<is_allocator T>
-	inline void* HeapZone<T>::Allocate(uInt const numBytes)
+	inline void* HeapZone<T>::Allocate(AllocationInfo const& allocationInfo)
 	{
-		return m_Allocator.Allocate(numBytes, m_ZoneInfo);
+		return m_Allocator.Allocate(allocationInfo, m_ZoneInfo);
 	}
 
 	template<is_allocator T>

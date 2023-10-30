@@ -5,12 +5,14 @@
 #include "Config.h"
 
 // Nabi Headers
+#include "AllocationInfo.h"
 #include "Allocators/AllocatorBase.h"
 #include "Allocators/AllocatorBlockInfo.h"
 #include "DebugUtils.h"
 #include "HeapZone/HeapZone.h"
 #include "HeapZone/HeapZoneInfo.h"
 #include "IntegerTypes.h"
+#include "MemoryConstants.h"
 #include "Operations/MemoryOperations.h"
 #include "TestConstants.h"
 
@@ -33,7 +35,7 @@ namespace nabi_allocator::tests
 		{
 		}
 
-		[[nodiscard]] void* Allocate(uInt const numBytes, HeapZoneInfo const& /*heapZoneInfo*/) override
+		[[nodiscard]] void* Allocate(AllocationInfo const& /*allocationInfo*/, HeapZoneInfo const& /*heapZoneInfo*/) override
 		{
 			++m_AllocationCount;
 			return nullptr;
@@ -88,8 +90,8 @@ namespace nabi_allocator::tests
 		HeapZone<MockAllocator> heapZone{ HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		MockAllocator const& mockAllocator = heapZone.GetAllocator();
 
-		void* const ptr1 = heapZone.Allocate(1u);
-		void const* const ptr2 = heapZone.Allocate(1u);
+		void* const ptr1 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(1u, c_NullMemoryTag));
+		void const* const ptr2 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(1u, c_NullMemoryTag));
 		EXPECT_EQ(2u, mockAllocator.GetAllocationCount());
 
 		heapZone.Free(ptr1);

@@ -5,6 +5,7 @@
 #include "Config.h"
 
 // Nabi Headers
+#include "AllocationInfo.h"
 #include "Allocators\AllocatorBlockInfo.h"
 #include "Allocators\BlockInfo.h"
 #include "Allocators\BlockInfoIndex.h"
@@ -43,20 +44,20 @@ namespace nabi_allocator::free_list_allocator
 	}
 
 	template<FreeListAllocatorSettings Settings>
-	void* FreeListAllocator<Settings>::Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo)
+	void* FreeListAllocator<Settings>::Allocate(AllocationInfo const& allocationInfo, HeapZoneInfo const& heapZoneInfo)
 	{
-		NA_ASSERT(numBytes > 0u, "Allocating 0 bytes");
+		NA_ASSERT(allocationInfo.m_NumBytes > 0u, "Allocating 0 bytes");
 
 		// Search for a free block. If one can't be found, the allocator is out of memory
 		BlockHeader* blockHeader = nullptr;
 		uInt allocatedBytes = 0u;
 
-		uInt requiredBlockSize = c_BlockHeaderSize + c_BlockFooterSize + numBytes;
+		uInt requiredBlockSize = c_BlockHeaderSize + c_BlockFooterSize + allocationInfo.m_NumBytes;
 		uInt padding = 0u;
 
-		if (numBytes < c_FreeListNodeSize)
+		if (allocationInfo.m_NumBytes < c_FreeListNodeSize)
 		{
-			padding += (c_FreeListNodeSize - numBytes);
+			padding += (c_FreeListNodeSize - allocationInfo.m_NumBytes);
 		}
 		padding += (requiredBlockSize + padding) % c_BlockAllignment;
 
@@ -86,15 +87,14 @@ namespace nabi_allocator::free_list_allocator
 		blockInfoContent.m_Padded = requiresPadding;
 		blockInfoContent.m_NumBytes = requiredBlockSize;
 #ifdef NA_MEMORY_TAGGING
-		// TODO Memory Tagging here (MemoryTagScope, get from the MemoryCommand singleton)
-		// blockInfoContent.m_MemoryTag =
+		blockInfoContent.m_MemoryTag = allocationInfo.m_MemoryTag;
 #endif // ifdef NA_MEMORY_TAGGING
 		LoadBlockInfo(blockInfoContent, *blockHeader);
 		allocatedBytes += c_BlockHeaderSize;
 
 		// Store the pointer to where the payload will be allocated
 		void* const payloadPtr = NA_REINTERPRET_MEMORY(void, blockHeader, +, allocatedBytes);
-		allocatedBytes += numBytes;
+		allocatedBytes += allocationInfo.m_NumBytes;
 
 		// Allocate padding if needed
 		if (requiresPadding)

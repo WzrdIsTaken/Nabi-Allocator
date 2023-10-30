@@ -21,6 +21,7 @@
 
 namespace nabi_allocator
 {
+	struct AllocationInfo;
 	struct HeapZoneInfo;
 } // namespace nabi_allocator
 
@@ -36,7 +37,7 @@ namespace nabi_allocator
 		inline AllocatorBase();
 		virtual ~AllocatorBase() = default;
 
-		[[nodiscard]] virtual void* Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo) = 0;
+		[[nodiscard]] virtual void* Allocate(AllocationInfo const& allocationInfo, HeapZoneInfo const& heapZoneInfo) = 0;
 		virtual void Free(void* memory, HeapZoneInfo const& heapZoneInfo) = 0;
 		virtual void Reset(HeapZoneInfo const& heapZoneInfo) = 0;
 

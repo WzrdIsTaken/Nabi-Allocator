@@ -5,8 +5,10 @@
 #include <vector>
 
 // Nabi Headers
+#include "AllocationInfo.h"
 #include "BenchmarkUtils.h"
 #include "DebugUtils.h"
+#include "MemoryConstants.h"
 
 namespace nabi_allocator::tests::blueprints
 {
@@ -29,7 +31,7 @@ namespace nabi_allocator::tests::blueprints
 			{
 				for (uInt i = 0u; i < allocationCount; ++i)
 				{
-					void* ptr = heapZone.Allocate(allocationSize);
+					void* ptr = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(allocationSize, c_NullMemoryTag));
 					allocations.push_back(ptr);
 				}
 
@@ -72,21 +74,21 @@ namespace nabi_allocator::tests::blueprints
 				// 10k 16 bytes allocations
 				for (uInt i = 0; i < allocationCount16Byte; ++i)
 				{
-					void* ptr = heapZone.Allocate(allocationSize16Byte);
+					void* ptr = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(allocationSize16Byte, c_NullMemoryTag));
 					allocations.push_back(ptr);
 				}
 
 				// 1k 256 bytes allocations
 				for (uInt i = 0; i < allocationCount256Byte; ++i)
 				{
-					void* ptr = heapZone.Allocate(allocationSize256Byte);
+					void* ptr = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(allocationSize256Byte, c_NullMemoryTag));
 					allocations.push_back(ptr);
 				}
 
 				// 50 2Mb allocations/deallocations
 				for (uInt i = 0; i < allocationCount2Mb; ++i)
 				{
-					void* ptr = heapZone.Allocate(allocationSize2Mb);
+					void* ptr = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(allocationSize2Mb, c_NullMemoryTag));
 					heapZone.Free(ptr);
 				}
 			},

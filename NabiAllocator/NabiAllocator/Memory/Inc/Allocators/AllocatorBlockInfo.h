@@ -5,6 +5,7 @@
 
 // Nabi Headers
 #include "IntegerTypes.h"
+#include "MemoryConstants.h"
 
 /**
  * A generic struct which holds fundamental infomation about an allocator's internal block structure so helper functions only need to implement one interface.
@@ -18,7 +19,7 @@ namespace nabi_allocator
 		// Meta
 		uPtr m_MemoryAddress;
 #ifdef NA_MEMORY_TAGGING
-		u32 m_MemoryTag;
+		MemoryTag m_MemoryTag;
 #endif // ifdef NA_MEMORY_TAGGING
 
 		// General

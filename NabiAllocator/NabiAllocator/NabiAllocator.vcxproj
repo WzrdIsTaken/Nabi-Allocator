@@ -85,6 +85,7 @@
     <ClInclude Include="Memory\Inc\HeapZone\HeapZoneScope.h" />
     <ClInclude Include="Memory\Inc\MemoryCommand.h" />
     <ClInclude Include="Memory\Inc\MemoryConstants.h" />
+    <ClInclude Include="Memory\Inc\AllocationInfo.h" />
     <ClInclude Include="Memory\Inc\Operations\BitOperations.h" />
     <ClInclude Include="Memory\Inc\Operations\MemoryOperations.h" />
     <ClInclude Include="Tests\Inc\Blueprints\AllocatorDefaultBenchmarks.h" />

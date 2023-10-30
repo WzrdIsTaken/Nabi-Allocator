@@ -310,5 +310,8 @@
     <ClInclude Include="Memory\Inc\HeapZone\HeapZoneScope.h">
       <Filter>Memory\Inc\HeapZone</Filter>
     </ClInclude>
+    <ClInclude Include="Memory\Inc\AllocationInfo.h">
+      <Filter>Memory\Inc</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

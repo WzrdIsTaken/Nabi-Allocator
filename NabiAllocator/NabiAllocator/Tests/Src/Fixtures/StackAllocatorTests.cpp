@@ -5,11 +5,13 @@
 #include "Config.h"
 
 // Nabi Headers
+#include "AllocationInfo.h"
 #include "Allocators\StackAllocator\StackAllocator.h"
 #include "Allocators\StackAllocator\StackAllocatorSettings.h"
 #include "Blueprints\AllocatorDefaultTests.h"
 #include "HeapZone\HeapZone.h"
 #include "HeapZone\HeapZoneBase.h"
+#include "MemoryConstants.h"
 #include "Operations\MemoryOperations.h"
 #include "TestConstants.h"
 
@@ -61,8 +63,8 @@ namespace nabi_allocator::tests
 	TEST(NA_FIXTURE_NAME, EnsureTopOfStackAllocate)
 	{
 		HeapZoneType heapZone = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
-		void const* const ptr1 = heapZone.Allocate(4u);
-		void const* const ptr2 = heapZone.Allocate(4u);
+		void const* const ptr1 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
+		void const* const ptr2 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
 
 		EXPECT_TRUE(NA_TO_UPTR(ptr1) < NA_TO_UPTR(ptr2));
 		heapZone.Reset();

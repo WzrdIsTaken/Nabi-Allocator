@@ -16,6 +16,8 @@ namespace nabi_allocator
 
 	inline namespace memory_constants
 	{
+		MemoryTag constexpr c_NullMemoryTag = static_cast<MemoryTag>(NULL);
+
 		uInt constexpr c_KByte = 1024u;
 		uInt constexpr c_MByte = c_KByte * 1024u;
 		uInt constexpr c_GByte = c_MByte * 1024u;

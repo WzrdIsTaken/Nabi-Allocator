@@ -30,6 +30,7 @@
 namespace nabi_allocator
 {
 	struct AllocatorBlockInfo;
+	struct AllocationInfo;
 	struct BlockHeader;
 	struct HeapZoneInfo;
 } // namespace nabi_allocator
@@ -51,7 +52,7 @@ namespace nabi_allocator::free_list_allocator
 		explicit FreeListAllocator(HeapZoneInfo const& heapZoneInfo);
 		~FreeListAllocator() override;
 
-		[[nodiscard]] void* Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo) override;
+		[[nodiscard]] void* Allocate(AllocationInfo const& allocationInfo, HeapZoneInfo const& heapZoneInfo) override;
 		void Free(void* memory, HeapZoneInfo const& heapZoneInfo) override;
 		void Reset(HeapZoneInfo const& heapZoneInfo) override;
 

@@ -26,13 +26,7 @@ namespace nabi_allocator
 	class HeapZoneScope final
 	{
 	public:
-#ifdef NA_TESTS
-		// This is kinda jank. Perhaps some sort of mocking instead? tl;dr - for  
-		// some tests I don't want the scope to register with the MemoryCommand.
-		HeapZoneScope() : m_HeapZone(nullptr), m_MemoryTag(nullptr) {};
-#endif // ifdef NA_TESTS
-
-		inline HeapZoneScope(HeapZoneBase* const heapZone, MemoryTag const* const memoryTag);
+		inline HeapZoneScope(HeapZoneBase* const heapZone, MemoryTag const* const memoryTag, bool const registerWithMemoryCommand = true);
 		inline ~HeapZoneScope();
 
 		 [[nodiscard]] inline HeapZoneBase* const GetHeapZone() const noexcept;
@@ -47,6 +41,10 @@ namespace nabi_allocator
 #ifdef NA_MEMORY_TAGGING
 		MemoryTag const* const m_MemoryTag;
 #endif // ifdef NA_MEMORY_TAGGING
+
+#if defined NA_DEBUG || defined NA_TESTS
+		bool m_RegisterWithMemoryCommand; // This is jank. Perhaps some sort of mocking instead? Also included in debug cos it might be useful
+#endif // ifdef NA_DEBUG || NA_TESTS
 	};
 } // namespace nabi_allocator
 

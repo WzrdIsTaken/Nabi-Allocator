@@ -5,9 +5,11 @@
 #include "gtest\gtest.h"
 
 // Nabi Headers
+#include "AllocationInfo.h"
 #include "Allocators\AllocatorBlockInfo.h"
 #include "Allocators\AllocatorUtils.h"
 #include "HeapZone\HeapZone.h"
+#include "MemoryConstants.h"
 
 namespace nabi_allocator::tests::blueprints
 {
@@ -31,7 +33,7 @@ namespace nabi_allocator::tests::blueprints
 		auto const& allocator = heapZone.GetAllocator();
 		auto const& heapZoneInfo = heapZone.GetZoneInfo();
 
-		void* const ptr = heapZone.Allocate(4u);
+		void* const ptr = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
 		{
 			std::string const expectedLayout =
 #ifdef _M_X64
@@ -65,7 +67,7 @@ namespace nabi_allocator::tests::blueprints
 	void AllocatorResetTest(uInt const heapZoneSize, std::string const& expectedResetLayout)
 	{
 		HeapZoneType heapZone{ HeapZoneBase::c_NoParent, heapZoneSize, "TestHeapZone" };
-		void* const ptr = heapZone.Allocate(4u);
+		void* const ptr = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
 		heapZone.Reset();
 
 		std::string const actualLayout = GetMemoryLayout(heapZone.GetAllocator(), heapZone.GetZoneInfo());

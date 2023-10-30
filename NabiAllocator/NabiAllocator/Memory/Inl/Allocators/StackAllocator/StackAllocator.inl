@@ -5,6 +5,7 @@
 #include <algorithm>
 
 // Nabi Headers
+#include "AllocationInfo.h"
 #include "Allocators\AllocatorBlockInfo.h"
 #include "Allocators\BlockInfo.h"
 #include "Allocators\BlockInfoIndex.h"
@@ -41,12 +42,12 @@ namespace nabi_allocator::stack_allocator
 	}
 
 	template<StackAllocatorSettings Settings>
-	void* StackAllocator<Settings>::Allocate(uInt const numBytes, HeapZoneInfo const& heapZoneInfo)
+	void* StackAllocator<Settings>::Allocate(AllocationInfo const& allocationInfo, HeapZoneInfo const& heapZoneInfo)
 	{
-		NA_ASSERT(numBytes > 0u, "Allocating 0 bytes");
+		NA_ASSERT(allocationInfo.m_NumBytes > 0u, "Allocating 0 bytes");
 
 		// Check if the remaining space in the allocator is sufficient
-		uInt requiredBlockSize = numBytes + c_BlockHeaderSize;
+		uInt requiredBlockSize = allocationInfo.m_NumBytes + c_BlockHeaderSize;
 		uInt const padding = requiredBlockSize % c_BlockAllignment;
 		requiredBlockSize += padding;
 		bool const requiresPadding = padding != 0u;
@@ -58,7 +59,7 @@ namespace nabi_allocator::stack_allocator
 
 		// In the stack allocator, the payload comes first
 		void* const payloadPtr = NA_TO_VPTR(m_CurrentPosition);
-		allocatedBytes += numBytes;
+		allocatedBytes += allocationInfo.m_NumBytes;
 
 		// Allocate padding if needed
 		if (requiresPadding)
@@ -75,8 +76,7 @@ namespace nabi_allocator::stack_allocator
 		blockInfoContent.m_Padded = requiresPadding;
 		blockInfoContent.m_NumBytes = requiredBlockSize;
 #ifdef NA_MEMORY_TAGGING
-		// TODO Memory Tagging here (MemoryTagScope, get from the MemoryCommand singleton) 
-		// blockInfoContent.m_MemoryTag = 
+		blockInfoContent.m_MemoryTag = allocationInfo.m_MemoryTag;
 #endif // ifdef NA_MEMORY_TAGGING
 		LoadBlockInfo(blockInfoContent, *blockHeader);
 		allocatedBytes += c_BlockHeaderSize;

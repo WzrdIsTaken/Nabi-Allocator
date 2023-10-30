@@ -8,6 +8,7 @@
 #include "Config.h"
 
 // Nabi Headers
+#include "AllocationInfo.h"
 #include "Allocators\AllocatorBase.h"
 #include "Allocators\FreeListAllocator\FreeListAllocator.h"
 #include "Allocators\FreeListAllocator\FreeListAllocatorSettings.h"
@@ -42,9 +43,9 @@ namespace nabi_allocator::tests
 	class UntilWeWriteAnUnmangedAllocator final : public HeapZoneBase // TODO write an unmanged allocator / heap 'zone' and replace this..!
 	{
 	public:
-		[[nodiscard]] inline void* Allocate(uInt const numBytes) override
+		[[nodiscard]] inline void* Allocate(AllocationInfo const& allocationInfo) override
 		{
-			return std::malloc(numBytes);
+			return std::malloc(allocationInfo.m_NumBytes);
 		}
 
 		inline void Free(void* const memory) override
