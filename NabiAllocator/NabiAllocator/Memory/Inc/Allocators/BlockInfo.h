@@ -5,6 +5,7 @@
 
 // Nabi Headers
 #include "IntegerTypes.h"
+#include "MemoryConstants.h"
 #include "TypeUtils.h"
 
 /**
@@ -25,7 +26,7 @@ namespace nabi_allocator
 	struct BlockHeader final : public BlockBase
 	{
 #ifdef NA_MEMORY_TAGGING
-		u32 m_MemoryTag; // I hope a u32 has enough range for all the memory tags someone could ever want... (it can easily be changed though)
+		MemoryTag m_MemoryTag;
 
 #ifdef _M_X64
 		char const c_Padding[4];

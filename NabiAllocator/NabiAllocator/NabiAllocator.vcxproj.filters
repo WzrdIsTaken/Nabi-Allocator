@@ -47,6 +47,15 @@
     <ClCompile Include="Memory\Src\Allocators\AllocatorBase.cpp">
       <Filter>Memory\Src\Allocators</Filter>
     </ClCompile>
+    <ClCompile Include="Memory\Src\MemoryCommand.cpp">
+      <Filter>Memory\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\Src\NewDeleteOverrides.cpp">
+      <Filter>Memory\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\Src\Fixtures\MemoryCommandTests.cpp">
+      <Filter>Tests\Src\Fixtures</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tests">
@@ -188,6 +197,9 @@
     <None Include="Tests\Inl\Blueprints\AllocatorDefaultBenchmarks.inl">
       <Filter>Tests\Inl\Blueprints</Filter>
     </None>
+    <None Include="Memory\Inl\HeapZone\HeapZoneScope.inl">
+      <Filter>Memory\Inl\HeapZone</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Todo.txt" />
@@ -291,6 +303,12 @@
     </ClInclude>
     <ClInclude Include="Tests\Inc\Blueprints\AllocatorDefaultBenchmarks.h">
       <Filter>Tests\Inc\Blueprints</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\MemoryCommand.h">
+      <Filter>Memory\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\HeapZone\HeapZoneScope.h">
+      <Filter>Memory\Inc\HeapZone</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

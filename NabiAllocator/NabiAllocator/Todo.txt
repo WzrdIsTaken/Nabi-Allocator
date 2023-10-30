@@ -52,6 +52,11 @@ Tasks:
   that every application thinks it has a block going from 0 -> end..? perhaps..? can this memory be non contigous? eg the application thinks it
   is but in reality its not?
 
+- “The value of TS should be large enough to allow a sufficient number of different tag values (i.e. at least 4 to provide ~ 16 tag values) and
+   small enough to fit into the unused upper bits of a pointer (usually up to 8 or 16, depending on the architecture). TS also affects the 
+   complexity and the size of the tag storage.” This is how we have zero byte tagging! Combined with Molly Rocket’s video on seeing if memory 
+   is used.. This could be really interesting. Find that video on pointer buckets.
+
 *General
 - Next up we need to write the segerated list allocator, and also do some more reading into the free list allocator design.
 	- If we dont implement it (see the disseration folder on pc for notes for both coding it and disseration writeup)
@@ -81,7 +86,6 @@ Tasks:
 		- With constructors, would we have to perfect forward the constructors arguements?
 
 - Thoughts on sizeT rather than uInt...
-
 - Lower case folder names? 
 
 - should things like AllocatorUtils have there own namespace? and allocatorstats? [honestly, i think i like it the way it is..?]

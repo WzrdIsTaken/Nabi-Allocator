@@ -25,6 +25,13 @@
 #define NA_NAMEOF(arg) ((decltype(&arg))nullptr, #arg) // C# nameof functionality. Source: https://stackoverflow.com/a/38697366/8890269
 #define NA_NAMEOF_LITERAL(arg) #arg // Some things, like static asserts, require a string literal
 
+#define NA_IMPLEMENT_SINGLETON(type) \
+    [[nodiscard]] static type* const Instance() noexcept \
+    { \
+        static type t; \
+        return &t; \
+    }
+
 namespace nabi_allocator::type_utils
 {
 	// Used to convert an enum to its underlying type (note - to_underlying will do this in cpp23)

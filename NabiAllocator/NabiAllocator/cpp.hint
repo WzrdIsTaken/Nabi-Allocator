@@ -48,6 +48,7 @@ define NA_BENCHMARK(benchmarkFixtureName, benchmarkCaseName) TEST(benchmarkFixtu
 #define NA_MAKE_STRING_FROM_STREAM(stringAssignment, content) std::ostringstream stringStream = {}; stringStream << content; stringAssignment = stringStream.str();
 
 // TypeUtils.h
+#define NA_IMPLEMENT_SINGLETON [[nodiscard]] static type* const Instance() noexcept { static type t; return &t; }
 #define NA_NAMEOF(arg) ((decltype(&arg))nullptr, #arg)
 #define NA_SET_COPY_CONSTRUCTORS(type, operation) type(type&) = operation; type(type const&) = operation;
 #define NA_SET_COPY_MOVE_CONSTRUCTORS(type, operation) NA_SET_COPY_CONSTRUCTORS(type, operation) NA_SET_MOVE_CONSTRUCTORS(type, operation)

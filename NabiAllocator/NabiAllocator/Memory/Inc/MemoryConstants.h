@@ -9,6 +9,11 @@
 
 namespace nabi_allocator
 {
+	inline namespace memory_typedefs
+	{
+		using MemoryTag = u32; // I hope a u32 has enough range for all the memory tags someone could ever want... (it can easily be changed here though)
+	} // inline namespace memory_typedefs
+
 	inline namespace memory_constants
 	{
 		uInt constexpr c_KByte = 1024u;

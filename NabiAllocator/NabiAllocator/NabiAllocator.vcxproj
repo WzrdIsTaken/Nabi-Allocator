@@ -28,10 +28,13 @@
     <ClCompile Include="Memory\Src\Allocators\FreeListAllocator\FreeListNode.cpp" />
     <ClCompile Include="Memory\Src\Allocators\FreeListAllocator\SearchAlgorithms.cpp" />
     <ClCompile Include="Memory\Src\HeapZone\HeapZoneBase.cpp" />
+    <ClCompile Include="Memory\Src\MemoryCommand.cpp" />
+    <ClCompile Include="Memory\Src\NewDeleteOverrides.cpp" />
     <ClCompile Include="Tests\Src\Benchmarks\AllocatorBenchmarks.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\BitOperationsTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\FreeListAllocatorTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\HeapZoneTests.cpp" />
+    <ClCompile Include="Tests\Src\Fixtures\MemoryCommandTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\MemoryOperationsTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\StackAllocatorTests.cpp" />
     <ClCompile Include="Utils\Src\BenchmarkUtils.cpp" />
@@ -44,6 +47,7 @@
     <None Include="Memory\Inl\Allocators\StackAllocator\StackAllocator.inl" />
     <None Include="Memory\Inl\HeapZone\HeapZone.inl" />
     <None Include="Memory\Inl\HeapZone\HeapZoneBase.inl" />
+    <None Include="Memory\Inl\HeapZone\HeapZoneScope.inl" />
     <None Include="Memory\Inl\Operations\BitOperations.inl" />
     <None Include="Memory\Inl\Operations\MemoryOperations.inl" />
     <None Include="packages.config" />
@@ -78,6 +82,8 @@
     <ClInclude Include="Memory\Inc\HeapZone\HeapZone.h" />
     <ClInclude Include="Memory\Inc\HeapZone\HeapZoneBase.h" />
     <ClInclude Include="Memory\Inc\HeapZone\HeapZoneInfo.h" />
+    <ClInclude Include="Memory\Inc\HeapZone\HeapZoneScope.h" />
+    <ClInclude Include="Memory\Inc\MemoryCommand.h" />
     <ClInclude Include="Memory\Inc\MemoryConstants.h" />
     <ClInclude Include="Memory\Inc\Operations\BitOperations.h" />
     <ClInclude Include="Memory\Inc\Operations\MemoryOperations.h" />
