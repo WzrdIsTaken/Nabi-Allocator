@@ -27,6 +27,14 @@ namespace nabi_allocator::tests::blueprints
 
 	template<is_heap_zone HeapZoneType>
 	void AllocatorResetTest(uInt const heapZoneSize, std::string const& expectedResetLayout);
+
+#	ifdef NA_MEMORY_TAGGING
+		template<is_heap_zone HeapZoneType>
+		void AllocatorMemoryTagTest(uInt const heapZoneSize,
+			std::string const& expectedX64MemoryTaggingUsage, std::string const& expectedX64Usage,
+			std::string const& expectedX86MemoryTaggingUsage, std::string const& expectedX86Usage,
+			std::string const& expectedFreeUsage);
+#	endif // ifdef NA_MEMORY_TAGGING
 #endif // ifdef NA_TESTS
 } // namespace nabi_allocator::tests::blueprints
 

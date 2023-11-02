@@ -9,7 +9,7 @@
 namespace nabi_allocator
 {
 	AllocatorBlockInfo AllocatorBase::IterateThroughHeapZoneHelper(
-		uInt const blockHeaderPosition, std::function<s32(uInt const)> calculateBlockPaddingAdjustment) const
+		uInt const blockHeaderPosition, std::function<s64(uInt const)> calculateBlockPaddingAdjustment) const
 	{
 		AllocatorBlockInfo allocatorBlockInfo = {};
 		BlockHeader const* blockHeader = nullptr;

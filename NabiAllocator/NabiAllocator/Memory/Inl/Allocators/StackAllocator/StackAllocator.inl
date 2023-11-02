@@ -159,9 +159,9 @@ namespace nabi_allocator::stack_allocator
 		{
 			AllocatorBlockInfo const allocatorBlockInfo =
 				IterateThroughHeapZoneHelper((progressThroughHeapZone - c_BlockHeaderSize),
-					[](uInt blockNumBytes) -> s32
+					[](uInt const blockNumBytes) -> s64
 					{
-						return -static_cast<s32>(c_BlockPaddingSize);
+						return -static_cast<s64>(c_BlockPaddingSize);
 					});
 			progressThroughHeapZone -= allocatorBlockInfo.m_NumBytes;
 			allocatorBlocks.emplace_back(std::move(allocatorBlockInfo));

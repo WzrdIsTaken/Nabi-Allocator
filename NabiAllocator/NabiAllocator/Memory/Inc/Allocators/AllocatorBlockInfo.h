@@ -19,7 +19,7 @@ namespace nabi_allocator
 		// Meta
 		uPtr m_MemoryAddress;
 #ifdef NA_MEMORY_TAGGING
-		MemoryTag m_MemoryTag;
+		memoryTag m_MemoryTag;
 #endif // ifdef NA_MEMORY_TAGGING
 
 		// General

@@ -26,7 +26,7 @@ namespace nabi_allocator
 	struct BlockHeader final : public BlockBase
 	{
 #ifdef NA_MEMORY_TAGGING
-		MemoryTag m_MemoryTag;
+		memoryTag m_MemoryTag;
 
 #ifdef _M_X64
 		char const c_Padding[4];
@@ -45,7 +45,7 @@ namespace nabi_allocator
 		uInt m_NumBytes;
 
 #ifdef NA_MEMORY_TAGGING
-		MemoryTag m_MemoryTag;
+		memoryTag m_MemoryTag;
 #endif // ifdef NA_MEMORY_TAGGING
 	};
 

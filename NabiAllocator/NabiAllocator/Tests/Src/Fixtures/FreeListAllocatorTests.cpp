@@ -94,30 +94,44 @@ namespace nabi_allocator::tests
 	TEST(NA_FIXTURE_NAME, CreateAndDestroy)
 	{
 		blueprints::AllocatorCreateAndDestroyTest<HeapZoneType>(
-			c_SmallHeapZoneSize,  // Heap zone size
-			"F64P0"               // Expected init layout
+			c_SmallHeapZoneSize, // Heap zone size
+			"F64P0"              // Expected init layout
 		);
 	}
 
 	TEST(NA_FIXTURE_NAME, AllocateAndFree)
 	{
 		blueprints::AllocatorAllocateAndFreeTest<HeapZoneType>(
-			c_SmallHeapZoneSize,  // Heap zone size
-			"A64P36",             // Expected x64 + memory tagging layout
-			"A32P12 F32P0",       // Expected x64 layout
-			"A24P8 F40P0",        // Expected x86 + memory tagging layout
-			"A16P4 F48P0",        // Expected x86 layout
-			"F64P0"               // Expected init layout
+			c_SmallHeapZoneSize, // Heap zone size
+			"A64P36",            // Expected x64 + memory tagging layout
+			"A32P12 F32P0",      // Expected x64 layout
+			"A24P8 F40P0",       // Expected x86 + memory tagging layout
+			"A16P4 F48P0",       // Expected x86 layout
+			"F64P0"              // Expected free layout
 		);
 	}
 
 	TEST(NA_FIXTURE_NAME, Reset)
 	{
 		blueprints::AllocatorResetTest<HeapZoneType>(
-			c_SmallHeapZoneSize,  // Heap zone size
-			"F64P0"               // Expected reset layout
+			c_SmallHeapZoneSize, // Heap zone size
+			"F64P0"              // Expected reset layout
 		);
 	}
+
+#	ifdef NA_MEMORY_TAGGING
+		TEST(NA_FIXTURE_NAME, MemoryTagging)
+		{
+			blueprints::AllocatorMemoryTagTest<HeapZoneType>(
+				c_LargeHeapZoneSize,   // Heap zone size
+				"One40 Two40 Free176", // Expected x64 + memory tagging usage
+				"One32 Two32 Free192", // Expected x64 usage
+				"One24 Two24 Free208", // Expected x86 + memory tagging usage
+				"One16 Two16 Free224", // Expected x86 usage
+				"Free256"              // Expected free usage
+			);
+		}
+#	endif // ifdef NA_MEMORY_TAGGING
 
 	TEST(NA_FIXTURE_NAME, BestFitSearch)
 	{

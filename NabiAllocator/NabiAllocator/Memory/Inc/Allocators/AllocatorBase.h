@@ -46,7 +46,7 @@ namespace nabi_allocator
 
 	protected:
 		[[nodiscard]] AllocatorBlockInfo IterateThroughHeapZoneHelper(
-			uInt const blockHeaderPosition, std::function<s32(uInt const)> calculateBlockPaddingAdjustment) const;
+			uInt const blockHeaderPosition, std::function<s64(uInt const)> calculateBlockPaddingAdjustment) const;
 
 #ifdef NA_TRACK_ALLOCATIONS
 		AllocatorStats m_AllocatorStats;

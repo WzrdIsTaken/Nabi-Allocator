@@ -6,7 +6,7 @@
 
 namespace nabi_allocator
 {
-	inline HeapZoneScope::HeapZoneScope(HeapZoneBase* const heapZone, MemoryTag const* const memoryTag, bool const registerWithMemoryCommand)
+	inline HeapZoneScope::HeapZoneScope(HeapZoneBase* const heapZone, memoryTag const* const memoryTag, bool const registerWithMemoryCommand)
 		: m_HeapZone(heapZone)
 #ifdef NA_MEMORY_TAGGING
 		, m_MemoryTag(memoryTag)
@@ -37,7 +37,7 @@ namespace nabi_allocator
 	}
 
 #ifdef NA_MEMORY_TAGGING
-	inline MemoryTag const* const HeapZoneScope::GetMemoryTag() const noexcept
+	inline memoryTag const* const HeapZoneScope::GetMemoryTag() const noexcept
 	{
 		return m_MemoryTag;
 	}

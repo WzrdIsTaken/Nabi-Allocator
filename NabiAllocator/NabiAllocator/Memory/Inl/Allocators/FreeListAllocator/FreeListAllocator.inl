@@ -165,11 +165,15 @@ namespace nabi_allocator::free_list_allocator
 		// Loop through all the blocks in the heap zone until the end or "action" returns false
 		do
 		{
-			AllocatorBlockInfo const allocatorBlockInfo = 
+			AllocatorBlockInfo const allocatorBlockInfo =
 				IterateThroughHeapZoneHelper(progressThroughHeapZone,
-					[](uInt blockNumBytes) -> s32
+					[](uInt const blockNumBytes) -> s64
 					{
-						return blockNumBytes - c_BlockFooterSize - c_BlockPaddingSize;
+						uInt const blockAdjustment = blockNumBytes - c_BlockFooterSize - c_BlockPaddingSize;
+						NA_ASSERT(blockAdjustment < static_cast<uInt>(std::numeric_limits<s64>::max()),
+							"This will (probably?) never happen, but if it does its probs good to know about it :p");
+
+						return static_cast<s64>(blockAdjustment);
 					});
 			progressThroughHeapZone += allocatorBlockInfo.m_NumBytes;
 			allocatorBlocks.push_back(allocatorBlockInfo);

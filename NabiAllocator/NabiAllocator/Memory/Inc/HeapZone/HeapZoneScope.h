@@ -26,12 +26,12 @@ namespace nabi_allocator
 	class HeapZoneScope final
 	{
 	public:
-		inline HeapZoneScope(HeapZoneBase* const heapZone, MemoryTag const* const memoryTag, bool const registerWithMemoryCommand = true);
+		inline HeapZoneScope(HeapZoneBase* const heapZone, memoryTag const* const memoryTag, bool const registerWithMemoryCommand = true);
 		inline ~HeapZoneScope();
 
 		 [[nodiscard]] inline HeapZoneBase* const GetHeapZone() const noexcept;
 #ifdef NA_MEMORY_TAGGING
-		 [[nodiscard]] inline MemoryTag const* const GetMemoryTag() const noexcept;
+		 [[nodiscard]] inline memoryTag const* const GetMemoryTag() const noexcept;
 #endif // ifdef NA_MEMORY_TAGGING
 
 	private:
@@ -39,7 +39,7 @@ namespace nabi_allocator
 
 		HeapZoneBase* const m_HeapZone;
 #ifdef NA_MEMORY_TAGGING
-		MemoryTag const* const m_MemoryTag;
+		memoryTag const* const m_MemoryTag;
 #endif // ifdef NA_MEMORY_TAGGING
 
 #if defined NA_DEBUG || defined NA_TESTS

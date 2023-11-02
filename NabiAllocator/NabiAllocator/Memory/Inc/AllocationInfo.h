@@ -24,7 +24,7 @@ namespace nabi_allocator
 	{
 		uInt m_NumBytes;
 #ifdef NA_MEMORY_TAGGING
-		MemoryTag m_MemoryTag;
+		memoryTag m_MemoryTag;
 #endif // ifdef NA_MEMORY_TAGGING
 	};
 } // namespace nabi_allocator

@@ -1,6 +1,9 @@
 // inl's Header
 #include "Blueprints\AllocatorDefaultTests.h"
 
+// STD Headers
+#include <unordered_map>
+
 // Library Headers
 #include "gtest\gtest.h"
 
@@ -8,8 +11,10 @@
 #include "AllocationInfo.h"
 #include "Allocators\AllocatorBlockInfo.h"
 #include "Allocators\AllocatorUtils.h"
+#include "DebugUtils.h"
 #include "HeapZone\HeapZone.h"
 #include "MemoryConstants.h"
+#include "TypeUtils.h"
 
 namespace nabi_allocator::tests::blueprints
 {
@@ -73,5 +78,83 @@ namespace nabi_allocator::tests::blueprints
 		std::string const actualLayout = GetMemoryLayout(heapZone.GetAllocator(), heapZone.GetZoneInfo());
 		EXPECT_EQ(expectedResetLayout, actualLayout);
 	}
-#endif 
+
+#	ifdef NA_MEMORY_TAGGING
+		template<is_heap_zone HeapZoneType>
+		void AllocatorMemoryTagTest(uInt const heapZoneSize,
+			std::string const& expectedX64MemoryTaggingUsage, std::string const& expectedX64Usage,
+			std::string const& expectedX86MemoryTaggingUsage, std::string const& expectedX86Usage,
+			std::string const& expectedFreeUsage)
+		{
+			enum class MemoryTag : memoryTag
+			{
+				One = 1u << 1u,
+				Two = 1u << 2u,
+				All = ~0u,
+
+				ENUM_COUNT = 3u
+			};
+
+			static auto const tagToString =
+				[](u32 const tag) -> std::string
+				{
+					std::unordered_map<u32, std::string> const tagToStringMap =
+					{
+						{ type_utils::ToUnderlying(MemoryTag::One), "One"},
+						{ type_utils::ToUnderlying(MemoryTag::Two), "Two"},
+						{ c_NullMemoryTag, "Free" }
+					};
+
+					std::string tagName = "";
+
+					if (tagToStringMap.contains(tag))
+					{
+						tagName = tagToStringMap.at(tag);
+					}
+					else
+					{
+						NA_ASSERT_FAIL("Tag \"" << tag << "\" is not in the " NA_NAMEOF_LITERAL(tagToStringMap) " umap");
+					}
+
+					return tagName;
+				};
+
+			HeapZoneType heapZone{ HeapZoneBase::c_NoParent, heapZoneSize, "TestHeapZone" };
+			auto const& allocator = heapZone.GetAllocator();
+			auto const& heapZoneInfo = heapZone.GetZoneInfo();
+
+			void* const ptr1 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, type_utils::ToUnderlying(MemoryTag::One)));
+			void* const ptr2 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, type_utils::ToUnderlying(MemoryTag::Two)));
+			{
+				std::string const expectedLayout =
+#	ifdef _M_X64
+#		ifdef NA_MEMORY_TAGGING
+					expectedX64MemoryTaggingUsage
+#		else
+					expectedX64Usage
+#		endif // ifdef NA_MEMORY_TAGGING 
+#	elif _M_IX86
+#		ifdef NA_MEMORY_TAGGING
+					expectedX86MemoryTaggingUsage
+#		else
+					expectedX86Usage
+#		endif // ifdef NA_MEMORY_TAGGING 
+#	else
+#		error "Unsupported architecture"
+#	endif // ifdef _M_IX86, elif _M_IX86
+					;
+
+				std::string const actualUsage = GetMemoryUsage(allocator, heapZoneInfo, tagToString);
+				EXPECT_EQ(expectedLayout, actualUsage);
+			}
+
+			heapZone.Free(ptr2); // Free ptr2 first to comply with the StackAllocator
+			heapZone.Free(ptr1);
+			{
+				std::string const actualUsage = GetMemoryUsage(allocator, heapZoneInfo, tagToString);
+				EXPECT_EQ(expectedFreeUsage, actualUsage);
+			}
+		}
+#	endif // ifdef NA_MEMORY_TAGGING
+#endif // ifdef NA_TESTS
 } // namespace nabi_allocator::tests::blueprints
