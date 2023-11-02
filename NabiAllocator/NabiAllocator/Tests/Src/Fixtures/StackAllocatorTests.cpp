@@ -61,17 +61,21 @@ namespace nabi_allocator::tests
 	}
 
 #	ifdef NA_MEMORY_TAGGING
-	TEST(NA_FIXTURE_NAME, MemoryTagging)
-	{
-		blueprints::AllocatorMemoryTagTest<HeapZoneType>(
-			c_HeapZoneSize,       // Heap zone size
-			"One24 Two40 Free0",  // Expected x64 + memory tagging usage
-			"One16 Two16 Free32", // Expected x64 usage
-			"One16 Two16 Free32", // Expected x86 + memory tagging usage
-			"One8 Two8 Free48",   // Expected x86 usage
-			"Free64"              // Expected free usage
-		);
-	}
+		TEST(NA_FIXTURE_NAME, MemoryTagging)
+		{
+			// This case also tests two consecutive allocations then frees.
+			// In the x64 + memory tag case it also ensures that if there is insufficient space in the zone it is added as padding.
+			//	- This is done in FreeListAllocator's AllocateAndFree case.
+
+			blueprints::AllocatorMemoryTagTest<HeapZoneType>(
+				c_HeapZoneSize,       // Heap zone size
+				"One24 Two40",        // Expected x64 + memory tagging usage
+				"One16 Two16 Free32", // Expected x64 usage
+				"One16 Two16 Free32", // Expected x86 + memory tagging usage
+				"One8 Two8 Free48",   // Expected x86 usage
+				"Free64"              // Expected free usage
+			);
+		}
 #	endif // ifdef NA_MEMORY_TAGGING
 
 	TEST(NA_FIXTURE_NAME, EnsureTopOfStackAllocate)

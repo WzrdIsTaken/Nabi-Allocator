@@ -96,9 +96,9 @@ namespace nabi_allocator::tests::blueprints
 			};
 
 			static auto const tagToString =
-				[](u32 const tag) -> std::string
+				[](memoryTag const tag) -> std::string
 				{
-					std::unordered_map<u32, std::string> const tagToStringMap =
+					std::unordered_map<memoryTag, std::string> const tagToStringMap =
 					{
 						{ type_utils::ToUnderlying(MemoryTag::One), "One"},
 						{ type_utils::ToUnderlying(MemoryTag::Two), "Two"},

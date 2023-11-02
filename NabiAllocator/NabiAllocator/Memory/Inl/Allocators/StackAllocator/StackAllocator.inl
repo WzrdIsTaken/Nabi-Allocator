@@ -48,9 +48,20 @@ namespace nabi_allocator::stack_allocator
 
 		// Check if the remaining space in the allocator is sufficient
 		uInt requiredBlockSize = allocationInfo.m_NumBytes + c_BlockHeaderSize;
-		uInt const padding = requiredBlockSize % c_BlockAllignment;
+		uInt padding = requiredBlockSize % c_BlockAllignment;
 		requiredBlockSize += padding;
-		bool const requiresPadding = padding != 0u;
+		bool requiresPadding = padding != 0u;
+
+		// Check if after the allocation if the remaining space is still sufficient
+		uPtr const positionAfterAllocation = m_CurrentPosition + requiredBlockSize;
+		bool const remainingSpaceSufficient = (positionAfterAllocation + c_MinBlockSize) <= heapZoneInfo.m_End;
+		if (!remainingSpaceSufficient)
+		{
+			uInt const spaceToEnd = heapZoneInfo.m_End - positionAfterAllocation;
+			requiredBlockSize += spaceToEnd;
+			padding += spaceToEnd;
+			requiresPadding = true;
+		}
 
 		NA_ASSERT((m_CurrentPosition + requiredBlockSize) <= heapZoneInfo.m_End, 
 			NA_NAMEOF_LITERAL(StackAllocator) " is out of memory");
@@ -119,7 +130,16 @@ namespace nabi_allocator::stack_allocator
 
 		// Update the stack pointers
 #ifdef NA_DEBUG
-		m_PreviousPosition = memoryAddress - blockSize;
+		if (memoryAddress != heapZoneInfo.m_Start)
+		{
+			BlockHeader* const prevBlockHeader = NA_REINTERPRET_MEMORY(BlockHeader, m_CurrentPosition, -, (blockSize + c_BlockHeaderSize));
+			uInt const prevBlockSize = bit_operations::RightShiftBit(prevBlockHeader->m_BlockInfo, type_utils::ToUnderlying(BlockInfoIndex::SizeStart));
+			m_PreviousPosition = memoryAddress - prevBlockSize;
+		}
+		else
+		{
+			m_PreviousPosition = heapZoneInfo.m_Start;
+		}
 #endif // ifdef NA_DEBUG
 		m_CurrentPosition = memoryAddress;
 	}
