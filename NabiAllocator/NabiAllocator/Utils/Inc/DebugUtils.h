@@ -57,7 +57,7 @@ namespace nabi_allocator::debug_utils
 #	define NA_LOG_END     std::endl
 #	define NA_LOG_END_NL  nabi_allocator::character_constants::c_NewLine
 
-#	define NA_SPACE(numberOfSpaces) std::string(numberOfSpaces, ' ')
+#	define NA_SPACE(numberOfSpaces) std::string(numberOfSpaces, character_constants::c_SpaceSymbol)
 #	define NA_WRAP(item, wrapCharacter) wrapCharacter << item << wrapCharacter
 
 // --- Assertion Macros ---

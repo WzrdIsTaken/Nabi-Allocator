@@ -144,14 +144,14 @@ namespace nabi_allocator::tests::blueprints
 #	endif // ifdef _M_IX86, elif _M_IX86
 					;
 
-				std::string const actualUsage = GetMemoryUsage(allocator, heapZoneInfo, tagToString);
+				std::string const actualUsage = GetFullMemoryUsage(allocator, heapZoneInfo, tagToString);
 				EXPECT_EQ(expectedLayout, actualUsage);
 			}
 
 			heapZone.Free(ptr2); // Free ptr2 first to comply with the StackAllocator
 			heapZone.Free(ptr1);
 			{
-				std::string const actualUsage = GetMemoryUsage(allocator, heapZoneInfo, tagToString);
+				std::string const actualUsage = GetFullMemoryUsage(allocator, heapZoneInfo, tagToString);
 				EXPECT_EQ(expectedFreeUsage, actualUsage);
 			}
 		}

@@ -7,9 +7,12 @@
 // Nabi Headers
 #include "Allocators\AllocatorBase.h"
 #include "Allocators\AllocatorBlockInfo.h"
+#include "CharacterConstants.h"
 
 namespace nabi_allocator
 {
+	using namespace character_constants;
+
 	namespace
 	{
 		std::string ConvertAndFormatSStream(std::ostringstream const& stream)
@@ -28,16 +31,11 @@ namespace nabi_allocator
 		allocator.IterateThroughHeapZone(
 			[&output](AllocatorBlockInfo const& blockInfo) -> bool
 			{
-				char constexpr freeSymbol      = 'F';
-				char constexpr allocatedSymbol = 'A';
-				char constexpr paddingSymbol   = 'P';
-				char constexpr spaceSymbol     = ' ';
-
-				output << (blockInfo.m_Allocated ? allocatedSymbol : freeSymbol);
+				output << (blockInfo.m_Allocated ? c_AllocatedSymbol : c_FreeSymbol);
 				output << blockInfo.m_NumBytes;
-				output << paddingSymbol;
+				output << c_PaddingSymbol;
 				output << blockInfo.m_Padding;
-				output << spaceSymbol;
+				output << c_SpaceSymbol;
 
 				bool constexpr continueLooping = true;
 				return continueLooping;
@@ -46,8 +44,35 @@ namespace nabi_allocator
 		return ConvertAndFormatSStream(output);
 	}
 
+	std::string GetMemoryUsage(AllocatorBase const& allocator, HeapZoneInfo const& heapZoneInfo)
+	{
+		// Format: A(llocated)[number of bytes] F(ree)[number of bytes]
+		std::ostringstream output = {};
+		uInt allocatedBytes = 0u;
+		uInt freeBytes = 0u;
+
+		allocator.IterateThroughHeapZone(
+			[&output, &allocatedBytes, &freeBytes](AllocatorBlockInfo const& blockInfo) -> bool
+			{
+				if (blockInfo.m_Allocated)
+				{
+					allocatedBytes += blockInfo.m_NumBytes;
+				}
+				else
+				{
+					freeBytes += blockInfo.m_NumBytes;
+				}
+
+				bool constexpr continueLooping = true;
+				return continueLooping;
+			}, heapZoneInfo);
+
+		output << c_AllocatedSymbol << allocatedBytes << c_SpaceSymbol << c_FreeSymbol << freeBytes;
+		return output.str();
+	}
+
 #ifdef NA_MEMORY_TAGGING
-	std::string GetMemoryUsage(AllocatorBase const& allocator, HeapZoneInfo const& heapZoneInfo,
+	std::string GetFullMemoryUsage(AllocatorBase const& allocator, HeapZoneInfo const& heapZoneInfo,
 		std::optional<std::function<std::string(memoryTag const)>> tagAliases)
 	{
 		// Format: Tag[number of bytes] [space] [next entry]
@@ -70,8 +95,7 @@ namespace nabi_allocator
 
 		for (auto const [key, value] : tagByteUsage)
 		{
-			char constexpr spaceSymbol = ' ';
-			output << (tagAliases ? (*tagAliases)(key) : std::to_string(key)) << value << spaceSymbol;
+			output << (tagAliases ? (*tagAliases)(key) : std::to_string(key)) << value << c_SpaceSymbol;
 		}
 
 		return ConvertAndFormatSStream(output);
