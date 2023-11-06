@@ -30,16 +30,16 @@ s32 main(s32 argc, char* argv[])
 	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_WNDW);
 #endif // ifdef NA_DEBUG
 
-#if defined NA_TESTS || defined NA_BENCHMARKS
+#if defined NA_TESTS || defined NA_BENCHMARKS || defined NA_WORKFLOWS
 	std::string filterPattern = {};
 #	ifdef NA_TESTS
-		filterPattern += NA_CONCAT(NA_XSTR(NA_TEST_IDENTIFIER), NA_GTEST_FILTER_SEPERATOR);
+		filterPattern += NA_MAKE_GTEST_FILTER(NA_TEST_IDENTIFIER);
 #	endif // ifdef NA_TESTS
 #	ifdef NA_BENCHMARKS
-		filterPattern += NA_CONCAT(NA_XSTR(NA_BENCHMARK_IDENTIFIER), NA_GTEST_FILTER_SEPERATOR);
+		filterPattern += NA_MAKE_GTEST_FILTER(NA_BENCHMARK_IDENTIFIER);
 #	endif // ifdef NA_BENCHMARKS
 #	ifdef NA_WORKFLOWS
-		filterPattern += NA_CONCAT(NA_XSTR(NA_WORKFLOW_IDENTIFIER), NA_GTEST_FILTER_SEPERATOR);
+		filterPattern += NA_MAKE_GTEST_FILTER(NA_WORKFLOW_IDENTIFIER);
 #	endif // ifdef NA_WORKFLOWS
 	::testing::GTEST_FLAG(filter) = filterPattern.c_str();
 
@@ -49,7 +49,7 @@ s32 main(s32 argc, char* argv[])
 	NA_ASSERT(testResults == EXIT_SUCCESS, 
 		"One or more of the tests failed. See the console output for details, or run the test explorer.");
 	NA_LOG(NA_LOG_PREP, NA_LOG_INFO, NA_LOG_CATEGORY_TEST, "All tests complete!", NA_LOG_END_NL);
-#endif // ifdef NA_TESTS || NA_BENCHMARKS
+#endif // ifdef NA_TESTS || NA_BENCHMARKS || NA_WORKFLOWS
 
 	return EXIT_SUCCESS;
 }
