@@ -14,5 +14,6 @@
 // Tests
 #define NA_TESTS // Run unit tests
 #define NA_BENCHMARKS // Run benchmark tests
+#define NA_WORKFLOWS // Run workflow tests
 
 #define NA_BENCHMARK_RUN_COUNT 3u // If NA_BENCHMARKS is defined, how many times to run each benchmark

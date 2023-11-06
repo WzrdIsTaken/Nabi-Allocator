@@ -13,6 +13,7 @@
 #define NA_MEMORY_TAGGING
 #define NA_TESTS
 #define NA_TRACK_ALLOCATIONS
+#define NA_WORKFLOWS
 
 // DebugUtils.h
 #define NA_ASSERT(condition, message) NA_ASSERT_BASE(condition, message)
@@ -30,6 +31,9 @@
 #define NA_LOG_INFO "INFO"
 #define NA_LOG_WARN "WARN"
 
+// HeapZoneScope.h
+#define NA_HEAP_ZONE_SCOPE HeapZoneScope const heapZoneScope = { heapZone, _memoryTag, __VA_ARGS__ };
+
 // MacroUtils.h
 #define NA_CONCAT(arg1, arg2) arg1 ## arg2
 #define NA_EXPAND(arg) arg
@@ -44,6 +48,7 @@
 // TestConstants.h
 #define NA_BENCHMARK_FIXTURE_NAME(benchmarkFixtureName) NA_CONCAT(NA_EXPAND(NA_BENCHMARK_IDENTIFIER), benchmarkFixtureName)
 #define NA_BENCHMARK_IDENTIFIER b_
+#define NA_GTEST_FILTER_SEPERATOR "*:"
 #define NA_TEST_FIXTURE_NAME(testFixtureName) NA_CONCAT(NA_EXPAND(NA_TEST_IDENTIFIER), testFixtureName)
 #define NA_TEST_IDENTIFIER t_
 

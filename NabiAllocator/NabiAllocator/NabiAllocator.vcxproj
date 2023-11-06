@@ -37,6 +37,7 @@
     <ClCompile Include="Tests\Src\Fixtures\MemoryCommandTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\MemoryOperationsTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\StackAllocatorTests.cpp" />
+    <ClCompile Include="Tests\Src\Workflows\FullWorkflow.cpp" />
     <ClCompile Include="Utils\Src\BenchmarkUtils.cpp" />
   </ItemGroup>
   <ItemGroup>

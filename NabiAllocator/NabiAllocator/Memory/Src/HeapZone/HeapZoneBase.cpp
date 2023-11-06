@@ -37,7 +37,14 @@ namespace nabi_allocator
 		NA_ASSERT(IsInitialized(), "Heap zone is not initialized");
 
 		void* zoneStart = NA_TO_VPTR(m_ZoneInfo.m_Start);
-		memory_operations::ReleaseMemoryToOS(zoneStart);
+		if (m_ParentZone)
+		{
+			m_ParentZone->Free(zoneStart);
+		}
+		else
+		{
+			memory_operations::ReleaseMemoryToOS(zoneStart);
+		}
 
 		m_ZoneInfo.m_Start = c_NulluPtr;
 		m_ZoneInfo.m_End = c_NulluPtr;

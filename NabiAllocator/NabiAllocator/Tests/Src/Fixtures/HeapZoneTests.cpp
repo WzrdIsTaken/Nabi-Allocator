@@ -69,7 +69,7 @@ namespace nabi_allocator::tests
 
 	TEST(NA_FIXTURE_NAME, CreateAndDestroy)
 	{
-		HeapZone<MockAllocator> heapZone{ HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
+		HeapZone<MockAllocator> heapZone = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		HeapZoneInfo const& heapZoneInfo = heapZone.GetZoneInfo();
 
 		{
@@ -87,7 +87,7 @@ namespace nabi_allocator::tests
 
 	TEST(NA_FIXTURE_NAME, CheckAllocatorCalls)
 	{
-		HeapZone<MockAllocator> heapZone{ HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
+		HeapZone<MockAllocator> heapZone = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		MockAllocator const& mockAllocator = heapZone.GetAllocator();
 
 		void* const ptr1 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(1u, c_NullMemoryTag));
@@ -99,6 +99,21 @@ namespace nabi_allocator::tests
 
 		heapZone.Reset();
 		EXPECT_EQ(0u, mockAllocator.GetAllocationCount());
+	}
+
+	TEST(NA_FIXTURE_NAME, ParentZone)
+	{
+		/*
+		* TODO - Once we write the UnmanagedAllocator can use it here for this test I recon
+		HeapZone<MockAllocator> parentZone = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "ParentZone" };
+		HeapZone<MockAllocator> childZone = { &parentZone, c_HeapZoneSize, "ChildZone" };
+
+		HeapZoneInfo const& parentZoneInfo = parentZone.GetZoneInfo();
+		HeapZoneInfo const& childZoneInfo = childZone.GetZoneInfo();
+
+		EXPECT_EQ(parentZoneInfo.m_Start, childZoneInfo.m_Start);
+		EXPECT_EQ(parentZoneInfo.m_End, childZoneInfo.m_End);
+		*/
 	}
 
 #	undef NA_FIXTURE_NAME

@@ -56,6 +56,9 @@
     <ClCompile Include="Tests\Src\Fixtures\MemoryCommandTests.cpp">
       <Filter>Tests\Src\Fixtures</Filter>
     </ClCompile>
+    <ClCompile Include="Tests\Src\Workflows\FullWorkflow.cpp">
+      <Filter>Tests\Src\Workflows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tests">
@@ -156,6 +159,9 @@
     </Filter>
     <Filter Include="Tests\Inc\Blueprints">
       <UniqueIdentifier>{d0e18da6-ecbc-4fbc-a617-9b76e722126f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Src\Workflows">
+      <UniqueIdentifier>{8ba559ea-909c-4fc7-82fd-6c3b49d0f41f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -38,6 +38,9 @@ s32 main(s32 argc, char* argv[])
 #	ifdef NA_BENCHMARKS
 		filterPattern += NA_CONCAT(NA_XSTR(NA_BENCHMARK_IDENTIFIER), NA_GTEST_FILTER_SEPERATOR);
 #	endif // ifdef NA_BENCHMARKS
+#	ifdef NA_WORKFLOWS
+		filterPattern += NA_CONCAT(NA_XSTR(NA_WORKFLOW_IDENTIFIER), NA_GTEST_FILTER_SEPERATOR);
+#	endif // ifdef NA_WORKFLOWS
 	::testing::GTEST_FLAG(filter) = filterPattern.c_str();
 
 	::testing::InitGoogleTest(&argc, argv);
