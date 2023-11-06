@@ -139,8 +139,6 @@ namespace nabi_allocator::tests
 
 	TEST(NA_FIXTURE_NAME, FindHeapZoneForPtr)
 	{
-		using namespace free_list_allocator; // TODO remove this namesapce + for stack alloc
-
 		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone1 = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone1" };
 		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone2 = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone2" };
 

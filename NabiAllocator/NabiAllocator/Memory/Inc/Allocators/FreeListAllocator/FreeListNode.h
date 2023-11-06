@@ -15,7 +15,7 @@
  * only has to search the whats in the list.
 */
 
-namespace nabi_allocator::free_list_allocator
+namespace nabi_allocator
 {
 	struct FreeListNode final
 	{
@@ -38,7 +38,7 @@ namespace nabi_allocator::free_list_allocator
 	void AddFreeListNode(FreeListNode*& freelist, FreeListNode* const& node);
 	void RemoveFreeListNode(FreeListNode*& freelist, FreeListNode* const& node);
 	inline void ResetFreeListNode(FreeListNode* const& node);
-} // namespace nabi_allocator::free_list_allocator
+} // namespace nabi_allocator
 
 // Include Inline
 #include "Memory\Inl\Allocators\FreeListAllocator\FreeListNode.inl"

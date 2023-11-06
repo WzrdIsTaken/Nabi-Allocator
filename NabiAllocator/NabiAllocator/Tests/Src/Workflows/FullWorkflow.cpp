@@ -30,9 +30,6 @@ namespace nabi_allocator::tests
 		/*
 		* TODO continue with this when we have the new / delete stuff done. otherwise 
 		* 
-		using namespace free_list_allocator;	// TODO yh get rid of these namespaces
-		using namespace stack_allocator;
-
 		uInt constexpr parentZoneNumBytes = 256u;
 		uInt constexpr childZoneNumBytes = parentZoneNumBytes;
 

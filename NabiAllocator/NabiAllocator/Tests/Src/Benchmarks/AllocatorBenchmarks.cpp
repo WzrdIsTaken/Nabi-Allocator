@@ -75,41 +75,41 @@ namespace nabi_allocator::tests
 
 	// --- Free List Allocator ---
 
-	free_list_allocator::FreeListAllocatorSettings constexpr c_FreeListAllocatorSettings =
+	FreeListAllocatorSettings constexpr c_FreeListAllocatorBenchmarkSettings =
 	{
-		.m_SearchAlgorithm = free_list_allocator::SearchAlgorithm::FirstFit,
+		.m_SearchAlgorithm = SearchAlgorithm::FirstFit,
 		.m_BestFitLeniency = 0u
 	};
-	using FreeListAllocator = HeapZone<free_list_allocator::FreeListAllocator<c_FreeListAllocatorSettings>>; 
+	using BenchmarkFreeListAllocator = HeapZone<FreeListAllocator<c_FreeListAllocatorBenchmarkSettings>>;
 
 	NA_BENCHMARK(NA_FIXTURE_NAME, FreeListAllocatorAllocThenFree)
 	{
-		FreeListAllocator allocator = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
+		BenchmarkFreeListAllocator allocator = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		blueprints::AllocatorAllocThenFree(allocator, c_PrintBenchmarkResults);
 	}
 
 	NA_BENCHMARK(NA_FIXTURE_NAME, FreeListAllocatorVaryingSizeAllocThenFree)
 	{
-		FreeListAllocator allocator = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
+		BenchmarkFreeListAllocator allocator = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		blueprints::AllocatorVaryingSizeAllocThenFree(allocator, c_PrintBenchmarkResults);
 	}
 
 	// --- Stack Allocator ---
 
-	stack_allocator::StackAllocatorSettings constexpr c_StackAllocatorSettings =
+	StackAllocatorSettings constexpr c_StackAllocatorBenchmarkSettings =
 	{
 	};
-	using StackAllocator = HeapZone<stack_allocator::StackAllocator<c_StackAllocatorSettings>>;
+	using BenchmarkStackAllocator = HeapZone<StackAllocator<c_StackAllocatorBenchmarkSettings>>;
 
 	NA_BENCHMARK(NA_FIXTURE_NAME, StackAllocatorAllocThenFree)
 	{
-		StackAllocator allocator = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
+		BenchmarkStackAllocator allocator = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		blueprints::AllocatorAllocThenFree(allocator, c_PrintBenchmarkResults);
 	}
 
 	NA_BENCHMARK(NA_FIXTURE_NAME, StackAllocatorVaryingSizeAllocThenFree)
 	{
-		StackAllocator allocator = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
+		BenchmarkStackAllocator allocator = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		blueprints::AllocatorVaryingSizeAllocThenFree(allocator, c_PrintBenchmarkResults);
 	}
 

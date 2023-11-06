@@ -5,7 +5,7 @@
 #include "DebugUtils.h"
 #include "Operations\MemoryOperations.h"
 
-namespace nabi_allocator::free_list_allocator
+namespace nabi_allocator
 {
 	void AddFreeListNode(FreeListNode*& freelist, FreeListNode* const& node)
 	{
@@ -88,4 +88,4 @@ namespace nabi_allocator::free_list_allocator
 		ResetFreeListNode(node);
 #endif // ifdef NA_DEBUG || NA_TESTS
 	}
-} // namespace nabi_allocator::free_list_allocator
+} // namespace nabi_allocator

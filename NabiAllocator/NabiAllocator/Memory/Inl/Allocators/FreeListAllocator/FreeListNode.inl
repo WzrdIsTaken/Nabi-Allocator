@@ -4,7 +4,7 @@
 // Nabi Headers
 #include "DebugUtils.h"
 
-namespace nabi_allocator::free_list_allocator
+namespace nabi_allocator
 {
 	inline void ResetFreeListNode(FreeListNode* const& node)
 	{
@@ -13,4 +13,4 @@ namespace nabi_allocator::free_list_allocator
 		node->m_Next = nullptr;
 		node->m_Previous = nullptr;
 	}
-} // namespace nabi_allocator::free_list_allocator
+} // namespace nabi_allocator

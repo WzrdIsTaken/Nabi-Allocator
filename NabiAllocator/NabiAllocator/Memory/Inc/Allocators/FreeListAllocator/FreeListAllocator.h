@@ -32,14 +32,11 @@ namespace nabi_allocator
 	struct AllocatorBlockInfo;
 	struct AllocationInfo;
 	struct BlockHeader;
+	struct FreeListNode;
 	struct HeapZoneInfo;
 } // namespace nabi_allocator
-namespace nabi_allocator::free_list_allocator
-{
-	struct FreeListNode;
-} // namespace nabi_allocator::free_list_allocator
 
-namespace nabi_allocator::free_list_allocator
+namespace nabi_allocator
 {
 	template<FreeListAllocatorSettings Settings>
 	class FreeListAllocator;
@@ -72,7 +69,7 @@ namespace nabi_allocator::free_list_allocator
 
 		FreeListNode* m_FreeList;
 	};
-} // namespace nabi_allocator::free_list_allocator
+} // namespace nabi_allocator
 
 // Include Inline
 #include "Memory\Inl\Allocators\FreeListAllocator\FreeListAllocator.inl"

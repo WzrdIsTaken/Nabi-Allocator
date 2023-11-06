@@ -37,9 +37,7 @@ namespace nabi_allocator::tests
 #ifdef NA_TESTS
 #	define NA_FIXTURE_NAME NA_TEST_FIXTURE_NAME(FreeListAllocatorTests)
 
-	using namespace free_list_allocator;
 	using HeapZoneType = HeapZone<DefaultFreeListAllocator>;
-
 	uInt constexpr c_SmallHeapZoneSize = 64u;
 	uInt constexpr c_LargeHeapZoneSize = 256u;
 

@@ -27,9 +27,7 @@ namespace nabi_allocator::tests
 #ifdef NA_TESTS
 #	define NA_FIXTURE_NAME NA_TEST_FIXTURE_NAME(StackAllocatorTests)
 
-	using namespace stack_allocator;
 	using HeapZoneType = HeapZone<DefaultStackAllocator>;
-
 	uInt constexpr c_HeapZoneSize = 64u;
 
 	TEST(NA_FIXTURE_NAME, CreateAndDestroy)

@@ -16,7 +16,7 @@
  * HeapZone<FreeListAllocator<c_FreeListAllocatorSettings>> m_HeapZone;
 */
 
-namespace nabi_allocator::free_list_allocator
+namespace nabi_allocator
 {
 	struct FreeListAllocatorSettings final
 	{
@@ -29,4 +29,4 @@ namespace nabi_allocator::free_list_allocator
 		.m_SearchAlgorithm = SearchAlgorithm::BestFit,
 		.m_BestFitLeniency = 0u
 	};
-} // namespace nabi_allocator::free_list_allocator
+} // namespace nabi_allocator

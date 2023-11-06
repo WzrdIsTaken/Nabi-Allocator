@@ -15,11 +15,11 @@
 #include "Operations\BitOperations.h"
 #include "Operations\MemoryOperations.h"
 
-namespace nabi_allocator::stack_allocator
+namespace nabi_allocator
 {
-	static uInt constexpr c_BlockAllignment = 8u;
-	static uInt constexpr c_MinBlockSize = c_BlockAllignment + c_BlockHeaderSize +
-		((c_BlockAllignment + c_BlockHeaderSize) % c_BlockAllignment);
+	uInt constexpr c_BlockAllignmentSA = 8u;
+	uInt constexpr c_MinBlockSizeSA = c_BlockAllignmentSA + c_BlockHeaderSize +
+		((c_BlockAllignmentSA + c_BlockHeaderSize) % c_BlockAllignmentSA);
 
 	template<StackAllocatorSettings Settings>
 	StackAllocator<Settings>::StackAllocator(HeapZoneInfo const& heapZoneInfo)
@@ -48,13 +48,13 @@ namespace nabi_allocator::stack_allocator
 
 		// Check if the remaining space in the allocator is sufficient
 		uInt requiredBlockSize = allocationInfo.m_NumBytes + c_BlockHeaderSize;
-		uInt padding = requiredBlockSize % c_BlockAllignment;
+		uInt padding = requiredBlockSize % c_BlockAllignmentSA;
 		requiredBlockSize += padding;
 		bool requiresPadding = padding != 0u;
 
 		// Check if after the allocation if the remaining space is still sufficient
 		uPtr const positionAfterAllocation = m_CurrentPosition + requiredBlockSize;
-		bool const remainingSpaceSufficient = (positionAfterAllocation + c_MinBlockSize) <= heapZoneInfo.m_End;
+		bool const remainingSpaceSufficient = (positionAfterAllocation + c_MinBlockSizeSA) <= heapZoneInfo.m_End;
 		if (!remainingSpaceSufficient)
 		{
 			uInt const spaceToEnd = heapZoneInfo.m_End - positionAfterAllocation;
@@ -206,12 +206,12 @@ namespace nabi_allocator::stack_allocator
 	{
 #ifdef NA_DEBUG
 		uInt const heapZoneSize = memory_operations::GetMemorySize(heapZoneInfo.m_Start, heapZoneInfo.m_End);
-		NA_ASSERT_DEFAULT(memory_operations::IsAlligned(heapZoneSize, c_BlockAllignment));
-		NA_ASSERT_DEFAULT(heapZoneSize > c_MinBlockSize);
+		NA_ASSERT_DEFAULT(memory_operations::IsAlligned(heapZoneSize, c_BlockAllignmentSA));
+		NA_ASSERT_DEFAULT(heapZoneSize > c_MinBlockSizeSA);
 
 		m_PreviousPosition = c_NulluPtr;
 #endif // ifdef NA_DEBUG
 
 		m_CurrentPosition = heapZoneInfo.m_Start;
 	}
-} // namespace nabi_allocator::stack_allocator
+} // namespace nabi_allocator

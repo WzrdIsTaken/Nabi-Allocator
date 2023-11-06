@@ -4,7 +4,7 @@
  * Settings for the StackAllocator.
 */
 
-namespace nabi_allocator::stack_allocator
+namespace nabi_allocator
 {
 	struct StackAllocatorSettings final
 	{
@@ -16,4 +16,4 @@ namespace nabi_allocator::stack_allocator
 	StackAllocatorSettings constexpr c_StackAllocatorDefaultSettings =
 	{
 	};
-} // namespace nabi_allocator::stack_allocator
+} // namespace nabi_allocator

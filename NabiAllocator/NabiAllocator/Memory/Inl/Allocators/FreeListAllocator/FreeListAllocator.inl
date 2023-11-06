@@ -17,14 +17,14 @@
 #include "Operations\BitOperations.h"
 #include "Operations\MemoryOperations.h"
 
-namespace nabi_allocator::free_list_allocator
+namespace nabi_allocator
 {
 	// The size of blocks of memory have to be multiples of 8. This is because then we can always
 	// mask of 3 bits of the size to store other infomation and still retain the size of the block.
 	// Allignments of 8 also always work for x64 and x86 architecture. 
-	static uInt constexpr c_BlockAllignment = 8u;
-	static uInt constexpr c_MinBlockSize = c_BlockHeaderSize + c_FreeListNodeSize + c_BlockFooterSize + 
-		((c_BlockHeaderSize + c_FreeListNodeSize + c_BlockFooterSize) % c_BlockAllignment);
+	uInt constexpr c_BlockAllignmentFLA = 8u;
+	uInt constexpr c_MinBlockSizeFLA = c_BlockHeaderSize + c_FreeListNodeSize + c_BlockFooterSize + 
+		((c_BlockHeaderSize + c_FreeListNodeSize + c_BlockFooterSize) % c_BlockAllignmentFLA);
 
 	template<FreeListAllocatorSettings Settings>
 	FreeListAllocator<Settings>::FreeListAllocator(HeapZoneInfo const& heapZoneInfo)
@@ -59,7 +59,7 @@ namespace nabi_allocator::free_list_allocator
 		{
 			padding += (c_FreeListNodeSize - allocationInfo.m_NumBytes);
 		}
-		padding += (requiredBlockSize + padding) % c_BlockAllignment;
+		padding += (requiredBlockSize + padding) % c_BlockAllignmentFLA;
 
 		requiredBlockSize += padding;
 		bool requiresPadding = padding != 0u;
@@ -72,7 +72,7 @@ namespace nabi_allocator::free_list_allocator
 
 		// If the block is too large for the requested bytes, check that the remaining space after the block has been split is sufficient for another allocation
 		uInt const unusedSpace = originalBlockSize - requiredBlockSize;
-		bool const remainingBlockSpaceSufficient = unusedSpace >= c_MinBlockSize;
+		bool const remainingBlockSpaceSufficient = unusedSpace >= c_MinBlockSizeFLA;
 
 		if (!remainingBlockSpaceSufficient && unusedSpace != 0u)
 		{
@@ -194,8 +194,8 @@ namespace nabi_allocator::free_list_allocator
 	void FreeListAllocator<Settings>::InitMemory(HeapZoneInfo const& heapZoneInfo)
 	{
 		uInt const heapZoneSize = memory_operations::GetMemorySize(heapZoneInfo.m_Start, heapZoneInfo.m_End);
-		NA_ASSERT_DEFAULT(memory_operations::IsAlligned(heapZoneSize, c_BlockAllignment));
-		NA_ASSERT_DEFAULT(heapZoneSize > c_MinBlockSize);
+		NA_ASSERT_DEFAULT(memory_operations::IsAlligned(heapZoneSize, c_BlockAllignmentFLA));
+		NA_ASSERT_DEFAULT(heapZoneSize > c_MinBlockSizeFLA);
 
 		m_FreeList = nullptr;
 		AddFreeBlock(NA_TO_VPTR(heapZoneInfo.m_Start), heapZoneSize);
@@ -277,7 +277,7 @@ namespace nabi_allocator::free_list_allocator
 	void FreeListAllocator<Settings>::AddFreeBlock(void* const blockStartPtr, uInt const numBytes)
 	{
 		NA_ASSERT(blockStartPtr, NA_NAMEOF_LITERAL(blockStartPtr) " is null");
-		NA_ASSERT(numBytes >= c_MinBlockSize, "Trying to add a free block with size " << numBytes << ". The minimum size is " << c_MinBlockSize);
+		NA_ASSERT(numBytes >= c_MinBlockSizeFLA, "Trying to add a free block with size " << numBytes << ". The minimum size is " << c_MinBlockSizeFLA);
 
 		// Add the memory structures (header/footer)
 		BlockHeader* const freeBlockHeader = NA_REINTERPRET_MEMORY_DEFAULT(BlockHeader, blockStartPtr);
@@ -305,4 +305,4 @@ namespace nabi_allocator::free_list_allocator
 		FreeListNode* const freeListNode = NA_REINTERPRET_MEMORY(FreeListNode, blockStartPtr, +, c_BlockHeaderSize);
 		RemoveFreeListNode(m_FreeList, freeListNode);
 	}
-} // namespace nabi_allocator::free_list_allocator
+} // namespace nabi_allocator

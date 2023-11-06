@@ -35,7 +35,7 @@ namespace nabi_allocator
 	struct HeapZoneInfo;
 } // namespace nabi_allocator
 
-namespace nabi_allocator::stack_allocator
+namespace nabi_allocator
 {
 	template<StackAllocatorSettings Settings>
 	class StackAllocator;
@@ -65,7 +65,7 @@ namespace nabi_allocator::stack_allocator
 		uPtr m_PreviousPosition;
 #endif // ifdef NA_DEBUG
 	};
-} // namespace nabi_allocator::stack_allocator
+} // namespace nabi_allocator
 
 // Include Include
 #include "Memory\Inl\Allocators\StackAllocator\StackAllocator.inl"

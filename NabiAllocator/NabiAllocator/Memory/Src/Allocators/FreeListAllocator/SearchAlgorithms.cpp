@@ -13,7 +13,7 @@
 #include "Operations\MemoryOperations.h"
 #include "TypeUtils.h"
 
-namespace nabi_allocator::free_list_allocator
+namespace nabi_allocator
 {
 	// The code in these FindVia functions is repeated a bit, but I think this is ok as pulling it out into 
 	// another function (or macro) would reduce readability and possibly performance.
@@ -77,4 +77,4 @@ namespace nabi_allocator::free_list_allocator
 		NA_FUNCTION_NOT_IMPLEMENTED;
 		return nullptr;
 	}
-} // namespace nabi_allocator::free_list_allocator
+} // namespace nabi_allocator
