@@ -13,6 +13,12 @@ namespace nabi_allocator
 		, m_DebugName("NotAssigned")
 #endif // ifdef NA_DEBUG
 	{
+		s_AllHeapZones.push_back(this);
+	}
+
+	inline HeapZoneBase::~HeapZoneBase()
+	{
+		s_AllHeapZones.erase(std::remove(s_AllHeapZones.begin(), s_AllHeapZones.end(), this));
 	}
 
 	inline HeapZoneInfo const& HeapZoneBase::GetZoneInfo() const noexcept

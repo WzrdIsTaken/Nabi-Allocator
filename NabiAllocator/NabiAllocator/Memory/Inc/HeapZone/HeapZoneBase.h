@@ -2,6 +2,7 @@
 
 // STD Headers
 #include <string>
+#include <vector>
 
 // Config Headers
 #include "Config.h"
@@ -34,7 +35,11 @@ namespace nabi_allocator
 		static HeapZoneBase constexpr* const c_NoParent = nullptr;
 
 		HeapZoneBase();
-		virtual ~HeapZoneBase() = default;
+		virtual ~HeapZoneBase();
+
+		static uInt GetHeapZoneCount() noexcept;
+		static bool ContainsPtr(HeapZoneBase const& heapZone, void const* const ptr);
+		static HeapZoneBase* FindHeapZoneForPtr(void const* const ptr);
 
 		HeapZoneInfo& Init(HeapZoneBase* const parentZone, uInt const numBytes, std::string const& debugName);
 		void Deinit();
@@ -59,6 +64,8 @@ namespace nabi_allocator
 
 	private:
 		NA_SET_COPY_MOVE_CONSTRUCTORS(HeapZoneBase, delete);
+
+		static std::vector<HeapZoneBase*> s_AllHeapZones;
 	};
 } // namespace nabi_allocator
 

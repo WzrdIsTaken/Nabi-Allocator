@@ -1,7 +1,11 @@
+// STD Headers
+#include <optional>
+
 // Config Headers
 #include "Config.h"
 
 // Nabi Headers
+#include "AllocationInfo.h"
 #include "DebugUtils.h"
 #include "HeapZone\HeapZone.h"
 #include "HeapZone\HeapZoneBase.h"
@@ -37,16 +41,20 @@ template<typename T>
 /*
 [[nodiscard]] void* operator new(uInt numBytes) noexcept(false)
 {
+   
     static HeapZoneBase* lastHeapZone = nullptr;
-    static MemoryTag const* lastMemoryTag = nullptr;
+    static std::optional<memoryTag const> lastMemoryTag = std::nullopt;
 
     HeapZoneScope const* const heapZoneScope = MemoryCommand::Instance()->GetTopHeapZoneScope();
+    NA_ASSERT(heapZoneScope, "new called but no heap zone scopes have been pushed yet");
+
     HeapZoneBase* const heapZone = GetWithFallback(heapZoneScope->GetHeapZone(), lastHeapZone);
 #ifdef NA_MEMORY_TAGGING
-    MemoryTag const* const memoryTag = GetWithFallback(heapZoneScope->GetMemoryTag(), lastMemoryTag);
+    std::optional<memoryTag const> const memoryTag = *GetWithFallback(&heapZoneScope->GetMemoryTag(), &lastMemoryTag); // TODO this is jank
 #endif // ifdef NA_MEMORY_TAGGING
 
-    return heapZone->Allocate(numBytes);
+    return heapZone->Allocate(NA_MAKE_ALLOCATION_INFO(numBytes, memoryTag.value()));
+  
 }
 
 void operator delete(void* memory) noexcept
