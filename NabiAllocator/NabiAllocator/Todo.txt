@@ -58,26 +58,13 @@ Tasks:
    is used.. This could be really interesting. Find that video on pointer buckets.
 
 *General
-- Next up we need to write the segerated list allocator, and also do some more reading into the free list allocator design.
-	- If we dont implement it (see the disseration folder on pc for notes for both coding it and disseration writeup)
-	- The basic interface tests for the free list allocator (eg, allocating/freeing/usage with heapzone) will be the same for all allocators.
-	  Therefore, once we have written / tested the tests perhaps package them up into a macro or something. We could do like
-      NA_IMPLEMENT_ALLOCATOR_BASIC_TESTS(testFixtureName, allocType) and this would create the gTest TEST macros
-      for the basic tests which we could use for all allocators. [could we?]
-
 - Then we need to learn how to profile and optimise what we have as much as we can!
 	- Apperently the TryCoalesceBlock function is the slowest now. It has some futher function calls in it though, and I can't see exactly what I can push futher right now.
 
-- Create the MemoryCommand. If we call it something different, need to update the summary comment in HeapZone.h
-	- Remember, the HeapZone should have no knwoledge of the memory command
-		- Will probs have to reigster a heap zone with the memory command
-			- Perhaps a macro to do this?
-				- Macro can construct the heap zone and register with the supplied tag (for the heap zone scope)
 - Make the allocations thread safe? std::scoped_lock in HeapZone alloc/free?
 
 - Make sure there is a default allocator that just uses malloc/free, not even a heap zone. have a heap zone scope for this
 - We also need a stack allocator / linear allocator. something basic just to be the parent of the other allocators
-- Write a test for heap zone parent functionality. This can be done once we have an unmanged allocator or something in heap zone tests
 
 - If I manually free memory, do i need to call that memory's destructor?
 	- YES! you do. In eg ReleaseMemoryToOS you can do memory->~T();
@@ -85,20 +72,50 @@ Tasks:
 	- Think about the best place to do this. Would it be in ReleaseMemoryToOS and HeapZone->Free? Then RequestMemoryFromOS and HeapZone->Allocate..?
 		- With constructors, would we have to perfect forward the constructors arguements?
 
-- Thoughts on sizeT rather than uInt...
 - Lower case folder names? 
 
-- should things like AllocatorUtils have there own namespace? and allocatorstats? [honestly, i think i like it the way it is..?]
-
 - take free list allocator / stack allocator out of there namespaces? its a little clunky i think...
-- do the test blueprints need the extra namespace as well..?
+- do the test blueprints need the extra namespace as well..? [i think these should stay..?]
 
-- MemoryCommand, heap zone scopes, memory tag scope, all this stuff.
-	- For the memory tag tests, make sure the memory tag enum's type is MemoryConstant.h's MemoryTag
+- std::optional<std::function>>> *const*? <-?? wtf is this?
+- use NA_WRAP where we are doing \" \" atm?
+- Should my local std::function definitions be const? [like in AllocatorUtils.inl] and std::functions being passed into functions?
+- Allocate/Free multiple test?  in default tests?
+
+- Test for memory tag scopes / heap zone changing. (Unless this is handled in MemoryCommand? Add the test there if not) [WIP]
+	- This is WIP, we need the unmanaged allocator
+
+- About time we make the unmanaged allocator/heap zone i recon. this is needed for some tests and just generally
+
+- And then start bringing it all together with the new/delete operator overrides. Then all these other todos and python utils!
+- We also have some ctrl+f todods
+- Should block headers / footers / other stuff be [header/footer] const* const? (where they can - check!)
+- Ops on inlinging some of MemoryCommand's functions?
+
 - Python ultities
 - ^ These are the focus rn. Get the project into a submittable state!
 
 Archive:
+- A macro to make the NA_CONCAT(NA_XSTR(NA_BENCHMARK_IDENTIFIER), NA_GTEST_FILTER_SEPERATOR) stuff in main.cpp one thing? (we call this code 3 times)
+- Same deal for test constant's NA_CONCAT(NA_EXPAND(NA_TEST_IDENTIFIER), testFixtureName) (used 3 times)
+- should things like AllocatorUtils have there own namespace? and allocatorstats? [honestly, i think i like it the way it is..?]
+- Thoughts on sizeT rather than uInt... (acc maybe not..)
+- Create the MemoryCommand. If we call it something different, need to update the summary comment in HeapZone.h
+	- Remember, the HeapZone should have no knwoledge of the memory command
+		- Will probs have to reigster a heap zone with the memory command
+			- Perhaps a macro to do this?
+				- Macro can construct the heap zone and register with the supplied tag (for the heap zone scope) [we are doing it in a different way now]
+- helper function to convert the memory usage to %? same with the memory layout? [nah we can do this in python, or well matplotlib can do it]
+- Write a test for heap zone parent functionality. This can be done once we have an unmanged allocator or something in heap zone tests
+- Heap zone parent test?
+- Next up we need to write the segerated list allocator, and also do some more reading into the free list allocator design.
+	- If we dont implement it (see the disseration folder on pc for notes for both coding it and disseration writeup)
+	- The basic interface tests for the free list allocator (eg, allocating/freeing/usage with heapzone) will be the same for all allocators.
+	  Therefore, once we have written / tested the tests perhaps package them up into a macro or something. We could do like
+      NA_IMPLEMENT_ALLOCATOR_BASIC_TESTS(testFixtureName, allocType) and this would create the gTest TEST macros
+      for the basic tests which we could use for all allocators. [could we?] {already did this a while back}
+- MemoryCommand, heap zone scopes, memory tag scope, all this stuff.
+	- For the memory tag tests, make sure the memory tag enum's type is MemoryConstant.h's MemoryTag
 - Make sure you implement the other free list node implementation
 	- Wasn't worth doing. See "random engine ideas" -> NA_FREE_LIST_NODE_PTRs. Sure this would have made the size smaller on x64.. but then we could run out of range.
 	  Plus, its very error prone.

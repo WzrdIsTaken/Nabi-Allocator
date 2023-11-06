@@ -21,7 +21,7 @@ namespace nabi_allocator
 			"MemoryCommand's destructor called but there are still HeapZoneScopes on the stack");
 	}
 
-	void MemoryCommand::PushHeapZoneScope(HeapZoneScope const& heapZoneScope) // TODO: ops on inlining these functions? and the ones in header?
+	void MemoryCommand::PushHeapZoneScope(HeapZoneScope const& heapZoneScope)
 	{
 		m_HeapZoneScopes.push(heapZoneScope);
 	}

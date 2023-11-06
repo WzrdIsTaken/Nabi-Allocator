@@ -50,14 +50,14 @@
     <ClCompile Include="Memory\Src\MemoryCommand.cpp">
       <Filter>Memory\Src</Filter>
     </ClCompile>
-    <ClCompile Include="Memory\Src\NewDeleteOverrides.cpp">
-      <Filter>Memory\Src</Filter>
-    </ClCompile>
     <ClCompile Include="Tests\Src\Fixtures\MemoryCommandTests.cpp">
       <Filter>Tests\Src\Fixtures</Filter>
     </ClCompile>
     <ClCompile Include="Tests\Src\Workflows\FullWorkflow.cpp">
       <Filter>Tests\Src\Workflows</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\Src\NewDeleteOverrides.cpp">
+      <Filter>Memory\Src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
