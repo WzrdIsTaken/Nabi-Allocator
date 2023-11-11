@@ -95,6 +95,7 @@ Tasks:
 - ^ These are the focus rn. Get the project into a submittable state!
 
 Archive:
+- NA_HEAP_ZONE_SCOPE -> NA_SET_HEAP_ZONE_SCOPE? (if so, update this in tests and hint file)
 - take free list allocator / stack allocator out of there namespaces? its a little clunky i think...
 - A macro to make the NA_CONCAT(NA_XSTR(NA_BENCHMARK_IDENTIFIER), NA_GTEST_FILTER_SEPERATOR) stuff in main.cpp one thing? (we call this code 3 times)
 - Same deal for test constant's NA_CONCAT(NA_EXPAND(NA_TEST_IDENTIFIER), testFixtureName) (used 3 times)

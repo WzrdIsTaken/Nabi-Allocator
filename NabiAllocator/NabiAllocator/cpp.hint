@@ -32,7 +32,8 @@
 #define NA_LOG_WARN "WARN"
 
 // HeapZoneScope.h
-#define NA_HEAP_ZONE_SCOPE HeapZoneScope const heapZoneScope = { heapZone, _memoryTag, __VA_ARGS__ };
+#define NA_MAKE_HEAP_ZONE_AND_SET_SCOPE(zoneType, zoneParent, zoneNumBytes, zoneDebugName, scopeMemoryTag, ...) /*some long code block...*/
+#define NA_SET_HEAP_ZONE_SCOPE(heapZone, _memoryTag, ...) HeapZoneScope const heapZoneScope = { heapZone, _memoryTag, __VA_ARGS__ };
 
 // MacroUtils.h
 #define NA_CONCAT(arg1, arg2) arg1 ## arg2
@@ -65,7 +66,7 @@
 #define NA_SET_MOVE_CONSTRUCTORS(type, operation) type(type&&) = operation; type(type const&&) = operation;
 
 // Version.h
-#define NA_VERSION
+#define NA_VERSION NA_XSTR(NA_VERSION_MAJOR) "." NA_XSTR(NA_VERSION_MINOR) "." NA_XSTR(NA_VERSION_PATCH)
 #define NA_VERSION_MAJOR 0
 #define NA_VERSION_MINOR 0 
 #define NA_VERSION_PATCH 0

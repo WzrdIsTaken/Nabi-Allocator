@@ -45,7 +45,21 @@ namespace nabi_allocator::tests
 		MemoryCommand memoryCommand = {};
 		HeapZone<StackAllocator<c_StackAllocatorDefaultSettings>> parentZone = { HeapZoneBase::c_NoParent, parentZoneNumBytes, "ParentZone" };
 		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> childZone = { &parentZone, childZoneNumBytes, "ChildZone" };
-		NA_HEAP_ZONE_SCOPE(&childZone, type_utils::ToUnderlying(MemoryTag::General), &memoryCommand); // Initial scope
+		NA_SET_HEAP_ZONE_SCOPE(&childZone, type_utils::ToUnderlying(MemoryTag::General), &memoryCommand); // Initial scope
+
+		^ actually, use NA_MAKE_HEAP_ZONE_AND_SET_SCOPE here
+		  (or at least have a test in FullWorkflow which uses it. Perhaps a BasicWorkFlow test which just has the absolute basics it needs?)
+
+		*/
+
+		/*
+		NA_MAKE_HEAP_ZONE_AND_SET_SCOPE(
+			HeapZone<StackAllocator<c_StackAllocatorDefaultSettings>>, // Heap zone type
+			HeapZoneBase::c_NoParent,                                  // Heap zone parent
+			64u,                                                       // Heap zone size
+			"Test",                                                    // Heap zone debug name
+			c_NullMemoryTag                                            // Heap zone scope memory tag
+		);
 		*/
 	}
 
