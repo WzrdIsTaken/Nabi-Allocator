@@ -1,72 +1,63 @@
 // STD Headers
-#include <optional>
+#include <new>
 
 // Config Headers
 #include "Config.h"
 
 // Nabi Headers
-#include "AllocationInfo.h"
-#include "DebugUtils.h"
-#include "HeapZone\HeapZone.h"
-#include "HeapZone\HeapZoneBase.h"
-#include "HeapZone\HeapZoneScope.h"
 #include "IntegerTypes.h"
 #include "MemoryCommand.h"
-#include "MemoryConstants.h"
 
 /**
- * TODO desc 
+ * The global new/delete overrides. If NA_OVERRIDE_NEW_DELETE isn't defined they will just default to std::malloc/std::free.
+ * 
+ * Note:
+ *  - I was getting some warnings about inconsistent annotatings with my new override. I tried this 
+ *    https://stackoverflow.com/q/68569843/8890269 but it didn't quite work (perhaps I just wasn't
+ *    doing it right...) so just opted to disable the warnings instead :p.
 */
 
-using namespace nabi_allocator;
-
-// TODO - we should have a header/cpp called like NewDeleteLogic which new/delete call into.
-// then the stuff is testabable.
-// New and delete should only have one line on code inside them, to these functions.
-// Then the FullWorkFlow.cpp can call into them
-
-template<typename T>
-[[nodiscard]] inline T* GetWithFallback(T const* current, T const* fallback)
+namespace nabi_allocator
 {
-    if (!current)
+    [[nodiscard]] inline void* New(std::size_t const numBytes) noexcept(false)
     {
-        NA_ASSERT(fallback, "Can't fallback if its never been set");
-        current = fallback;
+#ifdef NA_OVERRIDE_NEW_DELETE
+        return MemoryCommand::Instance().Allocate(static_cast<uInt>(numBytes));
+#else 
+        return std::malloc(numBytes);
+#endif // ifdef NA_OVERRIDE_NEW_DELETE
     }
 
-    fallback = current;
-    return current;
-}
+    inline void Delete(void* const memory) noexcept
+    {
+#ifdef NA_OVERRIDE_NEW_DELETE
+        return MemoryCommand::Instance().Free(memory);
+#else 
+        std::free(memory);
+#endif // ifdef NA_OVERRIDE_NEW_DELETE
+    }
+} // namespace nabi_allocator
 
-/*
-[[nodiscard]] void* operator new(uInt numBytes) noexcept(false)
+#pragma warning(disable: 28196; disable: 28251; disable: 6387)
+
+    [[nodiscard]] void* operator new(std::size_t const numBytes) noexcept(false)
+    {
+        return nabi_allocator::New(numBytes);
+    }
+
+    [[nodiscard]] void* operator new[](std::size_t const numBytes) noexcept(false)
+    {
+        return nabi_allocator::New(numBytes);
+    }
+
+#pragma warning(default: 28196; default: 28251; default: 6387)
+
+void operator delete(void* const memory) noexcept
 {
-   
-    static HeapZoneBase* lastHeapZone = nullptr;
-    static std::optional<memoryTag const> lastMemoryTag = std::nullopt;
-
-    HeapZoneScope const* const heapZoneScope = MemoryCommand::Instance()->GetTopHeapZoneScope();
-    NA_ASSERT(heapZoneScope, "new called but no heap zone scopes have been pushed yet");
-
-    HeapZoneBase* const heapZone = GetWithFallback(heapZoneScope->GetHeapZone(), lastHeapZone);
-#ifdef NA_MEMORY_TAGGING
-    std::optional<memoryTag const> const memoryTag = *GetWithFallback(&heapZoneScope->GetMemoryTag(), &lastMemoryTag); // TODO this is jank
-#endif // ifdef NA_MEMORY_TAGGING
-
-    return heapZone->Allocate(NA_MAKE_ALLOCATION_INFO(numBytes, memoryTag.value()));
-  
+    nabi_allocator::Delete(memory);
 }
 
-void operator delete(void* memory) noexcept
+void operator delete[](void* const memory) noexcept
 {
-    // TODOs
-    // see https://github.com/ScrewjankGames/ScrewjankEngine/blob/master/Source/Runtime/src/system/memory/Memory.cpp
-    // we need a way to find which heap zone owns memory
-    // also we need some asserts eg if top heap zope scope doesnt exist
-    
-    // my idea is that heap zone scope owns the tag. it can be passed down to the allocator? rather than just accessing with the singleton..?
-    // ctrl + f TODO
-
-    // ALSO dont forget to override array new/delete https://stackoverflow.com/questions/8186018/how-to-properly-replace-global-new-delete-operators
+    nabi_allocator::Delete(memory);
 }
-*/

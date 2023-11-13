@@ -47,11 +47,11 @@ namespace nabi_allocator::tests
 	TEST(NA_FIXTURE_NAME, BasicWorkFlow)
 	{
 		NA_MAKE_HEAP_ZONE_AND_SET_SCOPE(
-			HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>>, // Heap zone type
-			HeapZoneBase::c_NoParent,                                        // Heap zone parent
-			1_MB,                                                            // Heap zone size
-			"Allocator",                                                     // Heap zone debug name
-			c_NullMemoryTag                                                  // Heap zone scope memory tag
+			HeapZone<DefaultFreeListAllocator>, // Heap zone type
+			HeapZoneBase::c_NoParent,           // Heap zone parent
+			1_MB,                               // Heap zone size
+			"Allocator",                        // Heap zone debug name
+			c_NullMemoryTag                     // Heap zone scope memory tag
 		);
 
 		// Raw ptrs

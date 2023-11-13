@@ -67,7 +67,7 @@ Tasks:
 - We also need a stack allocator / linear allocator. something basic just to be the parent of the other allocators
 
 - If I manually free memory, do i need to call that memory's destructor?
-	- YES! you do. In eg ReleaseMemoryToOS you can do memory->~T();
+	- YES! you do [maybe???]. In eg ReleaseMemoryToOS you can do memory->~T();
 	- What about memorys constructor?
 	- Think about the best place to do this. Would it be in ReleaseMemoryToOS and HeapZone->Free? Then RequestMemoryFromOS and HeapZone->Allocate..?
 		- With constructors, would we have to perfect forward the constructors arguements?
@@ -90,8 +90,6 @@ Tasks:
 - We also have some ctrl+f todods
 - Should block headers / footers / other stuff be [header/footer] const* const? (where they can - check!)
 - Ops on inlinging some of MemoryCommand's functions?
-
-- Annotate the MemoryCommand::Allocate/Free if checks with likely and unlikely as well?
 
 - find if things have been overriden by checksums [ask brandon]
 
@@ -116,6 +114,7 @@ Tasks:
 - ^ These are the focus rn. Get the project into a submittable state!
 
 Archive:
+- Annotate the MemoryCommand::Allocate/Free if checks with likely and unlikely as well?
 - Should NA_IMPLEMENT_SINGLETON return a reference not a pointer? static Type t; return t; not &? research
 - NA_HEAP_ZONE_SCOPE -> NA_SET_HEAP_ZONE_SCOPE? (if so, update this in tests and hint file)
 - take free list allocator / stack allocator out of there namespaces? its a little clunky i think...
