@@ -91,10 +91,32 @@ Tasks:
 - Should block headers / footers / other stuff be [header/footer] const* const? (where they can - check!)
 - Ops on inlinging some of MemoryCommand's functions?
 
+- Annotate the MemoryCommand::Allocate/Free if checks with likely and unlikely as well?
+
+- find if things have been overriden by checksums [ask brandon]
+
+- Does this make any sense? 		
+		static MemoryCommand* ThreadLocalGet() {
+			thread_local MemoryCommand d;
+			return &d;
+		}
+
+- Is the custom memory command actually a valid piece of logic? BEcause if NA_OVERRIDE_NEW_DELETE is not enabled, then we actually have to use it
+  If we decide it is, can remove the comments saying the logic is bot in heapzonescope (top comment and next to the var itself) (and other places..?)
+
+- can we assert if through the memory command we make an allocation too big? it just seems to crash atm
+
+- I think we have a todo above, but we need to make sure our implemenation still calls consturctors / destructors.
+- I think this needs to be done for when we default malloc/free as well [actually, maybe not?]
+
+- see this for proper new/delete replacement
+  https://stackoverflow.com/questions/4134195/how-do-i-call-the-original-operator-new-if-i-have-overloaded-it
+
 - Python ultities
 - ^ These are the focus rn. Get the project into a submittable state!
 
 Archive:
+- Should NA_IMPLEMENT_SINGLETON return a reference not a pointer? static Type t; return t; not &? research
 - NA_HEAP_ZONE_SCOPE -> NA_SET_HEAP_ZONE_SCOPE? (if so, update this in tests and hint file)
 - take free list allocator / stack allocator out of there namespaces? its a little clunky i think...
 - A macro to make the NA_CONCAT(NA_XSTR(NA_BENCHMARK_IDENTIFIER), NA_GTEST_FILTER_SEPERATOR) stuff in main.cpp one thing? (we call this code 3 times)

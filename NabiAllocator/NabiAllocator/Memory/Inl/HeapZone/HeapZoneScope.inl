@@ -23,7 +23,7 @@ namespace nabi_allocator
 		}
 #endif // ifdef NA_DEBUG || NA_TESTS || NA_WORKFLOWS
 
-		MemoryCommand::Instance()->PushHeapZoneScope(*this);
+		MemoryCommand::Instance().PushHeapZoneScope(*this);
 	}
 
 	inline HeapZoneScope::~HeapZoneScope()
@@ -36,7 +36,7 @@ namespace nabi_allocator
 		}
 #endif // ifdef NA_DEBUG || NA_TESTS || NA_WORKFLOWS
 
-		MemoryCommand::Instance()->PopHeapZoneScope(*this);
+		MemoryCommand::Instance().PopHeapZoneScope(*this);
 	}
 
 	inline HeapZoneBase* const HeapZoneScope::GetHeapZone() const noexcept

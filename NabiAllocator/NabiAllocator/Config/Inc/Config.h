@@ -4,7 +4,8 @@
  * These defines can be used to toggle on/off featues of NabiAllocator.
 */
 
-// Development
+// Development / Usage
+#define NA_OVERRIDE_NEW_DELETE // Routes all new/delete calls through NabiAllocator's MemoryCommand
 #define NA_DEBUG // Enables asserts, logging, etc
 
 // Allocator

@@ -26,11 +26,12 @@
 #define NA_NAMEOF_LITERAL(arg) #arg // Some things, like static asserts, require a string literal
 
 #define NA_IMPLEMENT_SINGLETON(type) \
-    [[nodiscard]] static type* const Instance() noexcept \
-    { \
-        static type t; \
-        return &t; \
-    }
+    public: \
+        [[nodiscard]] static type& Instance() noexcept \
+        { \
+            static type singleton; \
+            return singleton; \
+        }
 
 namespace nabi_allocator::type_utils
 {

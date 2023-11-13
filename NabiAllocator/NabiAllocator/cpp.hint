@@ -11,6 +11,7 @@
 #define NA_BENCHMARK_RUN_COUNT 1
 #define NA_DEBUG
 #define NA_MEMORY_TAGGING
+#define NA_OVERRIDE_NEW_DELETE
 #define NA_TESTS
 #define NA_TRACK_ALLOCATIONS
 #define NA_WORKFLOWS
@@ -33,7 +34,7 @@
 
 // HeapZoneScope.h
 #define NA_MAKE_HEAP_ZONE_AND_SET_SCOPE(zoneType, zoneParent, zoneNumBytes, zoneDebugName, scopeMemoryTag, ...) /*some long code block...*/
-#define NA_SET_HEAP_ZONE_SCOPE(heapZone, _memoryTag, ...) HeapZoneScope const heapZoneScope = { heapZone, _memoryTag, __VA_ARGS__ };
+#define NA_SET_HEAP_ZONE_SCOPE(heapZone, _memoryTag, ...) nabi_allocator::HeapZoneScope const heapZoneScope = { heapZone, _memoryTag, __VA_ARGS__ };
 
 // MacroUtils.h
 #define NA_CONCAT(arg1, arg2) arg1 ## arg2
@@ -59,7 +60,7 @@
 #define NA_MAKE_STRING_FROM_STREAM(stringAssignment, content) std::ostringstream stringStream = {}; stringStream << content; stringAssignment = stringStream.str();
 
 // TypeUtils.h
-#define NA_IMPLEMENT_SINGLETON [[nodiscard]] static type* const Instance() noexcept { static type t; return &t; }
+#define NA_IMPLEMENT_SINGLETON public: [[nodiscard]] static type* const Instance() noexcept { static type t; return &t; }
 #define NA_NAMEOF(arg) ((decltype(&arg))nullptr, #arg)
 #define NA_SET_COPY_CONSTRUCTORS(type, operation) type(type&) = operation; type(type const&) = operation;
 #define NA_SET_COPY_MOVE_CONSTRUCTORS(type, operation) NA_SET_COPY_CONSTRUCTORS(type, operation) NA_SET_MOVE_CONSTRUCTORS(type, operation)

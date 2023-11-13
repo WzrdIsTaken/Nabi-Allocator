@@ -28,26 +28,23 @@ namespace nabi_allocator::tests
 	TEST(NA_FIXTURE_NAME, PushAndPopScope)
 	{
 		MemoryCommand memoryCommand = {};
-		HeapZoneScope scope = { /*heapZone*/ nullptr, /*memoryTag*/ std::nullopt, /*customMemoryCommand*/ nullptr};
-
-		memoryCommand.PushHeapZoneScope(scope);
-		EXPECT_EQ(memoryCommand.GetTopHeapZoneScope(), &scope);
-
-		memoryCommand.PopHeapZoneScope(scope);
+		{
+			HeapZoneScope scope = { /*heapZone*/ nullptr, /*memoryTag*/ std::nullopt, /*customMemoryCommand*/ &memoryCommand };
+			EXPECT_EQ(memoryCommand.GetTopHeapZoneScope(), &scope);
+		}
+		
 		EXPECT_FALSE(memoryCommand.GetTopHeapZoneScope());
 	}
 
-	TEST(NA_FIXTURE_NAME, PushTwoScopesThenReset)
+	TEST(NA_FIXTURE_NAME, PushAndPopTwoScopes)
 	{
 		MemoryCommand memoryCommand = {};
-		HeapZoneScope scope1 = { nullptr, std::nullopt, nullptr };
-		HeapZoneScope scope2 = { nullptr, std::nullopt, nullptr };
-
-		memoryCommand.PushHeapZoneScope(scope1);
-		memoryCommand.PushHeapZoneScope(scope2);
-		EXPECT_EQ(memoryCommand.GetTopHeapZoneScope(), &scope2);
-
-		memoryCommand.Reset();
+		{
+			HeapZoneScope scope1 = { nullptr, std::nullopt, &memoryCommand };
+			HeapZoneScope scope2 = { nullptr, std::nullopt, &memoryCommand };
+			EXPECT_EQ(memoryCommand.GetTopHeapZoneScope(), &scope2);
+		}
+		
 		EXPECT_FALSE(memoryCommand.GetTopHeapZoneScope());
 	}
 
