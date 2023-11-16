@@ -9,13 +9,16 @@
 
 // Nabi Headers
 #include "AllocationInfo.h"
+#include "Allocators\BlockInfoIndex.h"
 #include "Allocators\FreeListAllocator\FreeListAllocator.h"
 #include "Allocators\StackAllocator\StackAllocator.h"
+#include "Allocators\AllocatorUtils.h"
 #include "HeapZone\HeapZone.h"
 #include "HeapZone\HeapZoneInfo.h"
 #include "HeapZone\HeapZoneScope.h"
 #include "MemoryCommand.h"
 #include "MemoryConstants.h"
+#include "Operations\BitOperations.h"
 #include "TestConstants.h"
 #include "TypeUtils.h"
 
@@ -96,40 +99,60 @@ namespace nabi_allocator::tests
 
 	TEST(NA_FIXTURE_NAME, FullWorkFlow)
 	{
-		/*
-		* TODO continue with this when we have the new / delete stuff done. otherwise 
-		* 
 		uInt constexpr parentZoneNumBytes = 256u;
 		uInt constexpr childZoneNumBytes = parentZoneNumBytes;
 
 		enum class MemoryTag : memoryTag
 		{
-			General = 1u << 1u,
-			Rendering = 1u << 2u, // Just some example sections where allocations could come from
-			All = ~0u,
+			General    = 1u << 1u,
+			Rendering  = 1u << 2u, // Just some example sections where allocations could come from
+			All        = ~0u,
 
 			ENUM_COUNT = 3u
 		};
 
-		MemoryCommand memoryCommand = {};
-		HeapZone<StackAllocator<c_StackAllocatorDefaultSettings>> parentZone = { HeapZoneBase::c_NoParent, parentZoneNumBytes, "ParentZone" };
-		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> childZone = { &parentZone, childZoneNumBytes, "ChildZone" };
-		NA_SET_HEAP_ZONE_SCOPE(&childZone, type_utils::ToUnderlying(MemoryTag::General), &memoryCommand); // Initial scope
+		HeapZone<DefaultStackAllocator> parentZone = { HeapZoneBase::c_NoParent, parentZoneNumBytes, "ParentZone" };
+		HeapZone<DefaultFreeListAllocator> childZone = { &parentZone, childZoneNumBytes, "ChildZone" };
+		NA_SET_HEAP_ZONE_SCOPE(&childZone, type_utils::ToUnderlying(MemoryTag::General)); // Initial scope
 
-		^ actually, use NA_MAKE_HEAP_ZONE_AND_SET_SCOPE here
-		  (or at least have a test in FullWorkflow which uses it. Perhaps a BasicWorkFlow test which just has the absolute basics it needs?)
+		auto verifyBlockMemoryTag =
+			[](uPtr const heapZoneStart, MemoryTag const _memoryTag) -> bool
+			{
+				bool result = false;
+				BlockHeader const* const blockHeader = NA_REINTERPRET_MEMORY_DEFAULT(BlockHeader, heapZoneStart);
 
-		*/
+				result =
+#ifdef NA_MEMORY_TAGGING
+						(blockHeader->m_MemoryTag == type_utils::ToUnderlying(_memoryTag))
+#else
+						true
+#endif // ifdef NA_MEMORY_TAGGING
+					;
 
-		/*
-		NA_MAKE_HEAP_ZONE_AND_SET_SCOPE(
-			HeapZone<StackAllocator<c_StackAllocatorDefaultSettings>>, // Heap zone type
-			HeapZoneBase::c_NoParent,                                  // Heap zone parent
-			64u,                                                       // Heap zone size
-			"Test",                                                    // Heap zone debug name
-			c_NullMemoryTag                                            // Heap zone scope memory tag
-		);
-		*/
+				return result;
+			};
+		uPtr const childZoneStart = childZone.GetZoneInfo().m_Start;
+
+		// General tag allocation
+		{
+			auto const* const allocation = new int();
+			EXPECT_TRUE(verifyBlockMemoryTag(childZoneStart, MemoryTag::General));
+			delete allocation;
+		}
+
+		// Switch tag and allocate
+		{
+			NA_SET_HEAP_ZONE_SCOPE(nullptr, type_utils::ToUnderlying(MemoryTag::Rendering));
+			auto const* const allocation = new int();
+			EXPECT_TRUE(verifyBlockMemoryTag(childZoneStart, MemoryTag::Rendering));
+			delete allocation;
+		}
+
+		// Check heap zone usage is as expected
+#ifdef NA_TRACK_ALLOCATIONS
+		EXPECT_EQ(parentZone.GetAllocator().GetStats().m_ActiveAllocationCount, 1u);
+		EXPECT_EQ(childZone.GetAllocator().GetStats().m_ActiveAllocationCount, 0u);
+#endif // ifdef NA_TRACK_ALLOCATIONS
 	}
 
 #	undef NA_FIXTURE_NAME

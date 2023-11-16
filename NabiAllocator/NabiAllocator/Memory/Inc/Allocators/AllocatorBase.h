@@ -44,6 +44,10 @@ namespace nabi_allocator
 		virtual std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
 			std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) const = 0;
 
+#ifdef NA_TRACK_ALLOCATIONS
+		inline AllocatorStats const& GetStats() const noexcept;
+#endif // ifdef NA_TRACK_ALLOCATIONS
+
 	protected:
 		[[nodiscard]] AllocatorBlockInfo IterateThroughHeapZoneHelper(
 			uInt const blockHeaderPosition, std::function<s64(uInt const)> calculateBlockPaddingAdjustment) const;

@@ -41,8 +41,11 @@ namespace nabi_allocator::tests
 		MemoryCommand memoryCommand = {};
 		{
 			HeapZoneScope scope1 = { nullptr, std::nullopt, &memoryCommand };
-			HeapZoneScope scope2 = { nullptr, std::nullopt, &memoryCommand };
-			EXPECT_EQ(memoryCommand.GetTopHeapZoneScope(), &scope2);
+			{
+				HeapZoneScope scope2 = { nullptr, std::nullopt, &memoryCommand };
+				EXPECT_EQ(memoryCommand.GetTopHeapZoneScope(), &scope2);
+			}
+			EXPECT_EQ(memoryCommand.GetTopHeapZoneScope(), &scope1);
 		}
 		
 		EXPECT_FALSE(memoryCommand.GetTopHeapZoneScope());
