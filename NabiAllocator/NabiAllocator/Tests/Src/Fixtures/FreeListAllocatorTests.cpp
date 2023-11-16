@@ -131,6 +131,19 @@ namespace nabi_allocator::tests
 		}
 #	endif // ifdef NA_MEMORY_TAGGING
 
+#	ifdef NA_TRACK_ALLOCATIONS
+		TEST(NA_FIXTURE_NAME, AllocationTracking)
+		{
+			blueprints::AllocatorAllocationTrackingTest<HeapZoneType>(
+				c_SmallHeapZoneSize, // Heap zone size
+				64u,	             // Expected x64 + memory tagging allocation size
+				32u,                 // Expected x64 allocation size
+				24u,                 // Expected x86 + memory tagging allocation size
+				16u                  // Expected x86 allocation size
+			);
+		}
+#	endif // ifdef NA_TRACK_ALLOCATIONS
+
 	TEST(NA_FIXTURE_NAME, BestFitSearch)
 	{
 		void* memory = AllocateAndSetUpMockMemory(c_SearchAlgorithmBlocks);

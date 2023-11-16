@@ -76,6 +76,19 @@ namespace nabi_allocator::tests
 		}
 #	endif // ifdef NA_MEMORY_TAGGING
 
+#	ifdef NA_TRACK_ALLOCATIONS
+		TEST(NA_FIXTURE_NAME, AllocationTracking)
+		{
+			blueprints::AllocatorAllocationTrackingTest<HeapZoneType>(
+				c_HeapZoneSize, // Heap zone size
+				24u,		    // Expected x64 + memory tagging allocation size
+				16u,            // Expected x64 allocation size
+				16u,            // Expected x86 + memory tagging allocation size
+				8u              // Expected x86 allocation size
+			);
+		}
+#	endif // ifdef NA_TRACK_ALLOCATIONS
+
 	TEST(NA_FIXTURE_NAME, EnsureTopOfStackAllocate)
 	{
 		HeapZoneType heapZone = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };

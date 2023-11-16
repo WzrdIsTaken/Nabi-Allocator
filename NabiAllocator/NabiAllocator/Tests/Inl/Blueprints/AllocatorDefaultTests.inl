@@ -127,21 +127,21 @@ namespace nabi_allocator::tests::blueprints
 			void* const ptr2 = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, type_utils::ToUnderlying(MemoryTag::Two)));
 			{
 				std::string const expectedLayout =
-#	ifdef _M_X64
-#		ifdef NA_MEMORY_TAGGING
+#		ifdef _M_X64
+#			ifdef NA_MEMORY_TAGGING
 					expectedX64MemoryTaggingUsage
-#		else
+#			else
 					expectedX64Usage
-#		endif // ifdef NA_MEMORY_TAGGING 
-#	elif _M_IX86
-#		ifdef NA_MEMORY_TAGGING
+#			endif // ifdef NA_MEMORY_TAGGING 
+#		elif _M_IX86
+#			ifdef NA_MEMORY_TAGGING
 					expectedX86MemoryTaggingUsage
-#		else
+#			else
 					expectedX86Usage
-#		endif // ifdef NA_MEMORY_TAGGING 
-#	else
-#		error "Unsupported architecture"
-#	endif // ifdef _M_IX86, elif _M_IX86
+#			endif // ifdef NA_MEMORY_TAGGING 
+#		else
+#			error "Unsupported architecture"
+#		endif // ifdef _M_IX86, elif _M_IX86
 					;
 
 				std::string const actualUsage = GetFullMemoryUsage(allocator, heapZoneInfo, tagToString);
@@ -156,5 +156,52 @@ namespace nabi_allocator::tests::blueprints
 			}
 		}
 #	endif // ifdef NA_MEMORY_TAGGING
+
+#	ifdef NA_TRACK_ALLOCATIONS
+		template<is_heap_zone HeapZoneType>
+		void AllocatorAllocationTrackingTest(uInt const heapZoneSize, 
+			uInt const expectedX64MemoryTaggingAllocationSize, uInt const expectedX64AllocationSize,
+			uInt const expectedX86MemoryTaggingAllocationSize, uInt const expectedX86AllocationSize)
+		{
+			HeapZoneType heapZone{ HeapZoneBase::c_NoParent, heapZoneSize, "TestHeapZone" };
+			auto const& allocatorStats = heapZone.GetAllocator().GetStats();
+
+			auto verifyAllocatorStats =
+				[&allocatorStats](u64 activeAllocations, u64 activeBytes, u64 totalAllocations, u64 totalBytes) -> bool
+				{
+					bool result = true;
+					result &= allocatorStats.m_ActiveAllocationCount == activeAllocations;
+					result &= allocatorStats.m_ActiveBytesAllocated == activeBytes;
+					result &= allocatorStats.m_TotalAllocationCount == totalAllocations;
+					result &= allocatorStats.m_TotalBytesAllocated == totalBytes;
+					return result;
+				};
+			EXPECT_TRUE(verifyAllocatorStats(0ull, 0ull, 0ull, 0ull));
+
+			u64 const expectedAllocationSize = static_cast<u64>(
+#		ifdef _M_X64
+#			ifdef NA_MEMORY_TAGGING
+					expectedX64MemoryTaggingAllocationSize
+#			else
+					expectedX64AllocationSize
+#			endif // ifdef NA_MEMORY_TAGGING 
+#		elif _M_IX86
+#			ifdef NA_MEMORY_TAGGING
+					expectedX86MemoryTaggingAllocationSize
+#			else
+					expectedX86AllocationSize
+#			endif // ifdef NA_MEMORY_TAGGING 
+#		else
+#			error "Unsupported architecture"
+#		endif // ifdef _M_IX86, elif _M_IX86
+				);
+
+			void* const ptr = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
+			EXPECT_TRUE(verifyAllocatorStats(1ull, expectedAllocationSize, 1ull, expectedAllocationSize));
+
+			heapZone.Free(ptr);
+			EXPECT_TRUE(verifyAllocatorStats(0ull, 0ull, 1ull, expectedAllocationSize));
+		}
+#	endif // ifdef NA_TRACK_ALLOCATIONS
 #endif // ifdef NA_TESTS
 } // namespace nabi_allocator::tests::blueprints
