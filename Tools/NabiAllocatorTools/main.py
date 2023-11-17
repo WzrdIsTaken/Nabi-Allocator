@@ -2,6 +2,7 @@
 # Matplotlib colours: https://matplotlib.org/stable/gallery/color/named_colors.html
 
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 ALLOCATED_COLOUR = "red"
@@ -20,7 +21,6 @@ def graph_memory_layout(memory_layout):
         first_char = memory[0]
         if (first_char == "A"):
             # TODO need to show the padding stuff in a new colour and stuff
-            # TODO We can use an edge colour to show the edges
 
             labels.append("Allocated")
             sizes.append(memory[1:])
@@ -31,7 +31,11 @@ def graph_memory_layout(memory_layout):
             colours.append(FREE_COLOUR)
 
     # Create pie chart 
-    plt.pie(sizes, colors=colours, autopct='%1.1f%%') # labels=labels (for this graph, it can look cluttered with labels)
+    wedges = plt.pie(sizes, colors=colours) # labels=labels, autopct='%1.1f%%' (for this graph, it can look cluttered with labels / %s)
+    for wedge in wedges[0]:
+        wedge.set_lw(0.5)
+        wedge.set_edgecolor("black")
+
     plt.axis("equal")
     plt.title("Memory Usage")
 
@@ -93,11 +97,11 @@ def menu():
 def main():
     #graph_memory_usage("A100 F50")
     #graph_full_memory_usage("Rendering100 Physics50 Free25")
-    graph_memory_layout("A10 F10 A20 F10 A40 A20")
+    graph_memory_layout("A10 F10 A20 F10 A40 A20 A10 A35 A1 A100 A13")
 
 main()
 
 # TODO rename file so not "main.py"? or have different files for the diferent graphs?
 # TODO make the figure (window) titles different?
 
-# TODO ctrl + f TODO
+# TODO ctrl + f TODO 
