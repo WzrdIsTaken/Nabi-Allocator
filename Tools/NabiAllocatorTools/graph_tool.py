@@ -1,12 +1,15 @@
-# Python style guide: https://peps.python.org/pep-0008/
+# Python style guide: https://peps.python.org/pep-0008/ && https://softwareengineering.stackexchange.com/questions/308972/python-file-naming-convention
 # Matplotlib colours: https://matplotlib.org/stable/gallery/color/named_colors.html
 
 import numpy as np
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 ALLOCATED_COLOUR = "red"
 FREE_COLOUR = "green"
+
+def draw_pie_chart():
+    # TODO implement, we have a lot of repeated code making the chart
+    pass
 
 def graph_memory_layout(memory_layout):
     # Format: F(ree)/A(llocated)[number of bytes]P(adding)[number of bytes] [space] [next entry]
@@ -19,13 +22,28 @@ def graph_memory_layout(memory_layout):
 
     for memory in layout:
         first_char = memory[0]
-        if (first_char == "A"):
+        if (first_char == 'A'):
+            allocated_bytes = 0
+            padded_bytes = 0
+            padded_flag = None
+
+            for i, char in enumerate(memory[1:]):
+                if char == 'P':
+                    padded_flag = i + 1
+
+            if padded_flag is not None:
+                allocated_bytes = int(memory[1:padded_flag])
+                padded_bytes = int(memory[padded_flag + 1:])
+            else:
+                allocated_bytes = memory[1:]
+
             # TODO need to show the padding stuff in a new colour and stuff
+            # allocated_byes and padded_bytes equal the correct amounts
 
             labels.append("Allocated")
-            sizes.append(memory[1:])
+            sizes.append(allocated_bytes + padded_bytes)
             colours.append(ALLOCATED_COLOUR)
-        elif (first_char == "F"):
+        elif (first_char == 'F'):
             labels.append("Free")
             sizes.append(memory[1:])
             colours.append(FREE_COLOUR)
@@ -55,7 +73,11 @@ def graph_memory_usage(memory_usage):
     labels = ["Allocated", "Free"]
     colours = [ALLOCATED_COLOUR, FREE_COLOUR]
 
-    plt.pie(sizes, labels=labels, colors=colours, autopct='%1.1f%%')
+    wedges = plt.pie(sizes, labels=labels, colors=colours, autopct='%1.1f%%')
+    for wedge in wedges[0]:
+        wedge.set_lw(0.5)
+        wedge.set_edgecolor("black")
+
     plt.axis("equal")
     plt.title("Memory Usage")
 
@@ -71,18 +93,22 @@ def graph_full_memory_usage(memory_usage):
     sizes = []
 
     for memory in usage:
-        bytes_start = -1
+        bytes_start = None
         for i, char in enumerate(memory):
             if char.isdigit():
                 bytes_start = i
                 break
         labels.append(memory[:bytes_start])
-        sizes.append(memory[bytes_start:])
+        sizes.append(int(memory[bytes_start:]))
 
     # Create pie chart
     colours = plt.cm.tab10(np.arange(len(labels))) # Create a different colours for each entry
 
-    plt.pie(sizes, labels=labels, colors=colours, autopct='%1.1f%%')
+    wedges = plt.pie(sizes, labels=labels, colors=colours, autopct='%1.1f%%')
+    for wedge in wedges[0]:
+        wedge.set_lw(0.5)
+        wedge.set_edgecolor("black")
+
     plt.axis("equal")
     plt.title("Full Memory Usage")
 
@@ -97,11 +123,12 @@ def menu():
 def main():
     #graph_memory_usage("A100 F50")
     #graph_full_memory_usage("Rendering100 Physics50 Free25")
-    graph_memory_layout("A10 F10 A20 F10 A40 A20 A10 A35 A1 A100 A13")
+    graph_memory_layout("A10P10 A10P0 F10")
 
 main()
 
-# TODO rename file so not "main.py"? or have different files for the diferent graphs?
+# TODO do we want main in this file..? gotta remind ourselves how python projects are set up
 # TODO make the figure (window) titles different?
+# TODO add some more functions and stuff (eg for making the pie chart) we have a lot of repeated code
 
 # TODO ctrl + f TODO 
