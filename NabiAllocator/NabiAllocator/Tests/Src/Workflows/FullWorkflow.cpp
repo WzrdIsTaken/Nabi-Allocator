@@ -24,6 +24,10 @@
 
 /**
  * A test for the full workflow of NabiAllocator.
+ * 
+ * Note:
+ *	- If NA_OVERRIDE_NEW_DELETE isn't defined, these will just run with the default new/delete implementation
+ *    (or with whatever implementation a user has defined I guess..).
 */
 
 namespace nabi_allocator::tests

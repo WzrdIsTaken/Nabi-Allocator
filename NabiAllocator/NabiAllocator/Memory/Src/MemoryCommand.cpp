@@ -2,7 +2,8 @@
 #include "MemoryCommand.h"
 
 // STD Headers
-#include <optional>
+#include <stack>
+#include <type_traits>
 
 // Config Headers
 #include "Config.h"
@@ -12,6 +13,7 @@
 #include "DebugUtils.h"
 #include "HeapZone\HeapZoneBase.h"
 #include "HeapZone\HeapZoneScope.h"
+#include "MemoryConstants.h"
 
 #define NA_GET_WITH_FALLBACK(current, fallback, toSet, ...) /*4/4 macro*/\
 	{ \
@@ -29,14 +31,9 @@
 
 namespace nabi_allocator
 {
-	// TODO should it be thread local? IF NOT it should be s_HeapZoneScopes . TODO add why we do this to the notes section
-	static std::stack<std::reference_wrapper<HeapZoneScope const>> g_HeapZoneScopes = {}; // See Notes section for why we have to do this and note why its thread local
-
-	MemoryCommand::MemoryCommand()
-		: m_LastHeapZone(nullptr)
-		, m_LastMemoryTag(c_NullMemoryTag)
-	{
-	}
+	thread_local std::stack<std::reference_wrapper<HeapZoneScope const>> g_HeapZoneScopes = {};
+	thread_local HeapZoneBase* g_LastHeapZone = nullptr;
+	thread_local memoryTag g_LastMemoryTag = c_NullMemoryTag;
 
 	MemoryCommand::~MemoryCommand()
 	{
@@ -49,19 +46,19 @@ namespace nabi_allocator
 		void* memory = nullptr;
 
 		HeapZoneScope const* const topHeapZoneScope = GetTopHeapZoneScope();
-		if (topHeapZoneScope)
+		if (topHeapZoneScope) [[likely]]
 		{
 			HeapZoneBase* topHeapZone = nullptr;
 			memoryTag topMemoryTag = c_NullMemoryTag;
 
-			NA_GET_WITH_FALLBACK(topHeapZoneScope->GetHeapZone(), m_LastHeapZone, topHeapZone);
+			NA_GET_WITH_FALLBACK(topHeapZoneScope->GetHeapZone(), g_LastHeapZone, topHeapZone);
 #ifdef NA_MEMORY_TAGGING
-			NA_GET_WITH_FALLBACK(topHeapZoneScope->GetMemoryTag(), m_LastMemoryTag, topMemoryTag, *);
+			NA_GET_WITH_FALLBACK(topHeapZoneScope->GetMemoryTag(), g_LastMemoryTag, topMemoryTag, *);
 #endif // ifdef NA_MEMORY_TAGGING
 
 			memory = topHeapZone->Allocate(NA_MAKE_ALLOCATION_INFO(numBytes, topMemoryTag));
 		}
-		else
+		else [[unlikely]]
 		{
 			memory = std::malloc(static_cast<std::size_t>(numBytes));
 		}
@@ -71,16 +68,16 @@ namespace nabi_allocator
 
 	void MemoryCommand::Free(void* const memory)
 	{
-		if (m_LastHeapZone)
+		if (g_LastHeapZone)
 		{
-			if (HeapZoneBase::ContainsPtr(*m_LastHeapZone, memory))
+			if (HeapZoneBase::ContainsPtr(*g_LastHeapZone, memory))
 			{
-				m_LastHeapZone->Free(memory);
+				g_LastHeapZone->Free(memory);
 				return;
 			}
 		}
 		
-		HeapZoneBase* heapZoneWhichMadeAllocation = HeapZoneBase::FindHeapZoneForPtr(memory);
+		HeapZoneBase* const heapZoneWhichMadeAllocation = HeapZoneBase::FindHeapZoneForPtr(memory);
 		if (heapZoneWhichMadeAllocation)
 		{
 			heapZoneWhichMadeAllocation->Free(memory);
@@ -112,12 +109,8 @@ namespace nabi_allocator
 		g_HeapZoneScopes.pop();
 		if (g_HeapZoneScopes.empty())
 		{
-			// TODO is the last heap zone ever not the top heap zone? do we need this?
-			// what is last heap zone even doing> [ok ik what its doing but could we do another way no i dont thinkso?]
-			// TODO is the if checks we have if allocate/free the best way we've got of doing things? w/ std malloc and free
-
-			m_LastHeapZone = nullptr;
-			m_LastMemoryTag = c_NullMemoryTag;
+			g_LastHeapZone = nullptr;
+			g_LastMemoryTag = c_NullMemoryTag;
 		}
 	}
 
