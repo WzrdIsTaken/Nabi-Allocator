@@ -8,6 +8,7 @@
 
 // Nabi Headers
 #include "DebugUtils.h"
+#include "IntegerTypes.h"
 
 namespace nabi_allocator::file_utils
 {
@@ -25,7 +26,8 @@ namespace nabi_allocator::file_utils
 			std::tm const* const localTime = std::localtime(&time);
 			std::string timeAsString = std::asctime(localTime);
 			std::replace(timeAsString.begin(), timeAsString.end(), ':', '.');
-			const_cast<std::string&>(fileName).insert(fileName.find_last_of('.'), 
+			uInt const lastDot = fileName.find_last_of('.');
+			const_cast<std::string&>(fileName).insert(lastDot != std::string::npos ? lastDot : fileName.length(),
 				" - " + timeAsString.substr(0u, timeAsString.length() - 1u)); // Removes a newline char (seems to be added by asctime)
 #pragma warning(default: 4996)
 		}
