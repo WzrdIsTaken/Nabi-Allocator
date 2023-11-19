@@ -50,6 +50,7 @@ namespace nabi_allocator::debug_utils
 
 #	define NA_LOG_CATEGORY_ASSERT "[Assert] "
 #	define NA_LOG_CATEGORY_CORE   "[Core] "
+#	define NA_LOG_CATEGORY_FILE   "[File] "
 #	define NA_LOG_CATEGORY_MEMORY "[Memory] "
 #	define NA_LOG_CATEGORY_TEST   "[Test] "
 

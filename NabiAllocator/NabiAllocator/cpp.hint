@@ -24,6 +24,7 @@
 #define NA_LOG(prep, severity, category, message, end) NA_LOG_BASE(prep, severity, category, message, end)
 #define NA_LOG_CATEGORY_ASSERT "[Assert] "
 #define NA_LOG_CATEGORY_CORE "[Core] "
+#define NA_LOG_CATEGORY_FILE "[File] "
 #define NA_LOG_CATEGORY_MEMORY "[Memory] "
 #define NA_LOG_CATEGORY_TEST "[Test] "
 #define NA_LOG_ERROR "ERROR"

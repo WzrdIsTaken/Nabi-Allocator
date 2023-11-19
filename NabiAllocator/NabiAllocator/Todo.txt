@@ -57,6 +57,8 @@ Tasks:
    complexity and the size of the tag storage.” This is how we have zero byte tagging! Combined with Molly Rocket’s video on seeing if memory 
    is used.. This could be really interesting. Find that video on pointer buckets.
 
+- Find if things have been overriden by checksums [ask brandon] [ngl idk if this is something i can be asked to do. but we can write about it in report]
+
 *General
 - Then we need to learn how to profile and optimise what we have as much as we can!
 	- Apperently the TryCoalesceBlock function is the slowest now. It has some futher function calls in it though, and I can't see exactly what I can push futher right now.
@@ -74,7 +76,6 @@ Tasks:
 		- With constructors, would we have to perfect forward the constructors arguements?
 
 - Lower case folder names? 
-
 - do the test blueprints need the extra namespace as well..? [i think these should stay..?]
 
 - std::optional<std::function>>> *const*? <-?? wtf is this?
@@ -91,8 +92,6 @@ Tasks:
 - We also have some ctrl+f todods
 - Should block headers / footers / other stuff be [header/footer] const* const? (where they can - check!)
 - Ops on inlinging some of MemoryCommand's functions?
-
-- find if things have been overriden by checksums [ask brandon]
 
 - Is the custom memory command actually a valid piece of logic? BEcause if NA_OVERRIDE_NEW_DELETE is not enabled, then we actually have to use it
   If we decide it is, can remove the comments saying the logic is bot in heapzonescope (top comment and next to the var itself) (and other places..?)

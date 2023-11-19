@@ -59,6 +59,9 @@
     <ClCompile Include="Memory\Src\NewDeleteOverrides.cpp">
       <Filter>Memory\Src</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\Src\FileUtils.cpp">
+      <Filter>Utils\Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tests">
@@ -318,6 +321,9 @@
     </ClInclude>
     <ClInclude Include="Memory\Inc\AllocationInfo.h">
       <Filter>Memory\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Inc\FileUtils.h">
+      <Filter>Utils\Inc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

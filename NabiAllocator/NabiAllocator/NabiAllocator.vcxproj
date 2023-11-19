@@ -39,6 +39,7 @@
     <ClCompile Include="Tests\Src\Fixtures\StackAllocatorTests.cpp" />
     <ClCompile Include="Tests\Src\Workflows\FullWorkflow.cpp" />
     <ClCompile Include="Utils\Src\BenchmarkUtils.cpp" />
+    <ClCompile Include="Utils\Src\FileUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -93,6 +94,7 @@
     <ClInclude Include="Tests\Inc\Blueprints\AllocatorDefaultTests.h" />
     <ClInclude Include="Tests\Inc\TestConstants.h" />
     <ClInclude Include="Utils\Inc\DebugUtils.h" />
+    <ClInclude Include="Utils\Inc\FileUtils.h" />
     <ClInclude Include="Utils\Inc\MacroUtils.h" />
     <ClInclude Include="Utils\Inc\BenchmarkUtils.h" />
     <ClInclude Include="Utils\Inc\StringUtils.h" />
