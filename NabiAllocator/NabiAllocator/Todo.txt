@@ -122,6 +122,10 @@ Tasks:
 	- If we remove them or decide 100% then remove the questionging comment in notes.
 	- **I think this is something we could benchmark and then write about on dis..?**
 
+- On all Python graphs have a label / legend - total alloc/ total free etc?
+	- https://stackoverflow.com/questions/19125722/adding-a-matplotlib-legend
+	- https://stackoverflow.com/questions/63799934/how-to-annotate-a-bar-plot-and-add-a-custom-legend
+
 - Python ultities
 - ^ These are the focus rn. Get the project into a submittable state!
 

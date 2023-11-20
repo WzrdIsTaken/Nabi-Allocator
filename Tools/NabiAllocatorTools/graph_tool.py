@@ -131,7 +131,7 @@ def action_user_input(option, user_input):
         user_input = user_input[:-3]
         data = user_input
     else:
-        data = parse_file(user_input) # user_input
+        data = parse_file(user_input)
 
     if option is "1":
         graph_memory_layout(data)
@@ -163,11 +163,5 @@ def menu():
 
         print("")
 
-if __name__ == '__main__':
+if __name__ == '__main__': # We might have to restructure this main stuff if we add more tools
     menu()
-
-# TODO on all graphs have a label - total alloc/ total free etc?
-# TODO do we want main in this file..? gotta remind ourselves how python projects are set up
-# TODO make the figure (window) titles different?
-# TODO add some more functions and stuff (eg for making the pie chart) we have a lot of repeated code
-# TODO ctrl + f TODO 
