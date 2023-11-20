@@ -66,6 +66,8 @@ Tasks:
 - Make the allocations thread safe? std::scoped_lock in HeapZone alloc/free?
 - Gotta find somewhere we can wack a goto in our code... :D
 
+- static std::vector<HeapZoneBase*> s_AllHeapZones; in cpp?
+
 - Make sure there is a default allocator that just uses malloc/free, not even a heap zone. have a heap zone scope for this
 - We also need a stack allocator / linear allocator. something basic just to be the parent of the other allocators
 
@@ -126,10 +128,30 @@ Tasks:
 	- https://stackoverflow.com/questions/19125722/adding-a-matplotlib-legend
 	- https://stackoverflow.com/questions/63799934/how-to-annotate-a-bar-plot-and-add-a-custom-legend
 
-- Python ultities
-- ^ These are the focus rn. Get the project into a submittable state!
+- So: Unmanaged allocator, thread safe allocations. Then kinda done I think
+
+- Need to write some solid documentation for my allocator for the user research stuff
+- Can we rename the containing folder to just "Allocator"? (so its Allocator, Tools) or would that cause too many error
+
+- note - it will be heap zone now memory command which had the mutex
+  right?
+  --
+  unamnaged alloc can still support memory tsgging
+  perhaod just create it (it will just be two funcs) statvially and ?
+  --
+  have a maxro like "na defaukt setup" whicu creates the stuff w/you having to do abything? i think at least once macro is good though for the setup
+
+- Write some "full workflow benchmarks"
+  eg something which goes through the overridden/default new/delete operators. Then we can really benchmark
+  just like the other one. loops and the like probs
+
+should they even be the same?
+
+i think if someone is using a memory allocator, they have some basic level of competiceyc
 
 Archive:
+- Python ultities
+- ^ These are the focus rn. Get the project into a submittable state!
 - Annotate the MemoryCommand::Allocate/Free if checks with likely and unlikely as well?
 - Should NA_IMPLEMENT_SINGLETON return a reference not a pointer? static Type t; return t; not &? research
 - NA_HEAP_ZONE_SCOPE -> NA_SET_HEAP_ZONE_SCOPE? (if so, update this in tests and hint file)
