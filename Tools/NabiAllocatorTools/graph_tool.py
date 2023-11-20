@@ -1,22 +1,22 @@
+# to a python dev (or any dev..) this code is probs kinda spaghetti. but i'm not a python dev (and the code works :p)...
 # Python style guide: https://peps.python.org/pep-0008/ && https://softwareengineering.stackexchange.com/questions/308972/python-file-naming-convention
 # Matplotlib colours: https://matplotlib.org/stable/gallery/color/named_colors.html
 
 import numpy as np
+import matplotlib.patches 
 import matplotlib.pyplot as plt
 
-ALLOCATED_COLOUR = "red"
-FREE_COLOUR = "green"
-
-def draw_pie_chart():
-    # TODO implement, we have a lot of repeated code making the chart
-    pass
+ALLOCATED_COLOUR = "orangered"
+OUTLINE_COLOUR = "black"
+OUTLINE_WIDTH = 1
+PADDED_COLOUR = "salmon"
+FREE_COLOUR = "greenyellow"
 
 def graph_memory_layout(memory_layout):
-    # Format: F(ree)/A(llocated)[number of bytes]P(adding)[number of bytes] [space] [next entry]
+    # Format: F(ree)/A(llocated)[number of bytes]P(adding)[number of bytes] [space] [next entry] | Eg: A10P5 A10P5 F10 A20P0 A5P1 A15P3 A14P0 F15
 
     # Extract infomation
     layout = memory_layout.split()
-    labels = []
     sizes = []
     colours = []
 
@@ -31,37 +31,41 @@ def graph_memory_layout(memory_layout):
                 if char == 'P':
                     padded_flag = i + 1
 
-            if padded_flag is not None:
-                allocated_bytes = int(memory[1:padded_flag])
-                padded_bytes = int(memory[padded_flag + 1:])
-            else:
-                allocated_bytes = memory[1:]
+            allocated_bytes = int(memory[1:padded_flag])
+            padded_bytes = int(memory[padded_flag + 1:])
+            payload_bytes = allocated_bytes - padded_bytes
 
-            # TODO need to show the padding stuff in a new colour and stuff
-            # allocated_byes and padded_bytes equal the correct amounts
-
-            labels.append("Allocated")
-            sizes.append(allocated_bytes + padded_bytes)
+            sizes.append(payload_bytes)
             colours.append(ALLOCATED_COLOUR)
-        elif (first_char == 'F'):
-            labels.append("Free")
+
+            if padded_bytes is not 0:
+                sizes.append(padded_bytes)
+                colours.append(PADDED_COLOUR)
+        else:
             sizes.append(memory[1:])
             colours.append(FREE_COLOUR)
 
     # Create pie chart 
-    wedges = plt.pie(sizes, colors=colours) # labels=labels, autopct='%1.1f%%' (for this graph, it can look cluttered with labels / %s)
-    for wedge in wedges[0]:
-        wedge.set_lw(0.5)
-        wedge.set_edgecolor("black")
+    fig, ax = plt.subplots()
+    wedges, _ = plt.pie(sizes, colors=colours) # for this graph, it can look cluttered with labels / %s
+    for i in range(0, len(wedges)):
+        nonPaddedWedge = colours[i] is not PADDED_COLOUR
+        wedges[i].set_linewidth(OUTLINE_WIDTH  if nonPaddedWedge else OUTLINE_WIDTH + 0.5)
+        wedges[i].set_edgecolor(OUTLINE_COLOUR if nonPaddedWedge else PADDED_COLOUR)
+
+    center = wedges[0].center
+    radius = wedges[0].r
+    circle = matplotlib.patches.Circle(center, radius, fill=False, edgecolor=OUTLINE_COLOUR, linewidth=OUTLINE_WIDTH)
+    ax.add_patch(circle)
 
     plt.axis("equal")
-    plt.title("Memory Usage")
+    plt.title("Memory Layout")
 
      # Draw the chart
     plt.show()
 
 def graph_memory_usage(memory_usage):
-     # Format: A(llocated)[number of bytes] F(ree)[number of bytes]
+     # Format: A(llocated)[number of bytes] F(ree)[number of bytes] | Eg: A100 F50
 
     # Extract infomation
     usage = memory_usage.split()
@@ -75,8 +79,8 @@ def graph_memory_usage(memory_usage):
 
     wedges = plt.pie(sizes, labels=labels, colors=colours, autopct='%1.1f%%')
     for wedge in wedges[0]:
-        wedge.set_lw(0.5)
-        wedge.set_edgecolor("black")
+        wedge.set_lw(OUTLINE_WIDTH)
+        wedge.set_edgecolor(OUTLINE_COLOUR)
 
     plt.axis("equal")
     plt.title("Memory Usage")
@@ -85,7 +89,7 @@ def graph_memory_usage(memory_usage):
     plt.show()
 
 def graph_full_memory_usage(memory_usage):
-    # Format: Tag[number of bytes] [space] [next entry]
+    # Format: Tag[number of bytes] [space] [next entry] | Eg: Rendering100 Physics50 Free25
 
     # Extract infomation
     usage = memory_usage.split()
@@ -106,8 +110,8 @@ def graph_full_memory_usage(memory_usage):
 
     wedges = plt.pie(sizes, labels=labels, colors=colours, autopct='%1.1f%%')
     for wedge in wedges[0]:
-        wedge.set_lw(0.5)
-        wedge.set_edgecolor("black")
+        wedge.set_lw(OUTLINE_WIDTH)
+        wedge.set_edgecolor(OUTLINE_COLOUR)
 
     plt.axis("equal")
     plt.title("Full Memory Usage")
@@ -115,20 +119,55 @@ def graph_full_memory_usage(memory_usage):
     # Draw the chart
     plt.show()
 
+def parse_file(file_path):
+    file = open(file_path, "r")
+    output = file.read()
+    file.close()
+    return output 
+
+def action_user_input(option, user_input):
+    data = None
+    if "RAW" in user_input:
+        user_input = user_input[:-3]
+        data = user_input
+    else:
+        data = parse_file(user_input) # user_input
+
+    if option is "1":
+        graph_memory_layout(data)
+    elif option is "2":
+        graph_memory_usage(data)
+    else: # option is "3"
+        graph_full_memory_usage(data)
+
 def menu():
-    # TODO make the program read from a file instead of copy/pasting in? For a large program, reading a file might be better?
-    # TODO: have some sort of menu?
-    pass
+    running = True
+    while running:
+        print("--- Nabi Graph Tool ---")
+        print("Enter a menu option and a file path.\n")
+    
+        print("1) Memory Layout")
+        print("2) Memory Usage")
+        print("3) Full Memory Usage")
+        print("4) Exit")
 
-def main():
-    #graph_memory_usage("A100 F50")
-    #graph_full_memory_usage("Rendering100 Physics50 Free25")
-    graph_memory_layout("A10P10 A10P0 F10")
+        # Example input: C:\Users\Ben\Desktop\Game Dev\NabiAllocator\Nabi-Allocator\logs\Test.txt
+        user_input = input("")
 
-main()
+        if (user_input[0] is '1' or user_input[0] is '2' or user_input[0] is '3'):
+            action_user_input(user_input[0], user_input[2:])
+        elif (user_input == "4"):
+            running = False
+        else:
+            print("Invalid input\n")
 
+        print("")
+
+if __name__ == '__main__':
+    menu()
+
+# TODO on all graphs have a label - total alloc/ total free etc?
 # TODO do we want main in this file..? gotta remind ourselves how python projects are set up
 # TODO make the figure (window) titles different?
 # TODO add some more functions and stuff (eg for making the pie chart) we have a lot of repeated code
-
 # TODO ctrl + f TODO 
