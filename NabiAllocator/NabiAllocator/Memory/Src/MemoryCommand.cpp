@@ -35,6 +35,11 @@ namespace nabi_allocator
 	thread_local HeapZoneBase* g_LastHeapZone = nullptr;
 	thread_local memoryTag g_LastMemoryTag = c_NullMemoryTag;
 
+	MemoryCommand::MemoryCommand()
+		: m_UnmanagedHeap{}
+	{
+	}
+
 	MemoryCommand::~MemoryCommand()
 	{
 		NA_ASSERT(g_HeapZoneScopes.empty(),
@@ -60,7 +65,7 @@ namespace nabi_allocator
 		}
 		else
 		{
-			memory = std::malloc(static_cast<std::size_t>(numBytes));
+			memory = m_UnmanagedHeap.Allocate(numBytes);
 		}
 
 		return memory;
@@ -70,7 +75,7 @@ namespace nabi_allocator
 	{
 		if (g_LastHeapZone)
 		{
-			if (HeapZoneBase::ContainsPtr(*g_LastHeapZone, memory))
+			if (g_LastHeapZone->ContainsPtr(memory))
 			{
 				g_LastHeapZone->Free(memory);
 			}
@@ -85,7 +90,7 @@ namespace nabi_allocator
 		}
 		else
 		{
-			std::free(memory);
+			m_UnmanagedHeap.Free(memory);
 		}
 	}
 
@@ -124,6 +129,11 @@ namespace nabi_allocator
 		}
 
 		return topHeapZoneScope;
+	}
+
+	UnmanagedHeap const& MemoryCommand::GetUnmanagedHeap() const noexcept
+	{
+		return m_UnmanagedHeap;
 	}
 } // namespace nabi_allocator
 

@@ -40,12 +40,12 @@ namespace nabi_allocator
 
 namespace nabi_allocator
 {
+	HeapZoneBase constexpr* const c_SameZone = nullptr;
+	std::optional<memoryTag const> constexpr c_SameTag = std::nullopt;
+
 	class HeapZoneScope final
 	{
 	public:
-		static HeapZoneBase constexpr* const c_SameZone = nullptr;
-		static std::optional<memoryTag const> constexpr c_SameTag = std::nullopt;
-
 		inline HeapZoneScope(HeapZoneBase* const heapZone, std::optional<memoryTag const> const memoryTag, MemoryCommand* const customMemoryCommand = nullptr);
 		inline ~HeapZoneScope();
 

@@ -145,8 +145,8 @@ namespace nabi_allocator::tests
 		void* ptr1 = heapZone1.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
 		void* ptr2 = heapZone2.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
 
-		EXPECT_TRUE(HeapZoneBase::ContainsPtr(heapZone1, ptr1));
-		EXPECT_FALSE(HeapZoneBase::ContainsPtr(heapZone1, ptr2));
+		EXPECT_TRUE(heapZone1.ContainsPtr(ptr1));
+		EXPECT_FALSE(heapZone1.ContainsPtr(ptr2));
 
 		EXPECT_EQ(HeapZoneBase::FindHeapZoneForPtr(ptr2), &heapZone2);
 		EXPECT_FALSE(HeapZoneBase::FindHeapZoneForPtr(ptr2) == &heapZone1);

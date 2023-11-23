@@ -93,7 +93,7 @@ Tasks:
 - And then start bringing it all together with the new/delete operator overrides. Then all these other todos and python utils!
 - We also have some ctrl+f todods
 - Should block headers / footers / other stuff be [header/footer] const* const? (where they can - check!)
-- Ops on inlinging some of MemoryCommand's functions?
+- Ops on inlinging some of MemoryCommand's functions? & [[likely]] and [[unlikely]] annotation?
 
 - Is the custom memory command actually a valid piece of logic? BEcause if NA_OVERRIDE_NEW_DELETE is not enabled, then we actually have to use it
   If we decide it is, can remove the comments saying the logic is bot in heapzonescope (top comment and next to the var itself) (and other places..?)
@@ -140,6 +140,11 @@ Tasks:
   perhaod just create it (it will just be two funcs) statvially and ?
   --
   have a maxro like "na defaukt setup" whicu creates the stuff w/you having to do abything? i think at least once macro is good though for the setup
+
+  Is it worth having memory tracking etc inthe unamanaged heap? hoesntly, i think not. its meaant to be simple zero overhead. thats what it is
+  Also in the dis, like the lecturerer said, if youve done something once you dont need to do it over and over again to show knolwedge
+
+  We should have only written std::malloc/std::free at one point in the program: in MemoryConstants.inl
 
 - Write some "full workflow benchmarks"
   eg something which goes through the overridden/default new/delete operators. Then we can really benchmark

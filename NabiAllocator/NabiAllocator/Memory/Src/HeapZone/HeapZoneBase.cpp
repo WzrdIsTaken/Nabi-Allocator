@@ -18,19 +18,14 @@ namespace nabi_allocator
 		return s_AllHeapZones.size();
 	}
 
-	bool HeapZoneBase::ContainsPtr(HeapZoneBase const& heapZone, void const* const ptr)
-	{
-		HeapZoneInfo const& heapZonesInfo = heapZone.GetZoneInfo();
-		return memory_operations::IsPtrInRange(heapZonesInfo.m_Start, heapZonesInfo.m_End, NA_TO_UPTR(ptr));
-	}
-
 	HeapZoneBase* HeapZoneBase::FindHeapZoneForPtr(void const* const ptr)
 	{
 		HeapZoneBase* containingZone = nullptr;
 
 		for (HeapZoneBase* const heapZone : s_AllHeapZones)
 		{
-			bool const containsPtr = ContainsPtr(*heapZone, ptr);
+			NA_ASSERT(heapZone, "A HeapZone in s_AllHeapZones is null!");
+			bool const containsPtr = heapZone->ContainsPtr(ptr);;
 			if (containsPtr)
 			{
 				containingZone = heapZone;

@@ -209,6 +209,9 @@
     <None Include="Memory\Inl\HeapZone\HeapZoneScope.inl">
       <Filter>Memory\Inl\HeapZone</Filter>
     </None>
+    <None Include="Memory\Inl\UnmanagedHeap.inl">
+      <Filter>Memory\Inl</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Todo.txt" />
@@ -324,6 +327,9 @@
     </ClInclude>
     <ClInclude Include="Utils\Inc\FileUtils.h">
       <Filter>Utils\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\UnmanagedHeap.h">
+      <Filter>Memory\Inc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@
 // Nabi Headers
 #include "IntegerTypes.h"
 #include "TypeUtils.h"
+#include "UnmanagedHeap.h"
 
 /**
  * A global singleton which the overriden new/delete operators route allocations through.
@@ -16,6 +17,8 @@
  *		- The [[unlikely]] branch should only be called for static memory...
  *  - The constructor/destructor can't be private because I create a local memory command in tests.
  *		- Think of a way to solve this?
+ *  - The reason c_UnmanagedHeap is outside of the MemoryCommand is, well, because I want it at 
+ *    namespace scope so it matches with c_SameZone and c_SameTag (defined in HeapZoneScope.h).
 */
 
 namespace nabi_allocator
@@ -30,7 +33,7 @@ namespace nabi_allocator
 		NA_IMPLEMENT_SINGLETON(MemoryCommand)
 
 	public:
-		MemoryCommand() = default;
+		MemoryCommand();
 		~MemoryCommand();
 
 		[[nodiscard]] void* Allocate(uInt const numBytes);
@@ -40,8 +43,13 @@ namespace nabi_allocator
 		void PopHeapZoneScope(HeapZoneScope const& heapZoneScope);
 
 		[[nodiscard]] HeapZoneScope const* const GetTopHeapZoneScope() const noexcept;
+		[[nodiscard]] UnmanagedHeap const& GetUnmanagedHeap() const noexcept;
 
 	private:
 		NA_SET_COPY_MOVE_CONSTRUCTORS(MemoryCommand, delete);
+
+		UnmanagedHeap m_UnmanagedHeap;
 	};
+
+	inline UnmanagedHeap const& c_UnmanagedHeap = MemoryCommand::Instance().GetUnmanagedHeap();
 } // namespace nabi_allocator

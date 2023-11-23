@@ -39,7 +39,6 @@ namespace nabi_allocator
 		virtual ~HeapZoneBase();
 
 		[[nodiscard]] static uInt GetHeapZoneCount() noexcept;
-		[[nodiscard]] static bool ContainsPtr(HeapZoneBase const& heapZone, void const* const ptr);
 		[[nodiscard]] static HeapZoneBase* FindHeapZoneForPtr(void const* const ptr);
 
 		[[nodiscard]] HeapZoneInfo& Init(HeapZoneBase* const parentZone, uInt const numBytes, std::string const& debugName);
@@ -54,7 +53,8 @@ namespace nabi_allocator
 		[[nodiscard]] inline std::string const& GetDebugName() const noexcept;
 #endif // ifdef NA_DEBUG
 
-		inline bool IsInitialized() const noexcept;
+		[[nodiscard]] inline bool IsInitialized() const noexcept;
+		[[nodiscard]] inline bool ContainsPtr(void const* const ptr) const;
 
 	protected:
 		HeapZoneInfo m_ZoneInfo;

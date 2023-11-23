@@ -37,4 +37,9 @@ namespace nabi_allocator
 	{
 		return m_ZoneInfo.m_Start && m_ZoneInfo.m_End;
 	}
+
+	inline bool HeapZoneBase::ContainsPtr(void const* const ptr) const
+	{
+		return memory_operations::IsPtrInRange(m_ZoneInfo.m_Start, m_ZoneInfo.m_End, NA_TO_UPTR(ptr));
+	}
 } // namespace nabi_allocator
