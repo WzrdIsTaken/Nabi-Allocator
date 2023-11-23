@@ -23,6 +23,7 @@
 
 namespace nabi_allocator
 {
+	class HeapZoneBase;
 	class HeapZoneScope;
 } // namespace nabi_allocator
 
@@ -51,5 +52,11 @@ namespace nabi_allocator
 		UnmanagedHeap m_UnmanagedHeap;
 	};
 
-	inline UnmanagedHeap const& c_UnmanagedHeap = MemoryCommand::Instance().GetUnmanagedHeap();
+	// The whole workflow with this UnmanagedHeap heap is so jank (here and in the cpp), but honestly...
+	// I kinda like it xD. I'll change it later if need be. As for now, its fine.......
+	inline HeapZoneBase /*const*/& c_UnmanagedHeap =
+		reinterpret_cast<HeapZoneBase&>(
+			const_cast<UnmanagedHeap&>(
+				MemoryCommand::Instance().GetUnmanagedHeap()
+		));
 } // namespace nabi_allocator

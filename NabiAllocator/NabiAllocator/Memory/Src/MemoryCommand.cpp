@@ -61,10 +61,18 @@ namespace nabi_allocator
 			NA_GET_WITH_FALLBACK(topHeapZoneScope->GetMemoryTag(), g_LastMemoryTag, topMemoryTag, *);
 #endif // ifdef NA_MEMORY_TAGGING
 
-			memory = topHeapZone->Allocate(NA_MAKE_ALLOCATION_INFO(numBytes, topMemoryTag));
+			if (topHeapZone == &c_UnmanagedHeap)
+			{
+				goto unmanagedAllocatorAlloc;
+			}
+			else
+			{
+				memory = topHeapZone->Allocate(NA_MAKE_ALLOCATION_INFO(numBytes, topMemoryTag));
+			}
 		}
 		else
 		{
+		unmanagedAllocatorAlloc:
 			memory = m_UnmanagedHeap.Allocate(numBytes);
 		}
 
@@ -75,21 +83,33 @@ namespace nabi_allocator
 	{
 		if (g_LastHeapZone)
 		{
-			if (g_LastHeapZone->ContainsPtr(memory))
+			if (g_LastHeapZone == &c_UnmanagedHeap)
 			{
-				g_LastHeapZone->Free(memory);
+				goto unmanagedAllocatorFree;
 			}
 			else
 			{
-				HeapZoneBase* const heapZoneWhichMadeAllocation = HeapZoneBase::FindHeapZoneForPtr(memory);
-				if (heapZoneWhichMadeAllocation)
+				if (g_LastHeapZone->ContainsPtr(memory))
 				{
-					heapZoneWhichMadeAllocation->Free(memory);
+					g_LastHeapZone->Free(memory);
+				}
+				else
+				{
+					HeapZoneBase* const heapZoneWhichMadeAllocation = HeapZoneBase::FindHeapZoneForPtr(memory);
+					if (heapZoneWhichMadeAllocation)
+					{
+						heapZoneWhichMadeAllocation->Free(memory);
+					}
+					else
+					{
+						goto unmanagedAllocatorFree;
+					}
 				}
 			}
 		}
 		else
 		{
+		unmanagedAllocatorFree:
 			m_UnmanagedHeap.Free(memory);
 		}
 	}

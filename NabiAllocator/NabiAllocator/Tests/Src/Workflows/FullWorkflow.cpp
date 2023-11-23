@@ -146,9 +146,17 @@ namespace nabi_allocator::tests
 
 		// Switch tag and allocate
 		{
-			NA_SET_HEAP_ZONE_SCOPE(nullptr, type_utils::ToUnderlying(MemoryTag::Rendering));
+			NA_SET_HEAP_ZONE_SCOPE(c_SameZone, type_utils::ToUnderlying(MemoryTag::Rendering));
 			auto const* const allocation = new int();
 			EXPECT_TRUE(verifyBlockMemoryTag(childZoneStart, MemoryTag::Rendering));
+			delete allocation;
+		}
+
+		// Switch to the unmanaged heap and allocate
+		{
+			NA_SET_HEAP_ZONE_SCOPE(&c_UnmanagedHeap, c_SameTag);
+			auto const* const allocation = new int(21);
+			EXPECT_TRUE(allocation); EXPECT_EQ(*allocation, 21);
 			delete allocation;
 		}
 
