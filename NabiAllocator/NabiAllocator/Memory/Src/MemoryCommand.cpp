@@ -46,7 +46,7 @@ namespace nabi_allocator
 		void* memory = nullptr;
 
 		HeapZoneScope const* const topHeapZoneScope = GetTopHeapZoneScope();
-		if (topHeapZoneScope) [[likely]]
+		if (topHeapZoneScope)
 		{
 			HeapZoneBase* topHeapZone = nullptr;
 			memoryTag topMemoryTag = c_NullMemoryTag;
@@ -58,7 +58,7 @@ namespace nabi_allocator
 
 			memory = topHeapZone->Allocate(NA_MAKE_ALLOCATION_INFO(numBytes, topMemoryTag));
 		}
-		else [[unlikely]]
+		else
 		{
 			memory = std::malloc(static_cast<std::size_t>(numBytes));
 		}
@@ -73,14 +73,15 @@ namespace nabi_allocator
 			if (HeapZoneBase::ContainsPtr(*g_LastHeapZone, memory))
 			{
 				g_LastHeapZone->Free(memory);
-				return;
 			}
-		}
-		
-		HeapZoneBase* const heapZoneWhichMadeAllocation = HeapZoneBase::FindHeapZoneForPtr(memory);
-		if (heapZoneWhichMadeAllocation)
-		{
-			heapZoneWhichMadeAllocation->Free(memory);
+			else
+			{
+				HeapZoneBase* const heapZoneWhichMadeAllocation = HeapZoneBase::FindHeapZoneForPtr(memory);
+				if (heapZoneWhichMadeAllocation)
+				{
+					heapZoneWhichMadeAllocation->Free(memory);
+				}
+			}
 		}
 		else
 		{
@@ -116,16 +117,13 @@ namespace nabi_allocator
 
 	HeapZoneScope const* const MemoryCommand::GetTopHeapZoneScope() const noexcept
 	{
-		if (!g_HeapZoneScopes.empty()) [[likely]]
+		HeapZoneScope const* topHeapZoneScope = nullptr;
+		if (!g_HeapZoneScopes.empty())
 		{
-			return &g_HeapZoneScopes.top().get();
-		}
-		else [[unlikely]]
-		{
-			return nullptr;
+			topHeapZoneScope = &g_HeapZoneScopes.top().get();
 		}
 
-		return nullptr;
+		return topHeapZoneScope;
 	}
 } // namespace nabi_allocator
 
