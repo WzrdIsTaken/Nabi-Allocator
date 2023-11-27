@@ -156,7 +156,7 @@ namespace nabi_allocator
 
 	template<StackAllocatorSettings Settings>
 	std::deque<AllocatorBlockInfo> StackAllocator<Settings>::IterateThroughHeapZone(
-		std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) const
+		std::optional<std::function<bool(AllocatorBlockInfo const&)>> const action, HeapZoneInfo const& heapZoneInfo) const
 	{
 		// Because we can't iterate forwards, as block headers are stored at the end of the payload,
 		// iterating through a stack allocators heapzone is a little clumsy. 

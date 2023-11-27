@@ -113,7 +113,7 @@ namespace nabi_allocator::tests::blueprints
 					}
 					else
 					{
-						NA_ASSERT_FAIL("Tag \"" << tag << "\" is not in the " NA_NAMEOF_LITERAL(tagToStringMap) " umap");
+						NA_ASSERT_FAIL("Tag " << NA_WRAP("\"", tag) << " is not in the " NA_NAMEOF_LITERAL(tagToStringMap) " umap");
 					}
 
 					return tagName;
@@ -166,8 +166,8 @@ namespace nabi_allocator::tests::blueprints
 			HeapZoneType heapZone{ HeapZoneBase::c_NoParent, heapZoneSize, "TestHeapZone" };
 			auto const& allocatorStats = heapZone.GetAllocator().GetStats();
 
-			auto verifyAllocatorStats =
-				[&allocatorStats](u64 activeAllocations, u64 activeBytes, u64 totalAllocations, u64 totalBytes) -> bool
+			auto const verifyAllocatorStats =
+				[&allocatorStats](u64 const activeAllocations, u64 const activeBytes, u64 const totalAllocations, u64 const totalBytes) -> bool
 				{
 					bool result = true;
 					result &= allocatorStats.m_ActiveAllocationCount == activeAllocations;

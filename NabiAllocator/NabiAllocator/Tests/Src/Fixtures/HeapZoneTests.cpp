@@ -55,7 +55,7 @@ namespace nabi_allocator::tests
 		}
 
 		std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
-			std::optional<std::function<bool(AllocatorBlockInfo const&)>> /*action*/, HeapZoneInfo const& /*heapZoneInfo*/) const override
+			std::optional<std::function<bool(AllocatorBlockInfo const&)>> const /*action*/, HeapZoneInfo const& /*heapZoneInfo*/) const override
 		{
 			NA_FUNCTION_NOT_IMPLEMENTED;
 			return {};

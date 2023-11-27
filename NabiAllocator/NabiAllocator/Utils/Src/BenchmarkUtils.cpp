@@ -16,7 +16,7 @@ namespace nabi_allocator::benchmark_utils
 	{
 		using namespace character_constants;
 
-		auto getTimeWithPrecision =
+		auto const getTimeWithPrecision =
 			[](f64 const time) -> std::string
 			{
 				int constexpr precision = std::numeric_limits<f64>::digits10;

@@ -157,7 +157,7 @@ namespace nabi_allocator
 
 	template<FreeListAllocatorSettings Settings>
 	std::deque<AllocatorBlockInfo> FreeListAllocator<Settings>::IterateThroughHeapZone(
-		std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) const
+		std::optional<std::function<bool(AllocatorBlockInfo const&)>> const action, HeapZoneInfo const& heapZoneInfo) const
 	{
 		std::deque<AllocatorBlockInfo> allocatorBlocks = {};
 		uInt progressThroughHeapZone = static_cast<uInt>(heapZoneInfo.m_Start);

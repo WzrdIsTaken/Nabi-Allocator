@@ -73,7 +73,7 @@ namespace nabi_allocator
 
 #ifdef NA_MEMORY_TAGGING
 	std::string GetFullMemoryUsage(AllocatorBase const& allocator, HeapZoneInfo const& heapZoneInfo,
-		std::optional<std::function<std::string(memoryTag const)>> tagAliases)
+		std::optional<std::function<std::string(memoryTag const)>> const tagAliases)
 	{
 		// Format: Tag[number of bytes] [space] [next entry]
 		std::ostringstream output = {};

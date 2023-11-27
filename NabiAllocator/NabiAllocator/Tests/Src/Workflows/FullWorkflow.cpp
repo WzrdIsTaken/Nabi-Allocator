@@ -119,7 +119,7 @@ namespace nabi_allocator::tests
 		HeapZone<DefaultFreeListAllocator> childZone = { &parentZone, childZoneNumBytes, "ChildZone" };
 		NA_SET_HEAP_ZONE_SCOPE(&childZone, type_utils::ToUnderlying(MemoryTag::General)); // Initial scope
 
-		auto verifyBlockMemoryTag =
+		auto const verifyBlockMemoryTag =
 			[](uPtr const heapZoneStart, MemoryTag const _memoryTag) -> bool
 			{
 				bool result = false;

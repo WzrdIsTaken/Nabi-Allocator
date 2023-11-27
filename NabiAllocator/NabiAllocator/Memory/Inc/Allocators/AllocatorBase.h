@@ -42,7 +42,7 @@ namespace nabi_allocator
 		virtual void Reset(HeapZoneInfo const& heapZoneInfo) = 0;
 
 		virtual std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
-			std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) const = 0;
+			std::optional<std::function<bool(AllocatorBlockInfo const&)>> const action, HeapZoneInfo const& heapZoneInfo) const = 0;
 
 #ifdef NA_TRACK_ALLOCATIONS
 		inline AllocatorStats const& GetStats() const noexcept;
@@ -50,7 +50,7 @@ namespace nabi_allocator
 
 	protected:
 		[[nodiscard]] AllocatorBlockInfo IterateThroughHeapZoneHelper(
-			uInt const blockHeaderPosition, std::function<s64(uInt const)> calculateBlockPaddingAdjustment) const;
+			uInt const blockHeaderPosition, std::function<s64(uInt const)> const calculateBlockPaddingAdjustment) const;
 
 #ifdef NA_TRACK_ALLOCATIONS
 		AllocatorStats m_AllocatorStats;

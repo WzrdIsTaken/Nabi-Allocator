@@ -53,7 +53,7 @@ namespace nabi_allocator
 		void Reset(HeapZoneInfo const& heapZoneInfo) override;
 
 		std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
-			std::optional<std::function<bool(AllocatorBlockInfo const&)>> action, HeapZoneInfo const& heapZoneInfo) const override;
+			std::optional<std::function<bool(AllocatorBlockInfo const&)>> const action, HeapZoneInfo const& heapZoneInfo) const override;
 
 	private:
 		NA_SET_COPY_MOVE_CONSTRUCTORS(StackAllocator, delete);

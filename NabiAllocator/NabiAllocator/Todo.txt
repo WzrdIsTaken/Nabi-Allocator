@@ -66,26 +66,8 @@ Tasks:
 - Then we need to learn how to profile and optimise what we have as much as we can!
 	- Apperently the TryCoalesceBlock function is the slowest now. It has some futher function calls in it though, and I can't see exactly what I can push futher right now.
 
-- If I manually free memory, do i need to call that memory's destructor?
-	- YES! you do [maybe???]. In eg ReleaseMemoryToOS you can do memory->~T();
-	- What about memorys constructor?
-	- Think about the best place to do this. Would it be in ReleaseMemoryToOS and HeapZone->Free? Then RequestMemoryFromOS and HeapZone->Allocate..?
-		- With constructors, would we have to perfect forward the constructors arguements?
+- Double check that the full workflow stuff is working ok... we are allocating a freelistallocator into a stack allocator with the same numbytes.. shoudlnt this fail?
 
-- Lower case folder names? 
-- do the test blueprints need the extra namespace as well..? [i think these should stay..?]
-
-- std::optional<std::function>>> *const*? <-?? wtf is this?
-- use NA_WRAP where we are doing \" \" atm?
-- Should my local std::function definitions be const? [like in AllocatorUtils.inl] and std::functions being passed into functions?
-- Allocate/Free multiple test?  in default tests?
-
-- Test for memory tag scopes / heap zone changing. (Unless this is handled in MemoryCommand? Add the test there if not) [WIP]
-	- This is WIP, we need the unmanaged allocator
-
-- About time we make the unmanaged allocator/heap zone i recon. this is needed for some tests and just generally
-
-- And then start bringing it all together with the new/delete operator overrides. Then all these other todos and python utils!
 - We also have some ctrl+f todods [I think they are all done now though?]
 - Should block headers / footers / other stuff be [header/footer] const* const? (where they can - check!)
 - Ops on inlinging some of MemoryCommand's functions? & [[likely]] and [[unlikely]] annotation?
@@ -95,9 +77,6 @@ Tasks:
 
 - can we assert if through the memory command we make an allocation too big? it just seems to crash atm
 
-- I think we have a todo above, but we need to make sure our implemenation still calls consturctors / destructors.
-- I think this needs to be done for when we default malloc/free as well [actually, maybe not?]
-
 - see this for proper new/delete replacement
   https://stackoverflow.com/questions/4134195/how-do-i-call-the-original-operator-new-if-i-have-overloaded-it
 
@@ -105,14 +84,6 @@ Tasks:
    "Static allocations will happen through the default allocation path, set as std::malloc/std::free."
 		- I think the unmanaged heap will have to be set up by the user, cos otherwise we will have some static variabls allocated there and others just by cpp
 	    -  We can just have a macro called like NA_SETUP / NA_DEFAULT_SETUP in a new config file, and they will set up an unmanaged heap and a statck/free list alloc on atop?
-
-- Should the memory command be thread local?
-	- Perhaps this is something to test/benchmark
-		- implement a macro like NA_THREAD_LOCAL_SINGLETON static MemoryCommand* ThreadLocalGet() {
-			thread_local MemoryCommand d;
-			return &d;
-		}
-	- I think there is a gap in my understanding here, research more
 
 - In the memory command, is the way we are routing to the default malloc/free most optimimal? (and just the general routing to the heap zone i guess..)
 - In the memory command, I'm using [[likely]] & [[unlikely]] in the implementation... thoughts on their usage?
@@ -126,19 +97,6 @@ Tasks:
 - Need to write some solid documentation for my allocator for the user research stuff
 	- Remeber to document that you can use the short namespace. NA_DEFINE_SHORT_NAMESPACE
 - Can we rename the containing folder to just "Allocator"? (so its Allocator, Tools) or would that cause too many error
-
-- note - it will be heap zone now memory command which had the mutex
-  right?
-  --
-  unamnaged alloc can still support memory tsgging
-  perhaod just create it (it will just be two funcs) statvially and ?
-  --
-  have a maxro like "na defaukt setup" whicu creates the stuff w/you having to do abything? i think at least once macro is good though for the setup
-
-  Is it worth having memory tracking etc inthe unamanaged heap? hoesntly, i think not. its meaant to be simple zero overhead. thats what it is
-  Also in the dis, like the lecturerer said, if youve done something once you dont need to do it over and over again to show knolwedge
-
-  We should have only written std::malloc/std::free at one point in the program: in MemoryConstants.inl
 
   Basic workflow test which does std::move? remember what brandon said
 
@@ -157,6 +115,40 @@ should they even be the same?
 i think if someone is using a memory allocator, they have some basic level of competiceyc
 
 Archive:
+- I think we have a todo above, but we need to make sure our implemenation still calls consturctors / destructors.
+- I think this needs to be done for when we default malloc/free as well [actually, maybe not?]
+- And then start bringing it all together with the new/delete operator overrides. Then all these other todos and python utils!
+- About time we make the unmanaged allocator/heap zone i recon. this is needed for some tests and just generally
+- Test for memory tag scopes / heap zone changing. (Unless this is handled in MemoryCommand? Add the test there if not) [WIP]
+	- This is WIP, we need the unmanaged allocator
+- Allocate/Free multiple test?  in default tests? [cba to write out all the possible values... this is tested in FullWorkflow / Benchmark anyway]
+- std::optional<std::function>>> *const*? <-?? wtf is this?
+- Should my local std::function definitions be const? [like in AllocatorUtils.inl] and std::functions being passed into functions?
+- If I manually free memory, do i need to call that memory's destructor?
+	- YES! you do [maybe???]. In eg ReleaseMemoryToOS you can do memory->~T();
+	- What about memorys constructor?
+	- Think about the best place to do this. Would it be in ReleaseMemoryToOS and HeapZone->Free? Then RequestMemoryFromOS and HeapZone->Allocate..?
+		- With constructors, would we have to perfect forward the constructors arguements?
+- note - it will be heap zone now memory command which had the mutex
+  right?
+  --
+  unamnaged alloc can still support memory tsgging
+  perhaod just create it (it will just be two funcs) statvially and ?
+  --
+  have a maxro like "na defaukt setup" whicu creates the stuff w/you having to do abything? i think at least once macro is good though for the setup
+- Is it worth having memory tracking etc inthe unamanaged heap? hoesntly, i think not. its meaant to be simple zero overhead. thats what it is
+- Also in the dis, like the lecturerer said, if youve done something once you dont need to do it over and over again to show knolwedge
+- Should the memory command be thread local?
+	- Perhaps this is something to test/benchmark
+		- implement a macro like NA_THREAD_LOCAL_SINGLETON static MemoryCommand* ThreadLocalGet() {
+			thread_local MemoryCommand d;
+			return &d;
+		}
+	- I think there is a gap in my understanding here, research more
+-  We should have only written std::malloc/std::free at one point in the program: in MemoryConstants.inl [and in the default allocator for benchmarks]
+- Lower case folder names? [Perhaps this would have been good to do at the start... but i cba to refactor everything now]
+- do the test blueprints need the extra namespace as well..? [i think these should stay..?]
+- use NA_WRAP where we are doing \" \" atm?
 - Make sure there is a default allocator that just uses malloc/free, not even a heap zone. have a heap zone scope for this
 - We also need a stack allocator / linear allocator. something basic just to be the parent of the other allocators
 - So: Unmanaged allocator, thread safe allocations. Then kinda done I think

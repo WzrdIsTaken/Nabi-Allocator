@@ -35,6 +35,6 @@ namespace nabi_allocator
 	[[nodiscard]] std::string GetMemoryUsage(AllocatorBase const& allocator, HeapZoneInfo const& heapZoneInfo);
 #ifdef NA_MEMORY_TAGGING
 	[[nodiscard]] std::string GetFullMemoryUsage(AllocatorBase const& allocator, HeapZoneInfo const& heapZoneInfo, 
-		 std::optional<std::function<std::string(u32 const)>> tagConverter = std::nullopt);
+		 std::optional<std::function<std::string(u32 const)>> const tagConverter = std::nullopt);
 #endif // #ifdef NA_MEMORY_TAGGING 
 } // namespace nabi_allocator
