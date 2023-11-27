@@ -26,8 +26,9 @@ namespace nabi_allocator::tests
 #ifdef NA_TESTS
 #	define NA_FIXTURE_NAME NA_TEST_FIXTURE_NAME(HeapZoneTests)
 
-	static uInt constexpr c_MockHeapZoneSize = 1u;
-	static uInt constexpr c_HeapZoneSize = 64u;
+	uInt constexpr c_MockHeapZoneSize = 1u;
+	uInt constexpr c_HeapZoneSize = 64u;
+	uInt constexpr c_LargeHeapZoneSize = 128u;
 
 	class MockAllocator final : public AllocatorBase
 	{
@@ -105,17 +106,14 @@ namespace nabi_allocator::tests
 
 	TEST(NA_FIXTURE_NAME, ParentZone)
 	{
-		/*
-		* TODO - Once we write the UnmanagedAllocator can use it here for this test I recon
-		HeapZone<MockAllocator> parentZone = { HeapZoneBase::c_NoParent, c_MockHeapZoneSize, "ParentZone" };
-		HeapZone<MockAllocator> childZone = { &parentZone, c_MockHeapZoneSize, "ChildZone" };
+		HeapZone<DefaultFreeListAllocator> parentZone = { HeapZoneBase::c_NoParent, c_LargeHeapZoneSize, "ParentZone" };
+		HeapZone<DefaultFreeListAllocator> childZone = { &parentZone, c_HeapZoneSize, "ChildZone" };
 
 		HeapZoneInfo const& parentZoneInfo = parentZone.GetZoneInfo();
 		HeapZoneInfo const& childZoneInfo = childZone.GetZoneInfo();
 
-		EXPECT_EQ(parentZoneInfo.m_Start, childZoneInfo.m_Start);
-		EXPECT_EQ(parentZoneInfo.m_End, childZoneInfo.m_End);
-		*/
+		EXPECT_EQ(parentZoneInfo.m_Start + c_BlockHeaderSize, childZoneInfo.m_Start);
+		EXPECT_EQ(parentZoneInfo.m_Start + c_BlockHeaderSize + c_HeapZoneSize, childZoneInfo.m_End);
 	}
 
 	TEST(NA_FIXTURE_NAME, AllHeapZonesUpdates)
@@ -139,8 +137,8 @@ namespace nabi_allocator::tests
 
 	TEST(NA_FIXTURE_NAME, FindHeapZoneForPtr)
 	{
-		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone1 = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone1" };
-		HeapZone<FreeListAllocator<c_FreeListAllocatorDefaultSettings>> heapZone2 = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone2" };
+		HeapZone<DefaultFreeListAllocator> heapZone1 = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone1" };
+		HeapZone<DefaultFreeListAllocator> heapZone2 = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone2" };
 
 		void* ptr1 = heapZone1.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
 		void* ptr2 = heapZone2.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));

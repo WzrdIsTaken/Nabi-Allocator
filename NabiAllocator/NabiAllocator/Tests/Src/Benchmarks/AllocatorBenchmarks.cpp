@@ -40,7 +40,9 @@ namespace nabi_allocator::tests
 	bool constexpr c_PrintBenchmarkResults = true;
 	uInt constexpr c_HeapZoneSize = 20_MB;
 
-	class UntilWeWriteAnUnmangedAllocator final : public HeapZoneBase // TODO write an unmanged allocator / heap 'zone' and replace this..!
+	// This allocator just wraps malloc/free so we can benchmark against the base implementation.
+	// Even the UnmanagedHeap routes through [Request/Release]Memory[From/To]OS which has some asserts. 
+	class DefaultAllocator final : public HeapZoneBase 
 	{
 	public:
 		[[nodiscard]] inline void* Allocate(AllocationInfo const& allocationInfo) override
@@ -63,13 +65,13 @@ namespace nabi_allocator::tests
 
 	NA_BENCHMARK(NA_FIXTURE_NAME, UnmanagedAllocatorAllocThenFree)
 	{
-		UntilWeWriteAnUnmangedAllocator test = {};
+		DefaultAllocator test = {};
 		blueprints::AllocatorAllocThenFree(test, c_PrintBenchmarkResults);
 	}
 
 	NA_BENCHMARK(NA_FIXTURE_NAME, UnmanagedAllocatorVaryingSizeAllocThenFree)
 	{
-		UntilWeWriteAnUnmangedAllocator test = {};
+		DefaultAllocator test = {};
 		blueprints::AllocatorVaryingSizeAllocThenFree(test, c_PrintBenchmarkResults);
 	}
 
