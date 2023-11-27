@@ -77,9 +77,6 @@ Tasks:
 
 - can we assert if through the memory command we make an allocation too big? it just seems to crash atm
 
-- see this for proper new/delete replacement
-  https://stackoverflow.com/questions/4134195/how-do-i-call-the-original-operator-new-if-i-have-overloaded-it
-
 - If we change the default allocation in the memory command to eg a pre created heap zone, then change the notes comment
    "Static allocations will happen through the default allocation path, set as std::malloc/std::free."
 		- I think the unmanaged heap will have to be set up by the user, cos otherwise we will have some static variabls allocated there and others just by cpp
@@ -100,11 +97,11 @@ Tasks:
 
   Basic workflow test which does std::move? remember what brandon said
 
-- write some tests for this unamanged heap stuff..
-- have a test for c_SameTag and c_SameZone
-- Have a test for the mutex/scopedlock/NA_THREAD_SAFE_HEAP_ZONE stuff
+
 
 - We have a lot of branching in MemoryCommand::Allocate/Free
+	- We could remove some branching if we just pushed back the unamanged heap by default into the list?
+		- But would that play nice with the thread local list?
 
 - Write some "full workflow benchmarks"
   eg something which goes through the overridden/default new/delete operators. Then we can really benchmark
@@ -112,9 +109,14 @@ Tasks:
 
 should they even be the same?
 
-i think if someone is using a memory allocator, they have some basic level of competiceyc
+- see this for proper new/delete replacement
+  https://stackoverflow.com/questions/4134195/how-do-i-call-the-original-operator-new-if-i-have-overloaded-it
 
 Archive:
+- have a test for c_SameTag and c_SameZone
+- Have a test for the mutex/scopedlock/NA_THREAD_SAFE_HEAP_ZONE stuff
+- write some tests for this unamanged heap stuff..
+- i think if someone is using a memory allocator, they have some basic level of competiceyc :p
 - I think we have a todo above, but we need to make sure our implemenation still calls consturctors / destructors.
 - I think this needs to be done for when we default malloc/free as well [actually, maybe not?]
 - And then start bringing it all together with the new/delete operator overrides. Then all these other todos and python utils!

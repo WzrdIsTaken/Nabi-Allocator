@@ -1,3 +1,6 @@
+// STD Headers
+#include <thread>
+
 // Library Headers
 #include "gtest\gtest.h"
 
@@ -5,13 +8,18 @@
 #include "Config.h"
 
 // Nabi Headers
+#include "Allocators\FreeListAllocator\FreeListAllocator.h"
+#include "HeapZone\HeapZone.h"
 #include "HeapZone\HeapZoneScope.h"
 #include "IntegerTypes.h"
 #include "MemoryCommand.h"
 #include "TestConstants.h"
 
 /**
- * Tests for MemoryCommand
+ * Tests for MemoryCommand.
+ * 
+ * Note:
+ *	- Some stuff is tested in FullWorldflow.cpp -> BasicWorkflow & FullWorkFlow (it just makes more sense to do it there).
 */
 
 namespace nabi_allocator::tests
@@ -49,6 +57,28 @@ namespace nabi_allocator::tests
 		}
 		
 		EXPECT_FALSE(memoryCommand.GetTopHeapZoneScope());
+	}
+
+	TEST(NA_FIXTURE_NAME, ThreadLocalHeapZoneScopes)
+	{
+		if (std::thread::hardware_concurrency() >= 2u)
+		{
+			// I know this looks a little bot, and its probs is, but this test does fail if you 
+			// change MemoryCommand->g_HeapZoneScopes to 'static' instead of 'threadlocal'
+
+			MemoryCommand memoryCommand = {};
+			auto const pushHeapZoneScope =
+				[&memoryCommand]() -> void
+				{
+					HeapZoneScope scope = { &c_UnmanagedHeap, std::nullopt, &memoryCommand };
+					EXPECT_EQ(memoryCommand.GetHeapZoneScopeCount(), 1u);
+				};
+
+			HeapZoneScope scope = { &c_UnmanagedHeap, std::nullopt, &memoryCommand };
+			std::thread thread(pushHeapZoneScope);
+			EXPECT_EQ(memoryCommand.GetHeapZoneScopeCount(), 1u);
+			thread.join();
+		}
 	}
 
 #	undef NA_FIXTURE_NAME

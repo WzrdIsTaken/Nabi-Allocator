@@ -27,7 +27,7 @@ namespace nabi_allocator
 	class UnmanagedHeap final
 	{
 	public:
-		inline void* Allocate(uInt const numBytes) const;
+		[[nodiscard]] inline void* Allocate(uInt const numBytes) const;
 		inline void Free(void* const memory) const;
 
 	private:

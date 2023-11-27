@@ -1,3 +1,6 @@
+// STD Headers
+#include <thread>
+
 // Library Headers
 #include "gtest\gtest.h"
 
@@ -152,6 +155,34 @@ namespace nabi_allocator::tests
 		heapZone1.Free(ptr1);
 		heapZone2.Free(ptr2);
 	}
+
+#	ifdef NA_THREAD_SAFE_HEAP_ZONE
+		TEST(NA_FIXTURE_NAME, MultipleThreadAllocations)
+		{
+			// i can't really think of a good test for this right now... just if it doesn't crash its succeeded right? xd
+			// i can confirm that as of 27/11/23 it crashes if i comment out NA_THREAD_SAFE_HEAP_ZONE and run this :p
+
+			if (std::thread::hardware_concurrency() >= 3u)
+			{
+				HeapZone<DefaultFreeListAllocator> heapZone = { HeapZoneBase::c_NoParent, c_LargeHeapZoneSize, "TestHeapZone" };
+				auto const allocateThroughHeapZone =
+					[&heapZone]() -> void
+				{
+					for (u32 i = 0u; i < 100u; ++i)
+					{
+						void* const memory = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
+						heapZone.Free(memory);
+					}
+				};
+
+				std::thread thread1(allocateThroughHeapZone);
+				std::thread thread2(allocateThroughHeapZone);
+
+				thread1.join();
+				thread2.join();
+			}
+		}
+#	endif // ifdef NA_THREAD_SAFE_HEAP_ZONE
 
 #	undef NA_FIXTURE_NAME
 #endif // ifdef NA_TESTS

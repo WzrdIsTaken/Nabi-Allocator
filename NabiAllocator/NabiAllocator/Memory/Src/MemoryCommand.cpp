@@ -19,7 +19,6 @@
 	{ \
 		if (!current) \
 		{ \
-			NA_ASSERT(fallback, "Can't fallback if its never been set"); \
 			toSet = fallback; \
 		} \
 		else \
@@ -154,6 +153,11 @@ namespace nabi_allocator
 	UnmanagedHeap const& MemoryCommand::GetUnmanagedHeap() const noexcept
 	{
 		return m_UnmanagedHeap;
+	}
+
+	uInt MemoryCommand::GetHeapZoneScopeCount() const noexcept
+	{
+		return static_cast<uInt>(g_HeapZoneScopes.size());
 	}
 } // namespace nabi_allocator
 

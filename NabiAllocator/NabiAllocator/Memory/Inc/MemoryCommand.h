@@ -45,6 +45,7 @@ namespace nabi_allocator
 
 		[[nodiscard]] HeapZoneScope const* const GetTopHeapZoneScope() const noexcept;
 		[[nodiscard]] UnmanagedHeap const& GetUnmanagedHeap() const noexcept;
+		[[nodiscard]] uInt GetHeapZoneScopeCount() const noexcept;
 
 	private:
 		NA_SET_COPY_MOVE_CONSTRUCTORS(MemoryCommand, delete);
