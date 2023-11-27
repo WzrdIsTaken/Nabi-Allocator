@@ -60,6 +60,7 @@ Tasks:
 - Find if things have been overriden by checksums [ask brandon] [ngl idk if this is something i can be asked to do. but we can write about it in report]
 
 - Will be interesting to profile with NA_THREAD_SAFE_HEAP_ZONE on and off
+- Will be good to profile FirstFit vs BestFit, and compair the memory layouts they produce
 
 *General
 - Then we need to learn how to profile and optimise what we have as much as we can!
@@ -123,6 +124,7 @@ Tasks:
 	- https://stackoverflow.com/questions/63799934/how-to-annotate-a-bar-plot-and-add-a-custom-legend
 
 - Need to write some solid documentation for my allocator for the user research stuff
+	- Remeber to document that you can use the short namespace. NA_DEFINE_SHORT_NAMESPACE
 - Can we rename the containing folder to just "Allocator"? (so its Allocator, Tools) or would that cause too many error
 
 - note - it will be heap zone now memory command which had the mutex

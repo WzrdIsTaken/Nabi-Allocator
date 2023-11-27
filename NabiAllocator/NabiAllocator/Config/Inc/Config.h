@@ -8,6 +8,12 @@
 #define NA_OVERRIDE_NEW_DELETE // Routes all new/delete calls through NabiAllocator's MemoryCommand
 #define NA_DEBUG // Enables asserts, logging, etc
 
+//#define NA_DEFINE_SHORT_NAMESPACE // Adds the option to use a shorter namespace, rather than typing out nabi_allocator every time...
+#ifdef NA_DEFINE_SHORT_NAMESPACE
+	namespace nabi_allocator {};
+	namespace na = nabi_allocator;
+#endif // ifdef NA_DEFINE_SHORT_NAMESPACE
+
 // Heap Zone
 #define NA_THREAD_SAFE_HEAP_ZONE // Adds a mutex/lock in HeapZone::Allocate and Free (default std::malloc/std::free are already thread safe)
 

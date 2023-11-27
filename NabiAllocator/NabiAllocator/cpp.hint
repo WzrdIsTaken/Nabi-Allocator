@@ -15,6 +15,7 @@
 #define NA_TESTS
 #define NA_THREAD_SAFE_HEAP_ZONE
 #define NA_TRACK_ALLOCATIONS
+#define NA_DEFINE_SHORT_NAMESPACE
 #define NA_WORKFLOWS
 
 // DebugUtils.h
