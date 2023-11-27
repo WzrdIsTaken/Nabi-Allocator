@@ -25,6 +25,9 @@ namespace nabi_allocator
 	template<is_allocator T>
 	inline void* HeapZone<T>::Allocate(AllocationInfo const& allocationInfo)
 	{
+#ifdef NA_THREAD_SAFE_HEAP_ZONE
+		std::scoped_lock lock(m_Mutex);
+#endif // ifdef NA_THREAD_SAFE_HEAP_ZONE
 		return m_Allocator.Allocate(allocationInfo, m_ZoneInfo);
 	}
 
@@ -32,6 +35,9 @@ namespace nabi_allocator
 	inline void HeapZone<T>::Free(void* const memory)
 	{
 		// Why this function doesn't set "memory" to nullptr: https://stackoverflow.com/q/704466/8890269
+#ifdef NA_THREAD_SAFE_HEAP_ZONE
+		std::scoped_lock lock(m_Mutex);
+#endif // ifdef NA_THREAD_SAFE_HEAP_ZONE
 		return m_Allocator.Free(memory, m_ZoneInfo);
 	}
 

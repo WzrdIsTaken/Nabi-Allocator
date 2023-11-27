@@ -1,5 +1,11 @@
 #pragma once
 
+// STD Headers
+#include <mutex>
+
+// Config Headers
+#include "Config.h"
+
 // Nabi Header
 #include "Allocators/AllocatorBase.h"
 #include "HeapZoneBase.h"
@@ -35,6 +41,9 @@ namespace nabi_allocator
 		NA_SET_COPY_MOVE_CONSTRUCTORS(HeapZone, delete);
 
 		T m_Allocator;
+#ifdef NA_THREAD_SAFE_HEAP_ZONE
+		std::mutex m_Mutex;
+#endif // ifdef NA_THREAD_SAFE_HEAP_ZONE
 	};
 } // namespace nabi_allocator
 

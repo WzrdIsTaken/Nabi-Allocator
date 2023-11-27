@@ -59,14 +59,11 @@ Tasks:
 
 - Find if things have been overriden by checksums [ask brandon] [ngl idk if this is something i can be asked to do. but we can write about it in report]
 
+- Will be interesting to profile with NA_THREAD_SAFE_HEAP_ZONE on and off
+
 *General
 - Then we need to learn how to profile and optimise what we have as much as we can!
 	- Apperently the TryCoalesceBlock function is the slowest now. It has some futher function calls in it though, and I can't see exactly what I can push futher right now.
-
-- Make the allocations thread safe? std::scoped_lock in HeapZone alloc/free?
-- Gotta find somewhere we can wack a goto in our code... :D
-
-- static std::vector<HeapZoneBase*> s_AllHeapZones; in cpp?
 
 - Make sure there is a default allocator that just uses malloc/free, not even a heap zone. have a heap zone scope for this
 - We also need a stack allocator / linear allocator. something basic just to be the parent of the other allocators
@@ -128,8 +125,6 @@ Tasks:
 	- https://stackoverflow.com/questions/19125722/adding-a-matplotlib-legend
 	- https://stackoverflow.com/questions/63799934/how-to-annotate-a-bar-plot-and-add-a-custom-legend
 
-- So: Unmanaged allocator, thread safe allocations. Then kinda done I think
-
 - Need to write some solid documentation for my allocator for the user research stuff
 - Can we rename the containing folder to just "Allocator"? (so its Allocator, Tools) or would that cause too many error
 
@@ -146,6 +141,14 @@ Tasks:
 
   We should have only written std::malloc/std::free at one point in the program: in MemoryConstants.inl
 
+  Basic workflow test which does std::move? remember what brandon said
+
+- write some tests for this unamanged heap stuff..
+- have a test for c_SameTag and c_SameZone
+- Have a test for the mutex/scopedlock/NA_THREAD_SAFE_HEAP_ZONE stuff
+
+- We have a lot of branching in MemoryCommand::Allocate/Free
+
 - Write some "full workflow benchmarks"
   eg something which goes through the overridden/default new/delete operators. Then we can really benchmark
   just like the other one. loops and the like probs
@@ -155,6 +158,10 @@ should they even be the same?
 i think if someone is using a memory allocator, they have some basic level of competiceyc
 
 Archive:
+- So: Unmanaged allocator, thread safe allocations. Then kinda done I think
+- Make the allocations thread safe? std::scoped_lock in HeapZone alloc/free?
+- static std::vector<HeapZoneBase*> s_AllHeapZones; in cpp?
+- Gotta find somewhere we can wack a goto in our code... :D
 - Python ultities
 - ^ These are the focus rn. Get the project into a submittable state!
 - Annotate the MemoryCommand::Allocate/Free if checks with likely and unlikely as well?
