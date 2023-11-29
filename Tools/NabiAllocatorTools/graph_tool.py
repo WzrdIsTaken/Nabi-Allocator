@@ -6,11 +6,15 @@ import numpy as np
 import matplotlib.patches 
 import matplotlib.pyplot as plt
 
+# Pie chart stuff
 ALLOCATED_COLOUR = "orangered"
 OUTLINE_COLOUR = "black"
 OUTLINE_WIDTH = 1
 PADDED_COLOUR = "salmon"
 FREE_COLOUR = "greenyellow"
+
+# Bar chart stuff
+INDIVIDUAL_BAR_WIDTH = 0.27
 
 def graph_memory_layout(memory_layout):
     # Format: F(ree)/A(llocated)[number of bytes]P(adding)[number of bytes] [space] [next entry] | Eg: A10P5 A10P5 F10 A20P0 A5P1 A15P3 A14P0 F15
@@ -89,7 +93,7 @@ def graph_memory_usage(memory_usage):
     plt.show()
 
 def graph_full_memory_usage(memory_usage):
-    # Format: Tag[number of bytes] [space] [next entry] | Eg: Rendering100 Physics50 Free25
+    # Format: [tag][number of bytes] [space] [next entry] | Eg: Rendering100 Physics50 Free25
 
     # Extract infomation
     usage = memory_usage.split()
@@ -119,6 +123,53 @@ def graph_full_memory_usage(memory_usage):
     # Draw the chart
     plt.show()
 
+def graph_benchmark_results(benchmark_results):
+    # Format: [category] [space] [allocator[,allocator(optional)] [space] [time[,time(optional)]] [next entry] | Eg: 10kAllocThenFree FreeListAllocator,StackAllocator 0.01,0.005
+    '''
+        in case we need this... (though i don't think it looks good on this graph)
+
+        def label_top_of_bar(bars):
+            for bar in bars:
+                height = bar.get_height()
+                ax.text(bar.get_x() + bar.get_width()/2.0, 1.05 * height, '%d'%int(height), ha='center', va='bottom')
+    '''
+
+    # Extract infomation
+    results = benchmark_results.split()
+    categories = []
+    allocators = []
+    times = []
+
+    i = 0
+    while i < len(results):
+        categories.append(results[i])
+        allocators.append(results[i + 1].split(','))
+        times.append([float(time) for time in results[i + 2].split(',')])
+        i += 3
+
+    unique_allocators = len(allocators[0])
+    number_of_bar_groups = len(allocators)
+    bar_group_locations = np.arange(number_of_bar_groups)
+    bar_colours = plt.cm.tab10(np.arange(unique_allocators))
+
+    # Create bar chart
+    fig = plt.figure()
+    ax = fig.add_subplot()
+
+    bars = []
+    for i in range(0, len(allocators)):
+        for j in range(0, unique_allocators):
+            allocator_times = [times[i][j] for i in range(len(times))]
+            bars.append(ax.bar(bar_group_locations + (INDIVIDUAL_BAR_WIDTH * j), allocator_times, INDIVIDUAL_BAR_WIDTH, color=bar_colours[j]))
+
+    ax.set_ylabel("Time (ms)")
+    ax.set_xticks(bar_group_locations + INDIVIDUAL_BAR_WIDTH * (len(allocators) - (len(allocators) - 1)) / 2)
+    ax.set_xticklabels(categories) 
+    ax.legend(bars, allocators[0])
+
+    # Draw the chart
+    plt.show()
+
 def parse_file(file_path):
     file = open(file_path, "r")
     output = file.read()
@@ -137,8 +188,10 @@ def action_user_input(option, user_input):
         graph_memory_layout(data)
     elif option is "2":
         graph_memory_usage(data)
-    else: # option is "3"
+    elif option is "3":
         graph_full_memory_usage(data)
+    else: # option is "4"
+        graph_benchmark_results(data)
 
 def menu():
     running = True
@@ -149,14 +202,15 @@ def menu():
         print("1) Memory Layout")
         print("2) Memory Usage")
         print("3) Full Memory Usage")
-        print("4) Exit")
+        print("4) Benchmark Results")
+        print("5) Exit")
 
         # Example input: C:\Users\Ben\Desktop\Game Dev\NabiAllocator\Nabi-Allocator\logs\Test.txt
         user_input = input("")
 
-        if (user_input[0] is '1' or user_input[0] is '2' or user_input[0] is '3'):
+        if (user_input[0] is '1' or user_input[0] is '2' or user_input[0] is '3' or user_input[0] is '4'):
             action_user_input(user_input[0], user_input[2:])
-        elif (user_input == "4"):
+        elif (user_input == "5"):
             running = False
         else:
             print("Invalid input\n")
