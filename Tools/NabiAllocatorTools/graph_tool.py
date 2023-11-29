@@ -3,7 +3,7 @@
 # Matplotlib colours: https://matplotlib.org/stable/gallery/color/named_colors.html
 
 import numpy as np
-import matplotlib.patches 
+import matplotlib.patches as mPatch
 import matplotlib.pyplot as plt
 
 # Pie chart stuff
@@ -59,8 +59,11 @@ def graph_memory_layout(memory_layout):
 
     center = wedges[0].center
     radius = wedges[0].r
-    circle = matplotlib.patches.Circle(center, radius, fill=False, edgecolor=OUTLINE_COLOUR, linewidth=OUTLINE_WIDTH)
+    circle = mPatch.Circle(center, radius, fill=False, edgecolor=OUTLINE_COLOUR, linewidth=OUTLINE_WIDTH)
     ax.add_patch(circle)
+
+    legend_elements = [mPatch.Patch(color=ALLOCATED_COLOUR, label="Allocated"), mPatch.Patch(color=PADDED_COLOUR, label="Padded"), mPatch.Patch(color=FREE_COLOUR, label="Free")]
+    ax.legend(handles=legend_elements, bbox_to_anchor=(1.05, 1), loc="upper right")
 
     plt.axis("equal")
     plt.title("Memory Layout")
@@ -81,7 +84,8 @@ def graph_memory_usage(memory_usage):
     labels = ["Allocated", "Free"]
     colours = [ALLOCATED_COLOUR, FREE_COLOUR]
 
-    wedges = plt.pie(sizes, labels=labels, colors=colours, autopct='%1.1f%%')
+    fig, ax = plt.subplots()
+    wedges = plt.pie(sizes, colors=colours, autopct='%1.1f%%') #labels=labels (We can use this param and remove the legend if we want to display the data like that)
     for wedge in wedges[0]:
         wedge.set_lw(OUTLINE_WIDTH)
         wedge.set_edgecolor(OUTLINE_COLOUR)
@@ -89,7 +93,10 @@ def graph_memory_usage(memory_usage):
     plt.axis("equal")
     plt.title("Memory Usage")
 
-     # Draw the chart
+    legend_elements = [mPatch.Patch(color=ALLOCATED_COLOUR, label="Allocated"), mPatch.Patch(color=FREE_COLOUR, label="Free")]
+    ax.legend(handles=legend_elements, bbox_to_anchor=(1.05, 1), loc="upper right")
+
+    # Draw the chart
     plt.show()
 
 def graph_full_memory_usage(memory_usage):
@@ -112,10 +119,16 @@ def graph_full_memory_usage(memory_usage):
     # Create pie chart
     colours = plt.cm.tab10(np.arange(len(labels))) # Create a different colours for each entry
 
-    wedges = plt.pie(sizes, labels=labels, colors=colours, autopct='%1.1f%%')
+    fig, ax = plt.subplots()
+    wedges = plt.pie(sizes, colors=colours, autopct='%1.1f%%') #labels=labels (We can use this param and remove the legend if we want to display the data like that)
     for wedge in wedges[0]:
         wedge.set_lw(OUTLINE_WIDTH)
         wedge.set_edgecolor(OUTLINE_COLOUR)
+
+    legend_elements = []
+    for i in range(0, len(labels)):
+        legend_elements.append(mPatch.Patch(color=colours[i], label=labels[i]))
+    ax.legend(handles=legend_elements, bbox_to_anchor=(1.125, 1), loc="upper right")
 
     plt.axis("equal")
     plt.title("Full Memory Usage")
@@ -124,7 +137,7 @@ def graph_full_memory_usage(memory_usage):
     plt.show()
 
 def graph_benchmark_results(benchmark_results):
-    # Format: [category] [space] [allocator[,allocator(optional)] [space] [time[,time(optional)]] [next entry] | Eg: 10kAllocThenFree FreeListAllocator,StackAllocator 0.01,0.005
+    # Format: [category] [space] [allocator[,allocator(s)(optional)] [space] [time[,time(s)(optional)]] [next entry] | Eg: 10kAllocThenFree FreeListAllocator,StackAllocator 0.01,0.005
     '''
         in case we need this... (though i don't think it looks good on this graph)
 
@@ -165,7 +178,7 @@ def graph_benchmark_results(benchmark_results):
     ax.set_ylabel("Time (ms)")
     ax.set_xticks(bar_group_locations + INDIVIDUAL_BAR_WIDTH * (len(allocators) - (len(allocators) - 1)) / 2)
     ax.set_xticklabels(categories) 
-    ax.legend(bars, allocators[0])
+    ax.legend(bars, allocators[0]) # See "bbox_to_anchor" and "loc" params used in the other graph's legends if we need to move this one
 
     # Draw the chart
     plt.show()

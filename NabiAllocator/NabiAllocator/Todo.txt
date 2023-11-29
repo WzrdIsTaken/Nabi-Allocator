@@ -87,10 +87,6 @@ Tasks:
 	- If we remove them or decide 100% then remove the questionging comment in notes.
 	- **I think this is something we could benchmark and then write about on dis..?**
 
-- On all Python graphs have a label / legend - total alloc/ total free etc?
-	- https://stackoverflow.com/questions/19125722/adding-a-matplotlib-legend
-	- https://stackoverflow.com/questions/63799934/how-to-annotate-a-bar-plot-and-add-a-custom-legend
-
 - Need to write some solid documentation for my allocator for the user research stuff
 	- Remeber to document that you can use the short namespace. NA_DEFINE_SHORT_NAMESPACE
 - Can we rename the containing folder to just "Allocator"? (so its Allocator, Tools) or would that cause too many error
@@ -113,6 +109,9 @@ should they even be the same?
   https://stackoverflow.com/questions/4134195/how-do-i-call-the-original-operator-new-if-i-have-overloaded-it
 
 Archive:
+- On all Python graphs have a label / legend - total alloc/ total free etc?
+	- https://stackoverflow.com/questions/19125722/adding-a-matplotlib-legend
+	- https://stackoverflow.com/questions/63799934/how-to-annotate-a-bar-plot-and-add-a-custom-legend
 - have a test for c_SameTag and c_SameZone
 - Have a test for the mutex/scopedlock/NA_THREAD_SAFE_HEAP_ZONE stuff
 - write some tests for this unamanged heap stuff..
