@@ -62,9 +62,10 @@ namespace nabi_allocator
 		std::optional<memoryTag const> const m_MemoryTag;
 #endif // ifdef NA_MEMORY_TAGGING
 
-#if defined NA_DEBUG || defined NA_TESTS || defined NA_WORKFLOWS
-		MemoryCommand* const m_CustomMemoryCommand; // This is jank. Perhaps some sort of mocking instead? Also included in debug cos it might be useful
-#endif // ifdef NA_DEBUG || NA_TESTS || NA_WORKFLOWS
+		// This logic is half jank half kinda needed. It's half jank because it started off as a hack to be able to test 
+		// instanced MemoryCommandsin isolation (eg, in MemoryCommandTests.cpp), but then it became half needed because 
+		// if NA_OVERRIDE_NEW_DELETE is not defined and the user still wants to use heap zone scopes they will need it.
+		MemoryCommand* const m_CustomMemoryCommand;
 	};
 } // namespace nabi_allocator
 

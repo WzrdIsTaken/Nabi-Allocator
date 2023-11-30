@@ -104,7 +104,7 @@ namespace nabi_allocator::tests
 	TEST(NA_FIXTURE_NAME, FullWorkFlow)
 	{
 		uInt constexpr parentZoneNumBytes = 256u;
-		uInt constexpr childZoneNumBytes = parentZoneNumBytes;
+		uInt constexpr childZoneNumBytes = parentZoneNumBytes / 2u;
 
 		enum class MemoryTag : memoryTag
 		{

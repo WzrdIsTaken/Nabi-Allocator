@@ -11,32 +11,28 @@ namespace nabi_allocator
 #ifdef NA_MEMORY_TAGGING
 		, m_MemoryTag(memoryTag)
 #endif // ifdef NA_MEMORY_TAGGING
-#if defined NA_DEBUG || defined NA_TESTS || defined NA_WORKFLOWS
 		, m_CustomMemoryCommand(customMemoryCommand)
-#endif // ifdef NA_DEBUG || NA_TESTS || NA_WORKFLOWS
 	{
-#if defined NA_DEBUG || defined NA_TESTS || defined NA_WORKFLOWS
-		if (m_CustomMemoryCommand)
+		if (!m_CustomMemoryCommand)
+		{
+			MemoryCommand::Instance().PushHeapZoneScope(*this);
+		}
+		else
 		{
 			m_CustomMemoryCommand->PushHeapZoneScope(*this);
-			return;
 		}
-#endif // ifdef NA_DEBUG || NA_TESTS || NA_WORKFLOWS
-
-		MemoryCommand::Instance().PushHeapZoneScope(*this);
 	}
 
 	inline HeapZoneScope::~HeapZoneScope()
 	{
-#if defined NA_DEBUG || defined NA_TESTS || defined NA_WORKFLOWS
-		if (m_CustomMemoryCommand)
+		if (!m_CustomMemoryCommand)
+		{
+			MemoryCommand::Instance().PopHeapZoneScope(*this);
+		}
+		else
 		{
 			m_CustomMemoryCommand->PopHeapZoneScope(*this);
-			return;
 		}
-#endif // ifdef NA_DEBUG || NA_TESTS || NA_WORKFLOWS
-
-		MemoryCommand::Instance().PopHeapZoneScope(*this);
 	}
 
 	inline HeapZoneBase* const HeapZoneScope::GetHeapZone() const noexcept

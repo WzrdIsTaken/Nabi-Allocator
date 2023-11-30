@@ -61,51 +61,51 @@ Tasks:
 
 - Will be interesting to profile with NA_THREAD_SAFE_HEAP_ZONE on and off
 - Will be good to profile FirstFit vs BestFit, and compair the memory layouts they produce
+- Could profile using [[likely]]/[[unlikely]] if we have a good usecase?
 
 - It looks like the MemoryCommand is in need of some optimisation... It is comparable with the unmanaged heap in terms of speed even though the underlying allocators
   are faster
 
+- Need to write some solid documentation for my allocator for the user research stuff
+	- Remeber to document that you can use the short namespace. NA_DEFINE_SHORT_NAMESPACE
+
 *General
 - Then we need to learn how to profile and optimise what we have as much as we can!
 	- Apperently the TryCoalesceBlock function is the slowest now. It has some futher function calls in it though, and I can't see exactly what I can push futher right now.
+	- The memory command is also kinda slow...
+		- We have a lot of branching in MemoryCommand::Allocate/Free
+		- We could remove some branching if we just pushed back the unamanged heap by default into the list?
+			- But would that play nice with the thread local list? (I think it would be fine)
+			- Update this comment if we do that? "Static allocations will happen through the default allocation path, set as std::malloc/std::free."
+		- Thoughts on inlining some of the functions?
+		- Thoughts on using [[likely]]/[[unlikely]]?
+			- If we remove them or decide 100% then remove the questionging comment in notes.
 
-- Double check that the full workflow stuff is working ok... we are allocating a freelistallocator into a stack allocator with the same numbytes.. shoudlnt this fail?
-
-- We also have some ctrl+f todods [I think they are all done now though?]
-- Should block headers / footers / other stuff be [header/footer] const* const? (where they can - check!)
-- Ops on inlinging some of MemoryCommand's functions? & [[likely]] and [[unlikely]] annotation?
-
+Archive:
+- ***30/11/2023 after a day of painful vr stuff, the todos-i-need-to-do-in-order-to-submit-this-project are done!***
+	- ;;;__;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 - Is the custom memory command actually a valid piece of logic? BEcause if NA_OVERRIDE_NEW_DELETE is not enabled, then we actually have to use it
   If we decide it is, can remove the comments saying the logic is bot in heapzonescope (top comment and next to the var itself) (and other places..?)
-
-- can we assert if through the memory command we make an allocation too big? it just seems to crash atm
-
+- Double check that the full workflow stuff is working ok... we are allocating a freelistallocator into a stack allocator with the same numbytes.. shoudlnt this fail?
+	- [Again, I'm not 100% sure what I was seeing here. I think its ok now..?]
+- Basic workflow test which does std::move? remember what brandon said [tbh i think its fine...]
+- see this for proper new/delete replacement
+  https://stackoverflow.com/questions/4134195/how-do-i-call-the-original-operator-new-if-i-have-overloaded-it
+	- "dynamic exception specifications are valid only in C++14 and earlier; treating as noexcept(false)"
 - If we change the default allocation in the memory command to eg a pre created heap zone, then change the notes comment
    "Static allocations will happen through the default allocation path, set as std::malloc/std::free."
 		- I think the unmanaged heap will have to be set up by the user, cos otherwise we will have some static variabls allocated there and others just by cpp
 	    -  We can just have a macro called like NA_SETUP / NA_DEFAULT_SETUP in a new config file, and they will set up an unmanaged heap and a statck/free list alloc on atop?
-
+- can we assert if through the memory command we make an allocation too big? it just seems to crash atm [honeslty the assert logic is already there]
+	- Can fix some other time if the problem comes up. idk if this was what i was even seeing tbh
+- We also have some ctrl+f todods [I think they are all done now though?]
+- Should block headers / footers / other stuff be [header/footer] const* const? (where they can - check!) [we could do this... but its honeslty not worth going back]
+- Ops on inlinging some of MemoryCommand's functions? & [[likely]] and [[unlikely]] annotation?
 - In the memory command, is the way we are routing to the default malloc/free most optimimal? (and just the general routing to the heap zone i guess..)
 - In the memory command, I'm using [[likely]] & [[unlikely]] in the implementation... thoughts on their usage?
-	- If we remove them or decide 100% then remove the questionging comment in notes.
+	- 
 	- **I think this is something we could benchmark and then write about on dis..?**
-
-- Need to write some solid documentation for my allocator for the user research stuff
-	- Remeber to document that you can use the short namespace. NA_DEFINE_SHORT_NAMESPACE
 - Can we rename the containing folder to just "Allocator"? (so its Allocator, Tools) or would that cause too many error
-
-  Basic workflow test which does std::move? remember what brandon said
-
-- We have a lot of branching in MemoryCommand::Allocate/Free
-	- We could remove some branching if we just pushed back the unamanged heap by default into the list?
-		- But would that play nice with the thread local list?
-
-should they even be the same?
-
-- see this for proper new/delete replacement
-  https://stackoverflow.com/questions/4134195/how-do-i-call-the-original-operator-new-if-i-have-overloaded-it
-
-Archive:
 - Write some "full workflow benchmarks"
   eg something which goes through the overridden/default new/delete operators. Then we can really benchmark [doesnt have to acc go through these, just mem command]
   just like the other one. loops and the like probs
@@ -132,10 +132,8 @@ Archive:
 		- With constructors, would we have to perfect forward the constructors arguements?
 - note - it will be heap zone now memory command which had the mutex
   right?
-  --
   unamnaged alloc can still support memory tsgging
   perhaod just create it (it will just be two funcs) statvially and ?
-  --
   have a maxro like "na defaukt setup" whicu creates the stuff w/you having to do abything? i think at least once macro is good though for the setup
 - Is it worth having memory tracking etc inthe unamanaged heap? hoesntly, i think not. its meaant to be simple zero overhead. thats what it is
 - Also in the dis, like the lecturerer said, if youve done something once you dont need to do it over and over again to show knolwedge
