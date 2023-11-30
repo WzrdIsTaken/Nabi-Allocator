@@ -31,6 +31,7 @@
     <ClCompile Include="Memory\Src\MemoryCommand.cpp" />
     <ClCompile Include="Memory\Src\NewDeleteOverrides.cpp" />
     <ClCompile Include="Tests\Src\Benchmarks\AllocatorBenchmarks.cpp" />
+    <ClCompile Include="Tests\Src\Benchmarks\MemoryCommandBenchmarks.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\BitOperationsTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\FreeListAllocatorTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\HeapZoneTests.cpp" />

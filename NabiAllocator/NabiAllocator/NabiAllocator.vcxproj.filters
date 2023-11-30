@@ -62,6 +62,9 @@
     <ClCompile Include="Utils\Src\FileUtils.cpp">
       <Filter>Utils\Src</Filter>
     </ClCompile>
+    <ClCompile Include="Tests\Src\Benchmarks\MemoryCommandBenchmarks.cpp">
+      <Filter>Tests\Src\Benchmarks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tests">

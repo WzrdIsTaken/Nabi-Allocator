@@ -62,6 +62,9 @@ Tasks:
 - Will be interesting to profile with NA_THREAD_SAFE_HEAP_ZONE on and off
 - Will be good to profile FirstFit vs BestFit, and compair the memory layouts they produce
 
+- It looks like the MemoryCommand is in need of some optimisation... It is comparable with the unmanaged heap in terms of speed even though the underlying allocators
+  are faster
+
 *General
 - Then we need to learn how to profile and optimise what we have as much as we can!
 	- Apperently the TryCoalesceBlock function is the slowest now. It has some futher function calls in it though, and I can't see exactly what I can push futher right now.
@@ -93,15 +96,9 @@ Tasks:
 
   Basic workflow test which does std::move? remember what brandon said
 
-
-
 - We have a lot of branching in MemoryCommand::Allocate/Free
 	- We could remove some branching if we just pushed back the unamanged heap by default into the list?
 		- But would that play nice with the thread local list?
-
-- Write some "full workflow benchmarks"
-  eg something which goes through the overridden/default new/delete operators. Then we can really benchmark
-  just like the other one. loops and the like probs
 
 should they even be the same?
 
@@ -109,6 +106,9 @@ should they even be the same?
   https://stackoverflow.com/questions/4134195/how-do-i-call-the-original-operator-new-if-i-have-overloaded-it
 
 Archive:
+- Write some "full workflow benchmarks"
+  eg something which goes through the overridden/default new/delete operators. Then we can really benchmark [doesnt have to acc go through these, just mem command]
+  just like the other one. loops and the like probs
 - On all Python graphs have a label / legend - total alloc/ total free etc?
 	- https://stackoverflow.com/questions/19125722/adding-a-matplotlib-legend
 	- https://stackoverflow.com/questions/63799934/how-to-annotate-a-bar-plot-and-add-a-custom-legend

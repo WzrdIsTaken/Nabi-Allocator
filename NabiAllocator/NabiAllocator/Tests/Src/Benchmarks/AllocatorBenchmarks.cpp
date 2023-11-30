@@ -38,7 +38,6 @@ namespace nabi_allocator::tests
 #	define NA_FIXTURE_NAME NA_BENCHMARK_FIXTURE_NAME(AllocatorBenchmarks)
 
 	bool constexpr c_PrintBenchmarkResults = true;
-	uInt constexpr c_HeapZoneSize = 20_MB;
 
 	// This allocator just wraps malloc/free so we can benchmark against the base implementation.
 	// Even the UnmanagedHeap routes through [Request/Release]Memory[From/To]OS which has some asserts. 
@@ -86,13 +85,13 @@ namespace nabi_allocator::tests
 
 	NA_BENCHMARK(NA_FIXTURE_NAME, FreeListAllocatorAllocThenFree)
 	{
-		BenchmarkFreeListAllocator allocator = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
+		BenchmarkFreeListAllocator allocator = { HeapZoneBase::c_NoParent, blueprints::c_BenchmarkHeapZoneSize, "TestHeapZone" };
 		blueprints::AllocatorAllocThenFree(allocator, c_PrintBenchmarkResults);
 	}
 
 	NA_BENCHMARK(NA_FIXTURE_NAME, FreeListAllocatorVaryingSizeAllocThenFree)
 	{
-		BenchmarkFreeListAllocator allocator = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
+		BenchmarkFreeListAllocator allocator = { HeapZoneBase::c_NoParent, blueprints::c_BenchmarkHeapZoneSize, "TestHeapZone" };
 		blueprints::AllocatorVaryingSizeAllocThenFree(allocator, c_PrintBenchmarkResults);
 	}
 
@@ -105,13 +104,13 @@ namespace nabi_allocator::tests
 
 	NA_BENCHMARK(NA_FIXTURE_NAME, StackAllocatorAllocThenFree)
 	{
-		BenchmarkStackAllocator allocator = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
+		BenchmarkStackAllocator allocator = { HeapZoneBase::c_NoParent, blueprints::c_BenchmarkHeapZoneSize, "TestHeapZone" };
 		blueprints::AllocatorAllocThenFree(allocator, c_PrintBenchmarkResults);
 	}
 
 	NA_BENCHMARK(NA_FIXTURE_NAME, StackAllocatorVaryingSizeAllocThenFree)
 	{
-		BenchmarkStackAllocator allocator = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
+		BenchmarkStackAllocator allocator = { HeapZoneBase::c_NoParent, blueprints::c_BenchmarkHeapZoneSize, "TestHeapZone" };
 		blueprints::AllocatorVaryingSizeAllocThenFree(allocator, c_PrintBenchmarkResults);
 	}
 
