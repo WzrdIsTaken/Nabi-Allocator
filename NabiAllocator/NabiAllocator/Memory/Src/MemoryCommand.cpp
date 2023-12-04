@@ -2,6 +2,7 @@
 #include "MemoryCommand.h"
 
 // STD Headers
+#include <optional>
 #include <stack>
 #include <type_traits>
 
@@ -50,7 +51,7 @@ namespace nabi_allocator
 		void* memory = nullptr;
 
 		HeapZoneScope const* const topHeapZoneScope = GetTopHeapZoneScope();
-		if (topHeapZoneScope)
+		if (topHeapZoneScope) [[likely]]
 		{
 			HeapZoneBase* topHeapZone = nullptr;
 			memoryTag topMemoryTag = c_NullMemoryTag;
@@ -69,7 +70,7 @@ namespace nabi_allocator
 				memory = topHeapZone->Allocate(NA_MAKE_ALLOCATION_INFO(numBytes, topMemoryTag));
 			}
 		}
-		else
+		else [[unlikely]]
 		{
 		unmanagedAllocatorAlloc:
 			memory = m_UnmanagedHeap.Allocate(numBytes);
@@ -80,7 +81,7 @@ namespace nabi_allocator
 
 	void MemoryCommand::Free(void* const memory)
 	{
-		if (g_LastHeapZone)
+		if (g_LastHeapZone) [[likely]]
 		{
 			if (g_LastHeapZone == &c_UnmanagedHeap)
 			{
@@ -106,7 +107,7 @@ namespace nabi_allocator
 				}
 			}
 		}
-		else
+		else [[unlikely]]
 		{
 		unmanagedAllocatorFree:
 			m_UnmanagedHeap.Free(memory);
