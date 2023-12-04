@@ -14,15 +14,15 @@
 namespace nabi_allocator::bit_operations
 {
 	template<is_integral T>
-	[[nodiscard]] inline constexpr T FlipBit(T const value, u32 const bitPosition) noexcept;
+	[[nodiscard]] __forceinline constexpr T FlipBit(T const value, u32 const bitPosition) noexcept;
 	template<is_integral T>
-	[[nodiscard]] inline constexpr bool GetBit(T const value, u32 const bitPosition) noexcept;
+	[[nodiscard]] __forceinline constexpr bool GetBit(T const value, u32 const bitPosition) noexcept;
 	template<is_integral T>
-	[[nodiscard]] inline constexpr T SetBit(T const value, u32 const bitPosition, bool const bitState) noexcept;
+	[[nodiscard]] __forceinline constexpr T SetBit(T const value, u32 const bitPosition, bool const bitState) noexcept;
 	template<is_integral T>
-	[[nodiscard]] inline constexpr T LeftShiftBit(T const value, u32 const shiftAmount) noexcept;
+	[[nodiscard]] __forceinline constexpr T LeftShiftBit(T const value, u32 const shiftAmount) noexcept;
 	template<is_integral T>
-	[[nodiscard]] inline constexpr T RightShiftBit(T const value, u32 const shiftAmount) noexcept;
+	[[nodiscard]] __forceinline constexpr T RightShiftBit(T const value, u32 const shiftAmount) noexcept;
 
 	template<is_integral T>
 	[[nodiscard]] std::string ToBinaryString(T const value, u32 const split = 8u) noexcept;

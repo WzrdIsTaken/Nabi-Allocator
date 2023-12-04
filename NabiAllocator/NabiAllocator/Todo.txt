@@ -14,6 +14,7 @@ Resources:
 
 * Other
 - Profiling: https://learn.microsoft.com/en-us/visualstudio/profiling/profiling-feature-tour?view=vs-2022
+             https://learn.microsoft.com/en-us/visualstudio/profiling/beginners-guide-to-performance-profiling?view=vs-2019
 - If we need to access the private members of a class for testing, see this: https://stackoverflow.com/a/23267346/8890269
 
 Notes:
@@ -36,7 +37,7 @@ Tasks:
 - Bump the version to 1.0! (Core/Inc/Version.h)
 
 - Profile the use of __forceinline on: (i have never used forceinline before, so it will be interesting to see)
-	- BitOperations
+	- BitOperations X
 	- MemoryOperations
 	- HeapZone -> Allocate/Free
 

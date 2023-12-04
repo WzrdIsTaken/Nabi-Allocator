@@ -8,32 +8,32 @@
 namespace nabi_allocator::bit_operations
 {
 	template<is_integral T>
-	inline constexpr T FlipBit(T const value, u32 const bitPosition) noexcept
+	__forceinline constexpr T FlipBit(T const value, u32 const bitPosition) noexcept
 	{
 		return value ^ (static_cast<T>(1) << bitPosition);
 	}
 
 	template<is_integral T>
-	inline constexpr bool GetBit(T const value, u32 const bitPosition) noexcept
+	__forceinline constexpr bool GetBit(T const value, u32 const bitPosition) noexcept
 	{
 		return static_cast<bool>(value & (static_cast<T>(1) << bitPosition));
 	}
 
 	template<is_integral T>
-	inline constexpr T SetBit(T const value, u32 const bitPosition, bool const bitState) noexcept
+	__forceinline constexpr T SetBit(T const value, u32 const bitPosition, bool const bitState) noexcept
 	{
 		bool const bitValue = GetBit(value, bitPosition);
 		return bitValue != bitState ? FlipBit(value, bitPosition) : value;
 	}
 
 	template<is_integral T>
-	inline constexpr T LeftShiftBit(T const value, u32 const shiftAmount) noexcept
+	__forceinline constexpr T LeftShiftBit(T const value, u32 const shiftAmount) noexcept
 	{
 		return value << shiftAmount;
 	}
 
 	template<is_integral T>
-	inline constexpr T RightShiftBit(T const value, u32 const shiftAmount) noexcept
+	__forceinline constexpr T RightShiftBit(T const value, u32 const shiftAmount) noexcept
 	{
 		return value >> shiftAmount;
 	}

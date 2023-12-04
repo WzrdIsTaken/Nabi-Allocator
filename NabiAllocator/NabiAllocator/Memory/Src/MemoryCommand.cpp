@@ -142,7 +142,7 @@ namespace nabi_allocator
 	HeapZoneScope const* const MemoryCommand::GetTopHeapZoneScope() const noexcept
 	{
 		HeapZoneScope const* topHeapZoneScope = nullptr;
-		if (!g_HeapZoneScopes.empty())
+		if (!g_HeapZoneScopes.empty()) [[likely]]
 		{
 			topHeapZoneScope = &g_HeapZoneScopes.top().get();
 		}
