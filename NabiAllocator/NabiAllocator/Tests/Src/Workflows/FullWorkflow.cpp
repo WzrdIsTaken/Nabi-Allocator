@@ -28,6 +28,8 @@
  * Note:
  *	- If NA_OVERRIDE_NEW_DELETE isn't defined, these will just run with the default new/delete implementation
  *    (or with whatever implementation a user has defined I guess..).
+ *		- Also note if this isn't defined then checking memory tags of globally allocated memory won't work
+ *        (see the FullWorkFlow test - it *will* compile but *won't* meet the condition).
 */
 
 namespace nabi_allocator::tests
@@ -140,7 +142,9 @@ namespace nabi_allocator::tests
 		// General tag allocation
 		{
 			auto const* const allocation = new int();
+#ifdef NA_OVERRIDE_NEW_DELETE
 			EXPECT_TRUE(verifyBlockMemoryTag(childZoneStart, MemoryTag::General));
+#endif // ifdef NA_OVERRIDE_NEW_DELETE
 			delete allocation;
 		}
 
@@ -148,7 +152,9 @@ namespace nabi_allocator::tests
 		{
 			NA_SET_HEAP_ZONE_SCOPE(c_SameZone, type_utils::ToUnderlying(MemoryTag::Rendering));
 			auto const* const allocation = new int();
+#ifdef NA_OVERRIDE_NEW_DELETE
 			EXPECT_TRUE(verifyBlockMemoryTag(childZoneStart, MemoryTag::Rendering));
+#endif // ifdef NA_OVERRIDE_NEW_DELETE
 			delete allocation;
 		}
 
@@ -164,6 +170,32 @@ namespace nabi_allocator::tests
 #ifdef NA_TRACK_ALLOCATIONS
 		EXPECT_EQ(parentZone.GetAllocator().GetStats().m_ActiveAllocationCount, 1u);
 		EXPECT_EQ(childZone.GetAllocator().GetStats().m_ActiveAllocationCount, 0u);
+#endif // ifdef NA_TRACK_ALLOCATIONS
+	}
+
+	TEST(NA_FIXTURE_NAME, LocalHeapZoneWorkFlow)
+	{
+		// *The 'no global heap zone workflow' is tested, well, in a lot of other places. Eg: [Free/Stack]AllocatorTests.cpp->AllocatorDefaultTests.inl*
+
+		NA_MAKE_HEAP_ZONE_AND_SET_SCOPE(
+			HeapZone<DefaultFreeListAllocator>, // Heap zone type
+			HeapZoneBase::c_NoParent,           // Heap zone parent
+			128u,                               // Heap zone size
+			"Allocator",                        // Heap zone debug name
+			c_NullMemoryTag                     // Heap zone scope memory tag
+		);
+
+		HeapZoneBase* const topHeapZone = MemoryCommand::Instance().GetTopHeapZoneScope()->GetHeapZone();
+		{
+			HeapZone<DefaultFreeListAllocator> localZone = { topHeapZone, 64u, "LocalZone" };
+			EXPECT_EQ(MemoryCommand::Instance().GetHeapZoneScopeCount(), 1u);
+
+			void* const allocation = localZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
+			localZone.Free(allocation);
+		}
+
+#ifdef NA_TRACK_ALLOCATIONS
+		EXPECT_EQ(reinterpret_cast<HeapZone<DefaultFreeListAllocator>*>(topHeapZone)->GetAllocator().GetStats().m_ActiveAllocationCount, 0u);
 #endif // ifdef NA_TRACK_ALLOCATIONS
 	}
 
