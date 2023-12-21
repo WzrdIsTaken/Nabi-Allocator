@@ -45,7 +45,7 @@ namespace nabi_allocator
 			std::optional<std::function<bool(AllocatorBlockInfo const&)>> const action, HeapZoneInfo const& heapZoneInfo) const = 0;
 
 #ifdef NA_TRACK_ALLOCATIONS
-		inline AllocatorStats const& GetStats() const noexcept;
+		[[nodiscard]] inline AllocatorStats const& GetStats() const noexcept;
 #endif // ifdef NA_TRACK_ALLOCATIONS
 
 	protected:
