@@ -65,6 +65,9 @@
     <ClCompile Include="Tests\Src\Benchmarks\MemoryCommandBenchmarks.cpp">
       <Filter>Tests\Src\Benchmarks</Filter>
     </ClCompile>
+    <ClCompile Include="Tests\Src\Fixtures\DataPointerTests.cpp">
+      <Filter>Tests\Src\Fixtures</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tests">
@@ -169,6 +172,12 @@
     <Filter Include="Tests\Src\Workflows">
       <UniqueIdentifier>{8ba559ea-909c-4fc7-82fd-6c3b49d0f41f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Memory\Inc\Pointers">
+      <UniqueIdentifier>{1e7e9f76-098a-457b-a6a6-b459c270ef93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory\Inl\Pointers">
+      <UniqueIdentifier>{4a47b6bd-3de5-473f-b066-45006518d4b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -214,6 +223,9 @@
     </None>
     <None Include="Memory\Inl\UnmanagedHeap.inl">
       <Filter>Memory\Inl</Filter>
+    </None>
+    <None Include="Memory\Inl\Pointers\DataPointer.inl">
+      <Filter>Memory\Inl\Pointers</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -333,6 +345,9 @@
     </ClInclude>
     <ClInclude Include="Memory\Inc\UnmanagedHeap.h">
       <Filter>Memory\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Inc\Pointers\DataPointer.h">
+      <Filter>Memory\Inc\Pointers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

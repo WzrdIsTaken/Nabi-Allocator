@@ -33,6 +33,7 @@
     <ClCompile Include="Tests\Src\Benchmarks\AllocatorBenchmarks.cpp" />
     <ClCompile Include="Tests\Src\Benchmarks\MemoryCommandBenchmarks.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\BitOperationsTests.cpp" />
+    <ClCompile Include="Tests\Src\Fixtures\DataPointerTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\FreeListAllocatorTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\HeapZoneTests.cpp" />
     <ClCompile Include="Tests\Src\Fixtures\MemoryCommandTests.cpp" />
@@ -53,6 +54,7 @@
     <None Include="Memory\Inl\HeapZone\HeapZoneScope.inl" />
     <None Include="Memory\Inl\Operations\BitOperations.inl" />
     <None Include="Memory\Inl\Operations\MemoryOperations.inl" />
+    <None Include="Memory\Inl\Pointers\DataPointer.inl" />
     <None Include="Memory\Inl\UnmanagedHeap.inl" />
     <None Include="packages.config" />
     <None Include="Tests\Inl\Blueprints\AllocatorDefaultBenchmarks.inl" />
@@ -92,6 +94,7 @@
     <ClInclude Include="Memory\Inc\AllocationInfo.h" />
     <ClInclude Include="Memory\Inc\Operations\BitOperations.h" />
     <ClInclude Include="Memory\Inc\Operations\MemoryOperations.h" />
+    <ClInclude Include="Memory\Inc\Pointers\DataPointer.h" />
     <ClInclude Include="Memory\Inc\UnmanagedHeap.h" />
     <ClInclude Include="Tests\Inc\Blueprints\AllocatorDefaultBenchmarks.h" />
     <ClInclude Include="Tests\Inc\Blueprints\AllocatorDefaultTests.h" />

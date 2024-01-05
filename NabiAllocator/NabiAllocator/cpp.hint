@@ -9,6 +9,7 @@
 // Config.h
 #define NA_BENCHMARKS
 #define NA_BENCHMARK_RUN_COUNT 1
+#define NA_DATA_POINTER
 #define NA_DEBUG
 #define NA_MEMORY_TAGGING
 #define NA_OVERRIDE_NEW_DELETE
