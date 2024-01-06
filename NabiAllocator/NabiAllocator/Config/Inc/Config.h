@@ -20,7 +20,6 @@
 // Allocator
 #define NA_TRACK_ALLOCATIONS // Memory allocators will track the count and total size of active and all time allocated objects 
 #define NA_MEMORY_TAGGING // Adds metadata to all blocks. Note: this increases the size of each blocks by sizeof(nabi_allocator::memoryTag (in MemoryConstants.h))
-#define NA_DATA_POINTER // Use the data pointer to reduce allocator size overhead
 
 // Tests
 #define NA_TESTS // Run unit tests

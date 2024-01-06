@@ -54,6 +54,8 @@ Tasks:
    small enough to fit into the unused upper bits of a pointer (usually up to 8 or 16, depending on the architecture). TS also affects the 
    complexity and the size of the tag storage.” This is how we have zero byte tagging! Combined with Molly Rocket’s video on seeing if memory 
    is used.. This could be really interesting. Find that video on pointer buckets.
+	-> Can we just store the infomation which is currently in BlockInfo in the pointer? We could work out the size of blocks via pointer maths instead of explicity storing it
+		-> Tried this, didn't actually work when I put more thought into it.
 
 - Find if things have been overriden by checksums [ask brandon] [ngl idk if this is something i can be asked to do. but we can write about it in report]
 
@@ -85,6 +87,10 @@ Tasks:
 			  for a solid submission. I've scratched my optimisation itch, now just work on the poster up until that deadline. Also got other assignments to do...
 
 Archive:
+- Test __forceline for the data pointer
+- READ THE ABOVE^^^
+- We have made the data pointer, and the NA_DATA_PTR_TAGGING define. 
+- TIMEBOX the data pointer stuff. if it ends up going no where or taking longer than we thought, just stop and focus on other parts of the proj. hopefully wont take too long though..??
 - Write a python script to display the memory layout as eg a pie chart (free vs allocated blocks).
 	- Is the projects folder structure ok to put this stuff in a place which makes sense?
 	- Also a script to graph out the different allocator's performance? (malloc/free/total vs) (+ vs default malloc)

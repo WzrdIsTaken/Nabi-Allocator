@@ -10,9 +10,13 @@
  * 
  * Note:
  *	- If the pointer is 8 byte alligned, then the lowest 3 bits of a pointer could also be used I think (similar to BlockInfo).
- *  - The reason that this struct isn't behind the NA_DATA_POINTER define is because someone may want to use this logic outside of the allocator.
+ *  - The reason that this struct isn't behind the NA_DATA_PTR (previously) define(d) is because someone may want to use this logic outside of the allocator.
  *    Because, well, the idea is kinda neat! (its not my original idea fyi...!! i first saw it here: https://stackoverflow.com/a/63580741/8890269)
 */
+
+// Note: As of 06/01/24, the DataPointer isn't actually used anywhere in NabiAllocator. I thought it would be more useful than it actually is, 
+//       and as of now I cannot think of a good use for it. I'm sure there is one and I can probs find a place for it in my dissertation so 
+//       I'll keep it around but probs won't include it in the single header. We came, we investigated, we left.
 
 namespace nabi_allocator
 {

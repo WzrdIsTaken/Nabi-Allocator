@@ -13,7 +13,10 @@
 #include "TestConstants.h"
 
 /**
- * Tests for the DataPointer
+ * Tests for the DataPointer.
+ * 
+ * Note:
+ *	- See DataPointer.h. This code probs shouldn't be included in the single header?
 */
 
 namespace nabi_allocator::tests
