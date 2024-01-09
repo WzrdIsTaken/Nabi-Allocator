@@ -57,7 +57,8 @@ namespace nabi_allocator
 		bool const remainingSpaceSufficient = (positionAfterAllocation + c_MinBlockSizeSA) <= heapZoneInfo.m_End;
 		if (!remainingSpaceSufficient)
 		{
-			uInt const spaceToEnd = positionAfterAllocation - heapZoneInfo.m_End;
+			uInt const spaceToEnd = positionAfterAllocation >= heapZoneInfo.m_End ?
+				positionAfterAllocation - heapZoneInfo.m_End : heapZoneInfo.m_End - positionAfterAllocation;
 			requiredBlockSize += spaceToEnd;
 			padding += spaceToEnd;
 			requiresPadding = true;

@@ -18,7 +18,7 @@ namespace nabi_allocator
 		blockHeader = NA_REINTERPRET_MEMORY_DEFAULT(BlockHeader, blockHeaderPosition);
 		UnloadBlockInfo(blockInfoContent, *blockHeader);
 
-		// Store the block's infomation in allocatorBlockInfo#
+		// Store the block's infomation in allocatorBlockInfo
 		allocatorBlockInfo.m_MemoryAddress = NA_TO_UPTR(blockHeader);
 #ifdef NA_MEMORY_TAGGING
 		allocatorBlockInfo.m_MemoryTag = blockInfoContent.m_MemoryTag;

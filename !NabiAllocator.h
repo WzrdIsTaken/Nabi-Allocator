@@ -1832,7 +1832,8 @@ namespace nabi_allocator
 		bool const remainingSpaceSufficient = (positionAfterAllocation + c_MinBlockSizeSA) <= heapZoneInfo.m_End;
 		if (!remainingSpaceSufficient)
 		{
-			uInt const spaceToEnd = positionAfterAllocation - heapZoneInfo.m_End;
+			uInt const spaceToEnd = positionAfterAllocation >= heapZoneInfo.m_End ?
+				positionAfterAllocation - heapZoneInfo.m_End : heapZoneInfo.m_End - positionAfterAllocation;
 			requiredBlockSize += spaceToEnd;
 			padding += spaceToEnd;
 			requiresPadding = true;
@@ -3710,8 +3711,8 @@ namespace nabi_allocator::tests
 
 	TEST(NA_FIXTURE_NAME, TooLargeAllocation)
 	{
-		blueprints::AllocatorAllocateTooLargeTest<HeapZoneType>(
-			c_SmallHeapZoneSize // Heap zone size
+		blueprints::AllocatorAllocateTooLargeTest<HeapZoneTypeFLAT>(
+			c_SmallHeapZoneSizeFLAT // Heap zone size
 		);
 	}
 
@@ -4296,7 +4297,7 @@ namespace nabi_allocator::tests
 	{
 		blueprints::AllocatorCreateAndDestroyTest<HeapZoneTypeSAT>(
 			c_HeapZoneSizeSAT, // Heap zone size
-			"F64P0"         // Expected init layout
+			"F64P0"            // Expected init layout
 		);
 	}
 
@@ -4304,18 +4305,18 @@ namespace nabi_allocator::tests
 	{
 		blueprints::AllocatorAllocateAndFreeTest<HeapZoneTypeSAT>(
 			c_HeapZoneSizeSAT, // Heap zone size
-			"A24P4 F40P0",  // Expected x64 + memory tagging layout
-			"A16P4 F48P0",  // Expected x64 layout
-			"A16P4 F48P0",  // Expected x86 + memory tagging layout
-			"A8P0 F56P0",   // Expected x86 layout
-			"F64P0"         // Expected free layout
+			"A24P4 F40P0",     // Expected x64 + memory tagging layout
+			"A16P4 F48P0",     // Expected x64 layout
+			"A16P4 F48P0",     // Expected x86 + memory tagging layout
+			"A8P0 F56P0",      // Expected x86 layout
+			"F64P0"            // Expected free layout
 		);
 	}
 
 	TEST(NA_FIXTURE_NAME, TooLargeAllocation)
 	{
-		blueprints::AllocatorAllocateTooLargeTest<HeapZoneType>(
-			c_HeapZoneSize // Heap zone size
+		blueprints::AllocatorAllocateTooLargeTest<HeapZoneTypeSAT>(
+			c_HeapZoneSizeSAT // Heap zone size
 		);
 	}
 
@@ -4323,7 +4324,7 @@ namespace nabi_allocator::tests
 	{
 		blueprints::AllocatorResetTest<HeapZoneTypeSAT>(
 			c_HeapZoneSizeSAT, // Heap zone size
-			"F64P0"         // Expected reset layout
+			"F64P0"            // Expected reset layout
 		);
 	}
 
@@ -4335,12 +4336,12 @@ namespace nabi_allocator::tests
 		//	- This is done in FreeListAllocator's AllocateAndFree case.
 
 		blueprints::AllocatorMemoryTagTest<HeapZoneTypeSAT>(
-			c_HeapZoneSizeSAT,       // Heap zone size
-			"One24 Two40",           // Expected x64 + memory tagging usage
-			"One16 Two16 Free32",    // Expected x64 usage
-			"One16 Two16 Free32",    // Expected x86 + memory tagging usage
-			"One8 Two8 Free48",      // Expected x86 usage
-			"Free64"                 // Expected free usage
+			c_HeapZoneSizeSAT,    // Heap zone size
+			"One24 Two40",        // Expected x64 + memory tagging usage
+			"One16 Two16 Free32", // Expected x64 usage
+			"One16 Two16 Free32", // Expected x86 + memory tagging usage
+			"One8 Two8 Free48",   // Expected x86 usage
+			"Free64"              // Expected free usage
 		);
 	}
 #	endif // ifdef NA_MEMORY_TAGGING
@@ -4551,7 +4552,7 @@ namespace nabi_allocator::tests
 		NA_MAKE_HEAP_ZONE_AND_SET_SCOPE(
 			HeapZone<DefaultFreeListAllocator>, // Heap zone type
 			HeapZoneBase::c_NoParent,           // Heap zone parent
-			128u,                               // Heap zone size
+			256u,                               // Heap zone size
 			"Allocator",                        // Heap zone debug name
 			c_NullMemoryTag                     // Heap zone scope memory tag
 		);

@@ -180,7 +180,7 @@ namespace nabi_allocator::tests
 		NA_MAKE_HEAP_ZONE_AND_SET_SCOPE(
 			HeapZone<DefaultFreeListAllocator>, // Heap zone type
 			HeapZoneBase::c_NoParent,           // Heap zone parent
-			128u,                               // Heap zone size
+			256u,                               // Heap zone size
 			"Allocator",                        // Heap zone debug name
 			c_NullMemoryTag                     // Heap zone scope memory tag
 		);
