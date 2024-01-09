@@ -41,21 +41,21 @@ namespace nabi_allocator::tests::blueprints
 		void* const ptr = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
 		{
 			std::string const expectedLayout =
-#ifdef _M_X64
-#	ifdef NA_MEMORY_TAGGING
+#	ifdef _M_X64
+#		ifdef NA_MEMORY_TAGGING
 				expectedX64MemoryTaggingLayout
-#	else
+#		else
 				expectedX64Layout
-#	endif // ifdef NA_MEMORY_TAGGING 
-#elif _M_IX86
-#	ifdef NA_MEMORY_TAGGING
+#		endif // ifdef NA_MEMORY_TAGGING 
+#	elif _M_IX86
+#		ifdef NA_MEMORY_TAGGING
 				expectedX86MemoryTaggingLayout
-#	else
+#		else
 				expectedX86Layout
-#	endif // ifdef NA_MEMORY_TAGGING 
-#else
-#	error "Unsupported architecture"
-#endif // ifdef _M_IX86, elif _M_IX86
+#		endif // ifdef NA_MEMORY_TAGGING 
+#	else
+#		error "Unsupported architecture"
+#	endif // ifdef _M_IX86, elif _M_IX86
 				;
 			std::string const actualLayout = GetMemoryLayout(allocator, heapZoneInfo);
 			EXPECT_EQ(expectedLayout, actualLayout);
@@ -66,6 +66,21 @@ namespace nabi_allocator::tests::blueprints
 			std::string const actualLayout = GetMemoryLayout(allocator, heapZoneInfo);
 			EXPECT_EQ(expectedFreeLayout, actualLayout);
 		}
+	}
+
+	template<is_heap_zone HeapZoneType>
+	void AllocatorAllocateTooLargeTest(uInt const heapZoneSize)
+	{
+#	ifdef NA_DEBUG
+		// See MemoryCommandTests::TooLargeAllocation
+		return;
+#	endif
+
+		HeapZoneType heapZone{ HeapZoneBase::c_NoParent, heapZoneSize, "TestHeapZone" };
+		void* const ptr = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(heapZoneSize + 4u, c_NullMemoryTag));
+
+		EXPECT_TRUE(ptr == nullptr);
+		heapZone.Reset();
 	}
 
 	template<is_heap_zone HeapZoneType>

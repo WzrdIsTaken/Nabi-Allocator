@@ -65,7 +65,11 @@ namespace nabi_allocator
 		bool requiresPadding = padding != 0u;
 
 		blockHeader = TryFindFreeBlock(requiredBlockSize);
-		NA_ASSERT(blockHeader, NA_NAMEOF_LITERAL(FreeListAllocator) " is out of memory");
+		if (!blockHeader) [[unlikely]]
+		{
+			NA_ASSERT_FAIL(NA_NAMEOF_LITERAL(FreeListAllocator) " is out of memory");
+			return nullptr;
+		}
 
 		uInt const originalBlockSize = bit_operations::RightShiftBit(blockHeader->m_BlockInfo, type_utils::ToUnderlying(BlockInfoIndex::SizeStart));
 		RemoveFreeBlock(blockHeader);

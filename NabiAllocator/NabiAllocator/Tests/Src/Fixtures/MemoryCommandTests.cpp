@@ -81,6 +81,34 @@ namespace nabi_allocator::tests
 		}
 	}
 
+	TEST(NA_FIXTURE_NAME, TooLargeAllocation)
+	{
+#	ifdef NA_DEBUG
+		// Kinda the same deal as the StackAllocatorTests::EnsureTopOfStackFree. Idk why, but gTest 
+		// does not like asserts and I can't find an EXPECT_ASSERT solution or something like at PG.
+		return;
+#	endif
+
+		uInt constexpr heapZoneSize = 64u;
+
+		MemoryCommand memoryCommand = {};
+		HeapZone<DefaultFreeListAllocator> heapZone = { HeapZoneBase::c_NoParent, heapZoneSize, "TestHeapZone" };
+		HeapZoneScope scope = { &heapZone, std::nullopt, &memoryCommand };
+
+		void* ptr = memoryCommand.Allocate(heapZoneSize + 4u);
+		bool const ptrIsNull = (ptr == nullptr); // gTest doesn't like checking pointers in EXPECT_[TRUE/FALSE]?
+#	ifdef NA_MALLOC_IF_OUT_OF_MEMORY
+			EXPECT_FALSE(ptrIsNull);
+			memoryCommand.Free(ptr);
+#	else
+			EXPECT_TRUE(ptrIsNull);
+			if (!ptrIsNull) // Just in case!
+			{
+				memoryCommand.Free(ptr);
+			}
+#	endif // ifdef NA_MALLOC_IF_OUT_OF_MEMORY
+	}
+
 #	undef NA_FIXTURE_NAME
 #endif // ifdef NA_TESTS
 } // namespace nabi_allocator::tests

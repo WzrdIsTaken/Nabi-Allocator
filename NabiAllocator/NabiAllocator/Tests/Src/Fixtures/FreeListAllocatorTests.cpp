@@ -109,6 +109,13 @@ namespace nabi_allocator::tests
 		);
 	}
 
+	TEST(NA_FIXTURE_NAME, TooLargeAllocation)
+	{
+		blueprints::AllocatorAllocateTooLargeTest<HeapZoneType>(
+			c_SmallHeapZoneSize // Heap zone size
+		);
+	}
+
 	TEST(NA_FIXTURE_NAME, Reset)
 	{
 		blueprints::AllocatorResetTest<HeapZoneType>(

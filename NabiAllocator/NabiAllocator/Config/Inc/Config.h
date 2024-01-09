@@ -14,6 +14,10 @@
 	namespace na = nabi_allocator;
 #endif // ifdef NA_DEFINE_SHORT_NAMESPACE
 
+// Memory Command
+#define NA_MALLOC_IF_OUT_OF_MEMORY // If an heapzone is out of memory, rather than asserting and failing to allocate just try and malloc the memory
+//#define NA_SAFE_ALLOC_FREE_EARLY_OUT // If an allocation or free is going to fail (eg: freeing nullptr), then don't attempt it. Note: an assert will still fire
+
 // Heap Zone
 #define NA_THREAD_SAFE_HEAP_ZONE // Adds a mutex/lock in HeapZone::Allocate and Free (default std::malloc/std::free are already thread safe)
 

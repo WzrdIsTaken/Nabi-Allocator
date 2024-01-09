@@ -19,7 +19,7 @@ namespace nabi_allocator::benchmark_utils
 		auto const getTimeWithPrecision =
 			[](f64 const time) -> std::string
 			{
-				int constexpr precision = std::numeric_limits<f64>::digits10;
+				s32 constexpr precision = std::numeric_limits<f64>::digits10;
 
 				std::ostringstream stream = {}; // I'm not sure if there is a better way to do this...
 				stream << std::fixed << std::setprecision(precision) << time;

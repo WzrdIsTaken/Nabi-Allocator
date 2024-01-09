@@ -19,6 +19,10 @@
 	namespace na = nabi_allocator;
 #endif // ifdef NA_DEFINE_SHORT_NAMESPACE
 
+// Memory Command
+#define NA_MALLOC_IF_OUT_OF_MEMORY // If an heapzone is out of memory, rather than asserting and failing to allocate just try and malloc the memory
+//#define NA_SAFE_ALLOC_FREE_EARLY_OUT // If an allocation or free is going to fail (eg: freeing nullptr), then don't attempt it. Note: an assert will still fire
+
 // Heap Zone
 #define NA_THREAD_SAFE_HEAP_ZONE // Adds a mutex/lock in HeapZone::Allocate and Free (default std::malloc/std::free are already thread safe)
 
@@ -716,9 +720,9 @@ namespace nabi_allocator
 #ifdef NA_MEMORY_TAGGING
 		memoryTag m_MemoryTag;
 
-#ifdef _M_X64
-		char const c_Padding[4];
-#endif // ifdef _M_X64
+#	ifdef _M_X64
+			char const c_Padding[4];
+#	endif // ifdef _M_X64
 #endif // ifdef NA_MEMORY_TAGGING
 	};
 
@@ -1336,6 +1340,8 @@ namespace nabi_allocator::tests::blueprints
 		std::string const& expectedX64MemoryTaggingLayout, std::string const& expectedX64Layout,
 		std::string const& expectedX86MemoryTaggingLayout, std::string const& expectedX86Layout,
 		std::string const& expectedFreeLayout);
+	template<is_heap_zone HeapZoneType>
+	void AllocatorAllocateTooLargeTest(uInt const heapZoneSize);
 
 	template<is_heap_zone HeapZoneType>
 	void AllocatorResetTest(uInt const heapZoneSize, std::string const& expectedResetLayout);
@@ -1524,7 +1530,11 @@ namespace nabi_allocator
 		bool requiresPadding = padding != 0u;
 
 		blockHeader = TryFindFreeBlock(requiredBlockSize);
-		NA_ASSERT(blockHeader, NA_NAMEOF_LITERAL(FreeListAllocator) " is out of memory");
+		if (!blockHeader) [[unlikely]]
+		{
+			NA_ASSERT_FAIL(NA_NAMEOF_LITERAL(FreeListAllocator) " is out of memory");
+			return nullptr;
+		}
 
 		uInt const originalBlockSize = bit_operations::RightShiftBit(blockHeader->m_BlockInfo, type_utils::ToUnderlying(BlockInfoIndex::SizeStart));
 		RemoveFreeBlock(blockHeader);
@@ -1822,14 +1832,17 @@ namespace nabi_allocator
 		bool const remainingSpaceSufficient = (positionAfterAllocation + c_MinBlockSizeSA) <= heapZoneInfo.m_End;
 		if (!remainingSpaceSufficient)
 		{
-			uInt const spaceToEnd = heapZoneInfo.m_End - positionAfterAllocation;
+			uInt const spaceToEnd = positionAfterAllocation - heapZoneInfo.m_End;
 			requiredBlockSize += spaceToEnd;
 			padding += spaceToEnd;
 			requiresPadding = true;
 		}
 
-		NA_ASSERT((m_CurrentPosition + requiredBlockSize) <= heapZoneInfo.m_End,
-			NA_NAMEOF_LITERAL(StackAllocator) " is out of memory");
+		if ((m_CurrentPosition + requiredBlockSize) > heapZoneInfo.m_End) [[unlikely]]
+		{
+			NA_ASSERT_FAIL(NA_NAMEOF_LITERAL(StackAllocator) " is out of memory");
+			return nullptr;
+		}
 
 		uInt allocatedBytes = 0u;
 
@@ -2367,21 +2380,21 @@ namespace nabi_allocator::tests::blueprints
 		void* const ptr = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
 		{
 			std::string const expectedLayout =
-#ifdef _M_X64
-#	ifdef NA_MEMORY_TAGGING
+#	ifdef _M_X64
+#		ifdef NA_MEMORY_TAGGING
 				expectedX64MemoryTaggingLayout
-#	else
+#		else
 				expectedX64Layout
-#	endif // ifdef NA_MEMORY_TAGGING 
-#elif _M_IX86
-#	ifdef NA_MEMORY_TAGGING
+#		endif // ifdef NA_MEMORY_TAGGING 
+#	elif _M_IX86
+#		ifdef NA_MEMORY_TAGGING
 				expectedX86MemoryTaggingLayout
-#	else
+#		else
 				expectedX86Layout
-#	endif // ifdef NA_MEMORY_TAGGING 
-#else
-#	error "Unsupported architecture"
-#endif // ifdef _M_IX86, elif _M_IX86
+#		endif // ifdef NA_MEMORY_TAGGING 
+#	else
+#		error "Unsupported architecture"
+#	endif // ifdef _M_IX86, elif _M_IX86
 				;
 			std::string const actualLayout = GetMemoryLayout(allocator, heapZoneInfo);
 			EXPECT_EQ(expectedLayout, actualLayout);
@@ -2392,6 +2405,21 @@ namespace nabi_allocator::tests::blueprints
 			std::string const actualLayout = GetMemoryLayout(allocator, heapZoneInfo);
 			EXPECT_EQ(expectedFreeLayout, actualLayout);
 		}
+	}
+
+	template<is_heap_zone HeapZoneType>
+	void AllocatorAllocateTooLargeTest(uInt const heapZoneSize)
+	{
+#	ifdef NA_DEBUG
+		// See MemoryCommandTests::TooLargeAllocation
+		return;
+#	endif
+
+		HeapZoneType heapZone{ HeapZoneBase::c_NoParent, heapZoneSize, "TestHeapZone" };
+		void* const ptr = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(heapZoneSize + 4u, c_NullMemoryTag));
+
+		EXPECT_TRUE(ptr == nullptr);
+		heapZone.Reset();
 	}
 
 	template<is_heap_zone HeapZoneType>
@@ -2546,7 +2574,7 @@ namespace nabi_allocator::benchmark_utils
 		auto const getTimeWithPrecision =
 			[](f64 const time) -> std::string
 		{
-			int constexpr precision = std::numeric_limits<f64>::digits10;
+			s32 constexpr precision = std::numeric_limits<f64>::digits10;
 
 			std::ostringstream stream = {}; // I'm not sure if there is a better way to do this...
 			stream << std::fixed << std::setprecision(precision) << time;
@@ -2640,6 +2668,14 @@ namespace nabi_allocator
 
 	void* MemoryCommand::Allocate(uInt const numBytes)
 	{
+#ifdef NA_SAFE_ALLOC_FREE_EARLY_OUT
+		if (numBytes == 0u) [[unlikely]]
+		{
+			NA_ASSERT_FAIL("Attempting to allocate 0 bytes");
+			return nullptr;
+		}
+#endif // ifdef NA_SAFE_ALLOC_FREE_EARLY_OUT
+
 		void* memory = nullptr;
 
 		HeapZoneScope const* const topHeapZoneScope = GetTopHeapZoneScope();
@@ -2660,6 +2696,14 @@ namespace nabi_allocator
 			else
 			{
 				memory = topHeapZone->Allocate(NA_MAKE_ALLOCATION_INFO(numBytes, topMemoryTag));
+#ifdef NA_MALLOC_IF_OUT_OF_MEMORY
+				// Something went wrong while allocating its probably that the free memory in the heapzone is insufficient
+				// for the allocation (but regardless) just try and malloc the memory instead to hopefully prevent a crash.
+				if (!memory) [[unlikely]]
+				{
+					goto unmanagedAllocatorAlloc;
+				}
+#endif // ifdef NA_MALLOC_IF_OUT_OF_MEMORY
 			}
 		}
 		else [[unlikely]]
@@ -2673,6 +2717,14 @@ namespace nabi_allocator
 
 	void MemoryCommand::Free(void* const memory)
 	{
+#ifdef NA_SAFE_ALLOC_FREE_EARLY_OUT
+		if (!memory) [[unlikely]]
+		{
+			NA_ASSERT_FAIL("Attempting to free nullptr");
+			return;
+		}
+#endif // ifdef NA_SAFE_ALLOC_FREE_EARLY_OUT
+
 		if (g_LastHeapZone) [[likely]]
 		{
 			if (g_LastHeapZone == &c_UnmanagedHeap)
@@ -3656,6 +3708,13 @@ namespace nabi_allocator::tests
 		);
 	}
 
+	TEST(NA_FIXTURE_NAME, TooLargeAllocation)
+	{
+		blueprints::AllocatorAllocateTooLargeTest<HeapZoneType>(
+			c_SmallHeapZoneSize // Heap zone size
+		);
+	}
+
 	TEST(NA_FIXTURE_NAME, Reset)
 	{
 		blueprints::AllocatorResetTest<HeapZoneTypeFLAT>(
@@ -4110,6 +4169,34 @@ namespace nabi_allocator::tests
 		}
 	}
 
+	TEST(NA_FIXTURE_NAME, TooLargeAllocation)
+	{
+#	ifdef NA_DEBUG
+		// Kinda the same deal as the StackAllocatorTests::EnsureTopOfStackFree. Idk why, but gTest 
+		// does not like asserts and I can't find an EXPECT_ASSERT solution or something like at PG.
+		return;
+#	endif
+
+		uInt constexpr heapZoneSize = 64u;
+
+		MemoryCommand memoryCommand = {};
+		HeapZone<DefaultFreeListAllocator> heapZone = { HeapZoneBase::c_NoParent, heapZoneSize, "TestHeapZone" };
+		HeapZoneScope scope = { &heapZone, std::nullopt, &memoryCommand };
+
+		void* ptr = memoryCommand.Allocate(heapZoneSize + 4u);
+		bool const ptrIsNull = (ptr == nullptr); // gTest doesn't like checking pointers in EXPECT_[TRUE/FALSE]?
+#	ifdef NA_MALLOC_IF_OUT_OF_MEMORY
+		EXPECT_FALSE(ptrIsNull);
+		memoryCommand.Free(ptr);
+#	else
+		EXPECT_TRUE(ptrIsNull);
+		if (!ptrIsNull) // Just in case!
+		{
+			memoryCommand.Free(ptr);
+		}
+#	endif // ifdef NA_MALLOC_IF_OUT_OF_MEMORY
+	}
+
 #	undef NA_FIXTURE_NAME
 #endif // ifdef NA_TESTS
 } // namespace nabi_allocator::tests
@@ -4194,10 +4281,7 @@ namespace nabi_allocator::tests
 // --- StackAllocatorTests.cpp ---
 
 /**
- * Tests for FreeListAllocator.
- *
- * Note: I am unsure if my tests for the search algorithms are ok. On the one hand, they test the smallest part of the code.
- * On the other, they don't test the interface of the allocator itself. Thoughts?
+ * Tests for StackAllocator.
 */
 
 namespace nabi_allocator::tests
@@ -4225,6 +4309,13 @@ namespace nabi_allocator::tests
 			"A16P4 F48P0",  // Expected x86 + memory tagging layout
 			"A8P0 F56P0",   // Expected x86 layout
 			"F64P0"         // Expected free layout
+		);
+	}
+
+	TEST(NA_FIXTURE_NAME, TooLargeAllocation)
+	{
+		blueprints::AllocatorAllocateTooLargeTest<HeapZoneType>(
+			c_HeapZoneSize // Heap zone size
 		);
 	}
 

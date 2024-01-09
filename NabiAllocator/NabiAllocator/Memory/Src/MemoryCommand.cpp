@@ -48,6 +48,14 @@ namespace nabi_allocator
 
 	void* MemoryCommand::Allocate(uInt const numBytes)
 	{
+#ifdef NA_SAFE_ALLOC_FREE_EARLY_OUT
+		if (numBytes == 0u) [[unlikely]]
+		{
+			NA_ASSERT_FAIL("Attempting to allocate 0 bytes");
+			return nullptr;
+		}
+#endif // ifdef NA_SAFE_ALLOC_FREE_EARLY_OUT
+
 		void* memory = nullptr;
 
 		HeapZoneScope const* const topHeapZoneScope = GetTopHeapZoneScope();
@@ -68,6 +76,14 @@ namespace nabi_allocator
 			else
 			{
 				memory = topHeapZone->Allocate(NA_MAKE_ALLOCATION_INFO(numBytes, topMemoryTag));
+#ifdef NA_MALLOC_IF_OUT_OF_MEMORY
+				// Something went wrong while allocating its probably that the free memory in the heapzone is insufficient
+				// for the allocation (but regardless) just try and malloc the memory instead to hopefully prevent a crash.
+				if (!memory) [[unlikely]]
+				{
+					goto unmanagedAllocatorAlloc;
+				}
+#endif // ifdef NA_MALLOC_IF_OUT_OF_MEMORY
 			}
 		}
 		else [[unlikely]]
@@ -81,6 +97,14 @@ namespace nabi_allocator
 
 	void MemoryCommand::Free(void* const memory)
 	{
+#ifdef NA_SAFE_ALLOC_FREE_EARLY_OUT
+		if (!memory) [[unlikely]]
+		{
+			NA_ASSERT_FAIL("Attempting to free nullptr");
+			return;
+		}
+#endif // ifdef NA_SAFE_ALLOC_FREE_EARLY_OUT
+
 		if (g_LastHeapZone) [[likely]]
 		{
 			if (g_LastHeapZone == &c_UnmanagedHeap)

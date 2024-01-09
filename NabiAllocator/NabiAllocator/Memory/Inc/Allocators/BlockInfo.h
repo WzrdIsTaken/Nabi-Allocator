@@ -28,9 +28,9 @@ namespace nabi_allocator
 #ifdef NA_MEMORY_TAGGING
 		memoryTag m_MemoryTag;
 
-#ifdef _M_X64
-		char const c_Padding[4];
-#endif // ifdef _M_X64
+#	ifdef _M_X64
+			char const c_Padding[4];
+#	endif // ifdef _M_X64
 #endif // ifdef NA_MEMORY_TAGGING
 	};
 

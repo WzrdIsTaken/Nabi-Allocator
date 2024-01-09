@@ -16,10 +16,7 @@
 #include "TestConstants.h"
 
 /**
- * Tests for FreeListAllocator.
- *
- * Note: I am unsure if my tests for the search algorithms are ok. On the one hand, they test the smallest part of the code.
- * On the other, they don't test the interface of the allocator itself. Thoughts?
+ * Tests for StackAllocator.
 */
 
 namespace nabi_allocator::tests
@@ -47,6 +44,13 @@ namespace nabi_allocator::tests
 			"A16P4 F48P0",  // Expected x86 + memory tagging layout
 			"A8P0 F56P0",   // Expected x86 layout
 			"F64P0"         // Expected free layout
+		);
+	}
+
+	TEST(NA_FIXTURE_NAME, TooLargeAllocation)
+	{
+		blueprints::AllocatorAllocateTooLargeTest<HeapZoneType>(
+			c_HeapZoneSize // Heap zone size
 		);
 	}
 

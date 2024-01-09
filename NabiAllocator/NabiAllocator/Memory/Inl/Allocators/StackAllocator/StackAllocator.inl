@@ -57,14 +57,17 @@ namespace nabi_allocator
 		bool const remainingSpaceSufficient = (positionAfterAllocation + c_MinBlockSizeSA) <= heapZoneInfo.m_End;
 		if (!remainingSpaceSufficient)
 		{
-			uInt const spaceToEnd = heapZoneInfo.m_End - positionAfterAllocation;
+			uInt const spaceToEnd = positionAfterAllocation - heapZoneInfo.m_End;
 			requiredBlockSize += spaceToEnd;
 			padding += spaceToEnd;
 			requiresPadding = true;
 		}
 
-		NA_ASSERT((m_CurrentPosition + requiredBlockSize) <= heapZoneInfo.m_End, 
-			NA_NAMEOF_LITERAL(StackAllocator) " is out of memory");
+		if ((m_CurrentPosition + requiredBlockSize) > heapZoneInfo.m_End) [[unlikely]]
+		{
+			NA_ASSERT_FAIL(NA_NAMEOF_LITERAL(StackAllocator) " is out of memory");
+			return nullptr;
+		}
 
 		uInt allocatedBytes = 0u;
 

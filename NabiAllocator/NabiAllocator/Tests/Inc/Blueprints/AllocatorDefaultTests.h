@@ -24,6 +24,8 @@ namespace nabi_allocator::tests::blueprints
 		std::string const& expectedX64MemoryTaggingLayout, std::string const& expectedX64Layout,
 		std::string const& expectedX86MemoryTaggingLayout, std::string const& expectedX86Layout,
 		std::string const& expectedFreeLayout);
+	template<is_heap_zone HeapZoneType>
+	void AllocatorAllocateTooLargeTest(uInt const heapZoneSize);
 
 	template<is_heap_zone HeapZoneType>
 	void AllocatorResetTest(uInt const heapZoneSize, std::string const& expectedResetLayout);
