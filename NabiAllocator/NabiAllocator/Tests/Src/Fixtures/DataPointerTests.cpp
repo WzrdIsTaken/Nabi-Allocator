@@ -28,19 +28,19 @@ namespace nabi_allocator::tests
 	{
 		// * dereference
 		{
-			s32 constexpr value = 20;
+			s32 const value = 20;
 			DataPointer<s32 const> dataPointer = &value;
 			EXPECT_EQ(*dataPointer, value);
 			EXPECT_EQ(dataPointer.m_Data, static_cast<uInt>(0)); // Data should be set to 0 when a DataPointer is constructed with only a ptr (would be the same deal in the next case)
 		}
-		
+
 		// -> dereference
 		{
 			struct Container final
 			{
 				s32 m_Value;
 			};
-			Container constexpr container = { 24 };
+			Container const container = { 24 };
 			DataPointer<Container const> dataPointer = &container;
 			EXPECT_EQ(dataPointer->m_Value, container.m_Value);
 		}
@@ -61,11 +61,11 @@ namespace nabi_allocator::tests
 
 		// Update ptr
 		{
-			s32 constexpr valueOne = 1;
+			s32 const valueOne = 1;
 			dataPointer = &valueOne;
 			EXPECT_EQ(*dataPointer, valueOne);
 
-			s32 constexpr valueTwo = 2;
+			s32 const valueTwo = 2;
 			*dataPointer = valueTwo;
 			EXPECT_EQ(*dataPointer, valueTwo);
 		}

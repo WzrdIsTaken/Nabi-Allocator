@@ -34,7 +34,7 @@ Tasks:
 
 *Long Term
 - Make NabiAllocator a single header (or single .h+.inl+.cpp...) library once it's finished. This will make it easier to export / other people to benchmark.
-- Bump the version to 1.0! (Core/Inc/Version.h)
+- Bump the version to 1.0! (Core/Inc/Version.h) (in the single header as well!)
 
 - Profile the use of __forceinline on: (i have never used forceinline before, so it will be interesting to see)
 	- BitOperations X [see profiling google doc]
@@ -45,17 +45,12 @@ Tasks:
 
 - Remember C:\Users\Ben\Desktop\Uni\Year 3\Dissertation -> Lots of good stuff in here for the writeup
 - And a bunch of google docs with notes on
+- Remember to talk about the data pointer / any thing else that we did but didnt quite work. That investigation stuff is super important in a report!
+	- Also research cirular buffers & understand virtual memory. These could also make a good section
 
 - Something to investigate / understand is virtual memory in the context of - when the OS gives memory to an application it gives it in a way
   that every application thinks it has a block going from 0 -> end..? perhaps..? can this memory be non contigous? eg the application thinks it
   is but in reality its not?
-
-- “The value of TS should be large enough to allow a sufficient number of different tag values (i.e. at least 4 to provide ~ 16 tag values) and
-   small enough to fit into the unused upper bits of a pointer (usually up to 8 or 16, depending on the architecture). TS also affects the 
-   complexity and the size of the tag storage.” This is how we have zero byte tagging! Combined with Molly Rocket’s video on seeing if memory 
-   is used.. This could be really interesting. Find that video on pointer buckets.
-	-> Can we just store the infomation which is currently in BlockInfo in the pointer? We could work out the size of blocks via pointer maths instead of explicity storing it
-		-> Tried this, didn't actually work when I put more thought into it.
 
 - Find if things have been overriden by checksums [ask brandon] [ngl idk if this is something i can be asked to do. but we can write about it in report]
 
@@ -64,15 +59,6 @@ Tasks:
 - Could profile using [[likely]]/[[unlikely]] if we have a good usecase? X [see profiling google doc]
 
 *General
-- After the poster submission we have 3 things to do:
-	- 1) More optimisation (just take it easy, read the notes below)
-	- 2) Probs start with this - look into more advanced memory management techniques. Will be interesting for report. Eg: cirular buffers, understand virtual memory,
-	     how to use the unused pointers of a bit. These things don't have to go into the allocator, can just make a new C++ proj and play around with them.
-	- 3) Start prepping for user study
-		- Need to write some solid documentation for my allocator for the user research stuff
-		- Remeber to document that you can use the short namespace. NA_DEFINE_SHORT_NAMESPACE
-		- Tbh, well document all of the defines and there usages / what will and will not be considered if you toggle them on / the define dependencies
-
 - Then we need to learn how to profile and optimise what we have as much as we can! [AS OF 04/12/23 WE HAVE DONE ENOUGH. JUST POSTER STUFF NOW]
 	- Apperently the TryCoalesceBlock function is the slowest now. It has some futher function calls in it though, and I can't see exactly what I can push futher right now.
 	- The memory command is also kinda slow...
@@ -86,7 +72,35 @@ Tasks:
 			- UPDATE 2 - I tried to make a direct heap zone thing but had some problems. Anyway, I think that everything is more than fast enough
 			  for a solid submission. I've scratched my optimisation itch, now just work on the poster up until that deadline. Also got other assignments to do...
 
+- Probs the thing to do now is start writing the docs for the user study. The interface of the allocator won't change right <--this!
+	- Remeber to document that you can use the short namespace. NA_DEFINE_SHORT_NAMESPACE
+	- Tbh, well document all of the defines and there usages / what will and will not be considered if you toggle them on / the define dependencies
+
 Archive:
+NEXT TIME WE CODE (WED?)
+- Check over what we have done.  DONE
+- Perhaps its good to have a AllocateTooLarge test in DefaultAllocatorTests? Should just check nullptr is returned, can do the same IF_DEBUG return thing DONE
+- Then mirror what we have done in the single header and commit DONE
+- THEN
+- 2 Bugs:
+	- 1) When you overallocate with the stack allocator it crashes rather than returning nullptr DONE
+	- 2) Data ptr tests sometimes fail??? DONE
+		- Perhaps its because on x86 systems we dont actually have 8 free bits? double check the number of free bits we have
+		- Rename tagged ptr to data ptr as well
+- After the poster submission we have 3 things to do:
+	- 1) More optimisation (just take it easy, read the notes below)
+	- 2) Probs start with this - look into more advanced memory management techniques. Will be interesting for report. Eg: cirular buffers, understand virtual memory,
+	     how to use the unused pointers of a bit. These things don't have to go into the allocator, can just make a new C++ proj and play around with them.
+	- 3) Start prepping for user study
+		- Need to write some solid documentation for my allocator for the user research stuff
+		- [move the other notes under here to a different section]
+- “The value of TS should be large enough to allow a sufficient number of different tag values (i.e. at least 4 to provide ~ 16 tag values) and
+   small enough to fit into the unused upper bits of a pointer (usually up to 8 or 16, depending on the architecture). TS also affects the 
+   complexity and the size of the tag storage.” This is how we have zero byte tagging! Combined with Molly Rocket’s video on seeing if memory 
+   is used.. This could be really interesting. Find that video on pointer buckets.
+	-> Can we just store the infomation which is currently in BlockInfo in the pointer? We could work out the size of blocks via pointer maths instead of explicity storing it
+		-> Tried this, didn't actually work when I put more thought into it.
+- Also probs a good idea to wrap the gtest includes in NA_TESTS? so ppl can grab the library and easily get rid of depencieis (in the single include)
 - Test __forceline for the data pointer
 - READ THE ABOVE^^^
 - We have made the data pointer, and the NA_DATA_PTR_TAGGING define. 
