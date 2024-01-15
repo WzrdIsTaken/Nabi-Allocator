@@ -627,6 +627,11 @@ namespace nabi_allocator
  * The base class for all allocators. HeapZone's allocator template must comply with is_allocator.
 */
 
+#define NA_CHECK_MEMORY_FOR_ALLOCATOR_OPERATION(memory, heapZoneInfo) \
+	NA_ASSERT(memory, "memory is null"); \
+	NA_ASSERT(memory_operations::IsPtrInRange(heapZoneInfo.m_Start, heapZoneInfo.m_End, \
+		NA_TO_UPTR(memory)), "Trying to operate on memory not managed by this allocator"); 
+
 namespace nabi_allocator
 {
 	struct AllocationInfo;
@@ -651,14 +656,16 @@ namespace nabi_allocator
 
 		virtual std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
 			std::optional<std::function<bool(AllocatorBlockInfo const&)>> const action, HeapZoneInfo const& heapZoneInfo) const = 0;
+		[[nodiscard]] virtual AllocatorBlockInfo GetAllocationInfo(void const* const memory, HeapZoneInfo const& heapZoneInfo) const = 0;
 
 #ifdef NA_TRACK_ALLOCATIONS
 		[[nodiscard]] inline AllocatorStats const& GetStats() const noexcept;
 #endif // ifdef NA_TRACK_ALLOCATIONS
 
 	protected:
-		[[nodiscard]] AllocatorBlockInfo IterateThroughHeapZoneHelper(
-			uInt const blockHeaderPosition, std::function<s64(uInt const)> const calculateBlockPaddingAdjustment) const;
+		[[nodiscard]] AllocatorBlockInfo IterateThroughHeapZoneHelper(uInt const blockHeaderPosition,
+			std::function<s64(uInt const)> const calculatePayloadPtrAdjustment,
+			std::function<s64(uInt const)> const calculateBlockPaddingAdjustment) const;
 
 #ifdef NA_TRACK_ALLOCATIONS
 		AllocatorStats m_AllocatorStats;
@@ -928,6 +935,7 @@ namespace nabi_allocator
 
 		std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
 			std::optional<std::function<bool(AllocatorBlockInfo const&)>> const action, HeapZoneInfo const& heapZoneInfo) const override;
+		[[nodiscard]] AllocatorBlockInfo GetAllocationInfo(void const* const memory, HeapZoneInfo const& heapZoneInfo) const override;
 
 	private:
 		NA_SET_COPY_MOVE_CONSTRUCTORS(FreeListAllocator, delete);
@@ -1002,8 +1010,8 @@ namespace nabi_allocator
 // --- StackAllocator.h ---
 
 /**
- * A stack allocator works, as you might guess, exactly like a stack. It has the advantages of being faster and
- * having lower memory overhead compaired to something like a free list allocator as we don't have to store as
+ * A stack allocator works, as you might guess, exactly like a stack. It has the advantages of being faster (sometimes!)
+ * and having lower memory overhead compaired to something like a free list allocator as we don't have to store as
  * much infomation about a block or manage free memory. However, it is much less flexible as memory can only be
  * allocated and freed from the top of the stack.
  *
@@ -1041,6 +1049,7 @@ namespace nabi_allocator
 
 		std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
 			std::optional<std::function<bool(AllocatorBlockInfo const&)>> const action, HeapZoneInfo const& heapZoneInfo) const override;
+		[[nodiscard]] AllocatorBlockInfo GetAllocationInfo(void const* const memory, HeapZoneInfo const& heapZoneInfo) const override;
 
 	private:
 		NA_SET_COPY_MOVE_CONSTRUCTORS(StackAllocator, delete);
@@ -1346,6 +1355,9 @@ namespace nabi_allocator::tests::blueprints
 	template<is_heap_zone HeapZoneType>
 	void AllocatorResetTest(uInt const heapZoneSize, std::string const& expectedResetLayout);
 
+	template<is_heap_zone HeapZoneType>
+	void AllocatorGetAllocationInfoTest(uInt const heapZoneSize);
+
 #	ifdef NA_MEMORY_TAGGING
 	template<is_heap_zone HeapZoneType>
 	void AllocatorMemoryTagTest(uInt const heapZoneSize,
@@ -1596,9 +1608,7 @@ namespace nabi_allocator
 	template<FreeListAllocatorSettings Settings>
 	void FreeListAllocator<Settings>::Free(void* memory, HeapZoneInfo const& heapZoneInfo)
 	{
-		NA_ASSERT(memory, "Cannot free nullptr");
-		NA_ASSERT(memory_operations::IsPtrInRange(heapZoneInfo.m_Start, heapZoneInfo.m_End,
-			NA_TO_UPTR(memory)), "Trying to release memory not managed by this allocator");
+		NA_CHECK_MEMORY_FOR_ALLOCATOR_OPERATION(memory, heapZoneInfo);
 
 		// Get the payload's block's header
 		BlockHeader* const blockHeader = NA_REINTERPRET_MEMORY(BlockHeader, memory, -, c_BlockHeaderSize);
@@ -1629,21 +1639,12 @@ namespace nabi_allocator
 		std::optional<std::function<bool(AllocatorBlockInfo const&)>> const action, HeapZoneInfo const& heapZoneInfo) const
 	{
 		std::deque<AllocatorBlockInfo> allocatorBlocks = {};
-		uInt progressThroughHeapZone = static_cast<uInt>(heapZoneInfo.m_Start);
+		uInt progressThroughHeapZone = static_cast<uInt>(heapZoneInfo.m_Start) + c_BlockHeaderSize;
 
 		// Loop through all the blocks in the heap zone until the end or "action" returns false
 		do
 		{
-			AllocatorBlockInfo const allocatorBlockInfo =
-				IterateThroughHeapZoneHelper(progressThroughHeapZone,
-					[](uInt const blockNumBytes) -> s64
-					{
-						uInt const blockAdjustment = blockNumBytes - c_BlockFooterSize - c_BlockPaddingSize;
-						NA_ASSERT(blockAdjustment < static_cast<uInt>(std::numeric_limits<s64>::max()),
-							"This will (probably?) never happen, but if it does its probs good to know about it :p");
-
-						return static_cast<s64>(blockAdjustment);
-					});
+			AllocatorBlockInfo const allocatorBlockInfo = GetAllocationInfo(NA_TO_VPTR(progressThroughHeapZone), heapZoneInfo);
 			progressThroughHeapZone += allocatorBlockInfo.m_NumBytes;
 			allocatorBlocks.push_back(allocatorBlockInfo);
 
@@ -1656,6 +1657,27 @@ namespace nabi_allocator
 		} while (progressThroughHeapZone < heapZoneInfo.m_End);
 
 		return allocatorBlocks;
+	}
+
+	template<FreeListAllocatorSettings Settings>
+	AllocatorBlockInfo FreeListAllocator<Settings>::GetAllocationInfo(void const* const memory, HeapZoneInfo const& heapZoneInfo) const
+	{
+		NA_CHECK_MEMORY_FOR_ALLOCATOR_OPERATION(memory, heapZoneInfo);
+
+		// As of 15/01/24 this function perhaps doesn't have the best name anymore...
+		return IterateThroughHeapZoneHelper(NA_TO_UPTR(memory) - c_BlockHeaderSize,
+			[](uInt const /*blockNumBytes*/) -> s64
+			{
+				return static_cast<s64>(c_BlockHeaderSize);
+			},
+			[](uInt const blockNumBytes) -> s64
+			{
+				uInt const blockAdjustment = blockNumBytes - c_BlockFooterSize - c_BlockPaddingSize;
+				NA_ASSERT(blockAdjustment < static_cast<uInt>(std::numeric_limits<s64>::max()),
+					"This will (probably?) never happen, but if it does its probs good to know about it :p");
+
+				return static_cast<s64>(blockAdjustment);
+			});
 	}
 
 	template<FreeListAllocatorSettings Settings>
@@ -1889,9 +1911,7 @@ namespace nabi_allocator
 	template<StackAllocatorSettings Settings>
 	void StackAllocator<Settings>::Free(void* memory, HeapZoneInfo const& heapZoneInfo)
 	{
-		NA_ASSERT(memory, "Cannot free nullptr");
-		NA_ASSERT(memory_operations::IsPtrInRange(heapZoneInfo.m_Start, heapZoneInfo.m_End,
-			NA_TO_UPTR(memory)), "Trying to release memory not managed by this allocator");
+		NA_CHECK_MEMORY_FOR_ALLOCATOR_OPERATION(memory, heapZoneInfo);
 
 		uPtr const memoryAddress = NA_TO_UPTR(memory);
 		NA_ASSERT(memoryAddress == m_PreviousPosition, "Freeing memory which isn't at the top of the stack");
@@ -1960,6 +1980,10 @@ namespace nabi_allocator
 				IterateThroughHeapZoneHelper((progressThroughHeapZone - c_BlockHeaderSize),
 					[](uInt const blockNumBytes) -> s64
 					{
+						return -static_cast<s64>(blockNumBytes - c_BlockHeaderSize);
+					},
+					[](uInt const blockNumBytes) -> s64
+					{
 						return -static_cast<s64>(c_BlockPaddingSize);
 					});
 			progressThroughHeapZone -= allocatorBlockInfo.m_NumBytes;
@@ -1978,6 +2002,20 @@ namespace nabi_allocator
 		}
 
 		return allocatorBlocks;
+	}
+
+	template<StackAllocatorSettings Settings>
+	AllocatorBlockInfo StackAllocator<Settings>::GetAllocationInfo(void const* const memory, HeapZoneInfo const& heapZoneInfo) const
+	{
+		NA_CHECK_MEMORY_FOR_ALLOCATOR_OPERATION(memory, heapZoneInfo);
+
+		// Because of the memory layout this allocator has we have to do this kinda jank solution
+		uInt blockIndex = 0u;
+		return IterateThroughHeapZone(
+			[memory, &blockIndex](AllocatorBlockInfo const& allocatorBlockInfo) -> bool
+			{
+				return allocatorBlockInfo.m_PayloadPtr != memory && (++blockIndex, true); // s tier syntax
+			}, heapZoneInfo).at(blockIndex);
 	}
 
 	template<StackAllocatorSettings Settings>
@@ -2434,6 +2472,21 @@ namespace nabi_allocator::tests::blueprints
 		EXPECT_EQ(expectedResetLayout, actualLayout);
 	}
 
+	template<is_heap_zone HeapZoneType>
+	void AllocatorGetAllocationInfoTest(uInt const heapZoneSize)
+	{
+		HeapZoneType heapZone{ HeapZoneBase::c_NoParent, heapZoneSize, "TestHeapZone" };
+		void* const ptr = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
+
+		AllocatorBlockInfo const ptrInfo = heapZone.GetAllocator().GetAllocationInfo(ptr, heapZone.GetZoneInfo());
+		EXPECT_EQ(ptr, ptrInfo.m_PayloadPtr);
+#	ifdef NA_MEMORY_TAGGING
+		EXPECT_EQ(c_NullMemoryTag, ptrInfo.m_MemoryTag);
+#	endif // ifdef NA_MEMORY_TAGGING
+
+		heapZone.Reset();
+	}
+
 #	ifdef NA_MEMORY_TAGGING
 	template<is_heap_zone HeapZoneType>
 	void AllocatorMemoryTagTest(uInt const heapZoneSize,
@@ -2866,8 +2919,9 @@ void operator delete[](void* const memory) noexcept
 
 namespace nabi_allocator
 {
-	AllocatorBlockInfo AllocatorBase::IterateThroughHeapZoneHelper(
-		uInt const blockHeaderPosition, std::function<s64(uInt const)> const calculateBlockPaddingAdjustment) const
+	AllocatorBlockInfo AllocatorBase::IterateThroughHeapZoneHelper(uInt const blockHeaderPosition,
+		std::function<s64(uInt const)> const calculatePayloadPtrAdjustment,
+		std::function<s64(uInt const)> const calculateBlockPaddingAdjustment) const
 	{
 		AllocatorBlockInfo allocatorBlockInfo = {};
 		BlockHeader const* blockHeader = nullptr;
@@ -2882,7 +2936,6 @@ namespace nabi_allocator
 		allocatorBlockInfo.m_MemoryTag = blockInfoContent.m_MemoryTag;
 #endif // ifdef NA_MEMORY_TAGGING
 
-		allocatorBlockInfo.m_PayloadPtr = NA_REINTERPRET_MEMORY(void, blockHeader, +, c_BlockHeaderSize);
 		allocatorBlockInfo.m_Allocated = blockInfoContent.m_Allocated;
 		allocatorBlockInfo.m_Padded = blockInfoContent.m_Padded;
 
@@ -2896,6 +2949,8 @@ namespace nabi_allocator
 
 		allocatorBlockInfo.m_NumBytes = blockInfoContent.m_NumBytes;
 		allocatorBlockInfo.m_Padding = padding;
+		allocatorBlockInfo.m_PayloadPtr = 
+			NA_REINTERPRET_MEMORY(void, blockHeader, +, calculatePayloadPtrAdjustment(allocatorBlockInfo.m_NumBytes));
 
 		return allocatorBlockInfo;
 	}
@@ -3724,6 +3779,13 @@ namespace nabi_allocator::tests
 		);
 	}
 
+	TEST(NA_FIXTURE_NAME, GetAllocationInfo)
+	{
+		blueprints::AllocatorGetAllocationInfoTest<HeapZoneTypeFLAT>(
+			c_SmallHeapZoneSizeFLAT // Heap zone size
+		);
+	}
+
 #	ifdef NA_MEMORY_TAGGING
 	TEST(NA_FIXTURE_NAME, MemoryTagging)
 	{
@@ -3973,6 +4035,12 @@ namespace nabi_allocator::tests
 
 		std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
 			std::optional<std::function<bool(AllocatorBlockInfo const&)>> const /*action*/, HeapZoneInfo const& /*heapZoneInfo*/) const override
+		{
+			NA_FUNCTION_NOT_IMPLEMENTED;
+			return {};
+		}
+
+		[[nodiscard]] AllocatorBlockInfo GetAllocationInfo(void const* const /*memory*/, HeapZoneInfo const& /*heapZoneInfo*/) const override
 		{
 			NA_FUNCTION_NOT_IMPLEMENTED;
 			return {};
@@ -4325,6 +4393,13 @@ namespace nabi_allocator::tests
 		blueprints::AllocatorResetTest<HeapZoneTypeSAT>(
 			c_HeapZoneSizeSAT, // Heap zone size
 			"F64P0"            // Expected reset layout
+		);
+	}
+
+	TEST(NA_FIXTURE_NAME, GetAllocationInfo)
+	{
+		blueprints::AllocatorGetAllocationInfoTest<HeapZoneTypeSAT>(
+			c_HeapZoneSizeSAT // Heap zone size
 		);
 	}
 

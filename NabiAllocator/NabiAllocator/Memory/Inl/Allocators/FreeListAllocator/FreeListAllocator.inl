@@ -131,9 +131,7 @@ namespace nabi_allocator
 	template<FreeListAllocatorSettings Settings>
 	void FreeListAllocator<Settings>::Free(void* memory, HeapZoneInfo const& heapZoneInfo)
 	{
-		NA_ASSERT(memory, "Cannot free nullptr");
-		NA_ASSERT(memory_operations::IsPtrInRange(heapZoneInfo.m_Start, heapZoneInfo.m_End,
-			NA_TO_UPTR(memory)), "Trying to release memory not managed by this allocator");
+		NA_CHECK_MEMORY_FOR_ALLOCATOR_OPERATION(memory, heapZoneInfo);
 
 		// Get the payload's block's header
 		BlockHeader* const blockHeader = NA_REINTERPRET_MEMORY(BlockHeader, memory, -, c_BlockHeaderSize);
@@ -164,21 +162,12 @@ namespace nabi_allocator
 		std::optional<std::function<bool(AllocatorBlockInfo const&)>> const action, HeapZoneInfo const& heapZoneInfo) const
 	{
 		std::deque<AllocatorBlockInfo> allocatorBlocks = {};
-		uInt progressThroughHeapZone = static_cast<uInt>(heapZoneInfo.m_Start);
+		uInt progressThroughHeapZone = static_cast<uInt>(heapZoneInfo.m_Start) + c_BlockHeaderSize;
 
 		// Loop through all the blocks in the heap zone until the end or "action" returns false
 		do
 		{
-			AllocatorBlockInfo const allocatorBlockInfo =
-				IterateThroughHeapZoneHelper(progressThroughHeapZone,
-					[](uInt const blockNumBytes) -> s64
-					{
-						uInt const blockAdjustment = blockNumBytes - c_BlockFooterSize - c_BlockPaddingSize;
-						NA_ASSERT(blockAdjustment < static_cast<uInt>(std::numeric_limits<s64>::max()),
-							"This will (probably?) never happen, but if it does its probs good to know about it :p");
-
-						return static_cast<s64>(blockAdjustment);
-					});
+			AllocatorBlockInfo const allocatorBlockInfo = GetAllocationInfo(NA_TO_VPTR(progressThroughHeapZone), heapZoneInfo);
 			progressThroughHeapZone += allocatorBlockInfo.m_NumBytes;
 			allocatorBlocks.push_back(allocatorBlockInfo);
 
@@ -192,6 +181,27 @@ namespace nabi_allocator
 		while (progressThroughHeapZone < heapZoneInfo.m_End);
 
 		return allocatorBlocks;
+	}
+
+	template<FreeListAllocatorSettings Settings>
+	AllocatorBlockInfo FreeListAllocator<Settings>::GetAllocationInfo(void const* const memory, HeapZoneInfo const& heapZoneInfo) const
+	{
+		NA_CHECK_MEMORY_FOR_ALLOCATOR_OPERATION(memory, heapZoneInfo);
+
+		// As of 15/01/24 this function perhaps doesn't have the best name anymore...
+		return IterateThroughHeapZoneHelper(NA_TO_UPTR(memory) - c_BlockHeaderSize,
+			[](uInt const /*blockNumBytes*/) -> s64
+			{
+				return static_cast<s64>(c_BlockHeaderSize);
+			},
+			[](uInt const blockNumBytes) -> s64
+			{
+				uInt const blockAdjustment = blockNumBytes - c_BlockFooterSize - c_BlockPaddingSize;
+				NA_ASSERT(blockAdjustment < static_cast<uInt>(std::numeric_limits<s64>::max()),
+					"This will (probably?) never happen, but if it does its probs good to know about it :p");
+
+				return static_cast<s64>(blockAdjustment);
+			});
 	}
 
 	template<FreeListAllocatorSettings Settings>

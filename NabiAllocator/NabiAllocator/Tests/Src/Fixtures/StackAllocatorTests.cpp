@@ -62,6 +62,13 @@ namespace nabi_allocator::tests
 		);
 	}
 
+	TEST(NA_FIXTURE_NAME, GetAllocationInfo)
+	{
+		blueprints::AllocatorGetAllocationInfoTest<HeapZoneType>(
+			c_HeapZoneSize // Heap zone size
+		);
+	}
+
 #	ifdef NA_MEMORY_TAGGING
 		TEST(NA_FIXTURE_NAME, MemoryTagging)
 		{

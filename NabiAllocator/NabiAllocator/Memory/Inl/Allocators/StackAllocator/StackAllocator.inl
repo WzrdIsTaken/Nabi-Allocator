@@ -114,9 +114,7 @@ namespace nabi_allocator
 	template<StackAllocatorSettings Settings>
 	void StackAllocator<Settings>::Free(void* memory, HeapZoneInfo const& heapZoneInfo)
 	{
-		NA_ASSERT(memory, "Cannot free nullptr");
-		NA_ASSERT(memory_operations::IsPtrInRange(heapZoneInfo.m_Start, heapZoneInfo.m_End,
-			NA_TO_UPTR(memory)), "Trying to release memory not managed by this allocator");
+		NA_CHECK_MEMORY_FOR_ALLOCATOR_OPERATION(memory, heapZoneInfo);
 
 		uPtr const memoryAddress = NA_TO_UPTR(memory);
 		NA_ASSERT(memoryAddress == m_PreviousPosition, "Freeing memory which isn't at the top of the stack");
@@ -185,6 +183,10 @@ namespace nabi_allocator
 				IterateThroughHeapZoneHelper((progressThroughHeapZone - c_BlockHeaderSize),
 					[](uInt const blockNumBytes) -> s64
 					{
+						return -static_cast<s64>(blockNumBytes - c_BlockHeaderSize);
+					},
+					[](uInt const blockNumBytes) -> s64
+					{
 						return -static_cast<s64>(c_BlockPaddingSize);
 					});
 			progressThroughHeapZone -= allocatorBlockInfo.m_NumBytes;
@@ -203,6 +205,20 @@ namespace nabi_allocator
 		}
 
 		return allocatorBlocks;
+	}
+
+	template<StackAllocatorSettings Settings>
+	AllocatorBlockInfo StackAllocator<Settings>::GetAllocationInfo(void const* const memory, HeapZoneInfo const& heapZoneInfo) const
+	{
+		NA_CHECK_MEMORY_FOR_ALLOCATOR_OPERATION(memory, heapZoneInfo);
+
+		// Because of the memory layout this allocator has we have to do this kinda jank solution
+		uInt blockIndex = 0u;
+		return IterateThroughHeapZone(
+			[memory, &blockIndex](AllocatorBlockInfo const& allocatorBlockInfo) -> bool
+			{
+				return allocatorBlockInfo.m_PayloadPtr != memory && (++blockIndex, true); // s tier syntax
+			}, heapZoneInfo).at(blockIndex);
 	}
 
 	template<StackAllocatorSettings Settings>

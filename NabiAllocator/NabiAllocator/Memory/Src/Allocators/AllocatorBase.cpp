@@ -8,8 +8,9 @@
 
 namespace nabi_allocator
 {
-	AllocatorBlockInfo AllocatorBase::IterateThroughHeapZoneHelper(
-		uInt const blockHeaderPosition, std::function<s64(uInt const)> const calculateBlockPaddingAdjustment) const
+	AllocatorBlockInfo AllocatorBase::IterateThroughHeapZoneHelper(uInt const blockHeaderPosition, 
+		std::function<s64(uInt const)> const calculatePayloadPtrAdjustment, 
+		std::function<s64(uInt const)> const calculateBlockPaddingAdjustment) const
 	{
 		AllocatorBlockInfo allocatorBlockInfo = {};
 		BlockHeader const* blockHeader = nullptr;
@@ -24,7 +25,6 @@ namespace nabi_allocator
 		allocatorBlockInfo.m_MemoryTag = blockInfoContent.m_MemoryTag;
 #endif // ifdef NA_MEMORY_TAGGING
 
-		allocatorBlockInfo.m_PayloadPtr = NA_REINTERPRET_MEMORY(void, blockHeader, +, c_BlockHeaderSize);
 		allocatorBlockInfo.m_Allocated = blockInfoContent.m_Allocated;
 		allocatorBlockInfo.m_Padded = blockInfoContent.m_Padded;
 
@@ -38,6 +38,8 @@ namespace nabi_allocator
 
 		allocatorBlockInfo.m_NumBytes = blockInfoContent.m_NumBytes;
 		allocatorBlockInfo.m_Padding = padding;
+		allocatorBlockInfo.m_PayloadPtr = 
+			NA_REINTERPRET_MEMORY(void, blockHeader, +, calculatePayloadPtrAdjustment(allocatorBlockInfo.m_NumBytes));
 
 		return allocatorBlockInfo;
 	}

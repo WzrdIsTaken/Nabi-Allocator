@@ -64,6 +64,12 @@ namespace nabi_allocator::tests
 			return {};
 		}
 
+		[[nodiscard]] AllocatorBlockInfo GetAllocationInfo(void const* const /*memory*/, HeapZoneInfo const& /*heapZoneInfo*/) const override
+		{
+			NA_FUNCTION_NOT_IMPLEMENTED;
+			return {};
+		}
+
 		[[nodiscard]] inline u32 GetAllocationCount() const noexcept
 		{
 			return m_AllocationCount;

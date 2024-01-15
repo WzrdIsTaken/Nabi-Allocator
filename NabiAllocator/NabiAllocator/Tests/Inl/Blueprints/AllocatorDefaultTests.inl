@@ -94,6 +94,21 @@ namespace nabi_allocator::tests::blueprints
 		EXPECT_EQ(expectedResetLayout, actualLayout);
 	}
 
+	template<is_heap_zone HeapZoneType>
+	void AllocatorGetAllocationInfoTest(uInt const heapZoneSize)
+	{
+		HeapZoneType heapZone{ HeapZoneBase::c_NoParent, heapZoneSize, "TestHeapZone" };
+		void* const ptr = heapZone.Allocate(NA_MAKE_ALLOCATION_INFO(4u, c_NullMemoryTag));
+
+		AllocatorBlockInfo const ptrInfo = heapZone.GetAllocator().GetAllocationInfo(ptr, heapZone.GetZoneInfo());
+		EXPECT_EQ(ptr, ptrInfo.m_PayloadPtr);
+#	ifdef NA_MEMORY_TAGGING
+		EXPECT_EQ(c_NullMemoryTag, ptrInfo.m_MemoryTag);
+#	endif // ifdef NA_MEMORY_TAGGING
+
+		heapZone.Reset();
+	}
+
 #	ifdef NA_MEMORY_TAGGING
 		template<is_heap_zone HeapZoneType>
 		void AllocatorMemoryTagTest(uInt const heapZoneSize,

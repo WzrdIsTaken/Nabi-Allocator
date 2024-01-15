@@ -15,8 +15,8 @@
 #include "TypeUtils.h"
 
 /**
- * A stack allocator works, as you might guess, exactly like a stack. It has the advantages of being faster and 
- * having lower memory overhead compaired to something like a free list allocator as we don't have to store as 
+ * A stack allocator works, as you might guess, exactly like a stack. It has the advantages of being faster (sometimes!)  
+ * and having lower memory overhead compaired to something like a free list allocator as we don't have to store as 
  * much infomation about a block or manage free memory. However, it is much less flexible as memory can only be
  * allocated and freed from the top of the stack.
  * 
@@ -54,6 +54,7 @@ namespace nabi_allocator
 
 		std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
 			std::optional<std::function<bool(AllocatorBlockInfo const&)>> const action, HeapZoneInfo const& heapZoneInfo) const override;
+		[[nodiscard]] AllocatorBlockInfo GetAllocationInfo(void const* const memory, HeapZoneInfo const& heapZoneInfo) const override;
 
 	private:
 		NA_SET_COPY_MOVE_CONSTRUCTORS(StackAllocator, delete);

@@ -55,6 +55,7 @@ namespace nabi_allocator
 
 		std::deque<AllocatorBlockInfo> IterateThroughHeapZone(
 			std::optional<std::function<bool(AllocatorBlockInfo const&)>> const action, HeapZoneInfo const& heapZoneInfo) const override;
+		[[nodiscard]] AllocatorBlockInfo GetAllocationInfo(void const* const memory, HeapZoneInfo const& heapZoneInfo) const override;
 
 	private:
 		NA_SET_COPY_MOVE_CONSTRUCTORS(FreeListAllocator, delete);
