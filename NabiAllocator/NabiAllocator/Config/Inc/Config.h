@@ -7,6 +7,14 @@
 // Development / Usage
 #define NA_OVERRIDE_NEW_DELETE // Routes all new/delete calls through NabiAllocator's MemoryCommand
 #define NA_DEBUG // Enables asserts, logging, etc
+//#define NA_THREAD_LOCAL_HEAPS // Heap zones and memory tags will be thread local. However if memory is allocated on one thread and freed from another, it still won't crash.
+
+#define NA_NON_STANDARD_CPP // Use non standard C++ like __forceinline
+#ifdef NA_NON_STANDARD_CPP
+#	define NA_FORCE_INLINE __forceinline
+#else
+#	define NA_FORCE_INLINE inline
+#endif // ifdef NA_NON_STANDARD_CPP
 
 //#define NA_DEFINE_SHORT_NAMESPACE // Adds the option to use a shorter namespace, rather than typing out nabi_allocator every time...
 #ifdef NA_DEFINE_SHORT_NAMESPACE

@@ -29,11 +29,18 @@
 		} \
 	}
 
+#ifdef NA_THREAD_LOCAL_HEAPS
+#	define NA_HEAP_ZONE_STORAGE thread_local
+#else
+	// If this is defined, then HeapZoneScopes, LastHeapZone and LastMemoryTag kinda should be s_... ):
+#	define NA_HEAP_ZONE_STORAGE static
+#endif // ifdef NA_THREAD_LOCAL_HEAPS
+
 namespace nabi_allocator
 {
-	thread_local std::stack<std::reference_wrapper<HeapZoneScope const>> g_HeapZoneScopes = {};
-	thread_local HeapZoneBase* g_LastHeapZone = nullptr;
-	thread_local memoryTag g_LastMemoryTag = c_NullMemoryTag;
+	NA_HEAP_ZONE_STORAGE std::stack<std::reference_wrapper<HeapZoneScope const>> g_HeapZoneScopes = {};
+	NA_HEAP_ZONE_STORAGE HeapZoneBase* g_LastHeapZone = nullptr;
+	NA_HEAP_ZONE_STORAGE memoryTag g_LastMemoryTag = c_NullMemoryTag;
 
 	MemoryCommand::MemoryCommand()
 		: m_UnmanagedHeap{}
@@ -105,37 +112,34 @@ namespace nabi_allocator
 		}
 #endif // ifdef NA_SAFE_ALLOC_FREE_EARLY_OUT
 
-		if (g_LastHeapZone) [[likely]]
+		if (g_LastHeapZone)
 		{
 			if (g_LastHeapZone == &c_UnmanagedHeap)
 			{
 				goto unmanagedAllocatorFree;
 			}
-			else
+			else if (g_LastHeapZone->ContainsPtr(memory))
 			{
-				if (g_LastHeapZone->ContainsPtr(memory))
-				{
-					g_LastHeapZone->Free(memory);
-				}
-				else
-				{
-					HeapZoneBase* const heapZoneWhichMadeAllocation = HeapZoneBase::FindHeapZoneForPtr(memory);
-					if (heapZoneWhichMadeAllocation)
-					{
-						heapZoneWhichMadeAllocation->Free(memory);
-					}
-					else
-					{
-						goto unmanagedAllocatorFree;
-					}
-				}
+				g_LastHeapZone->Free(memory);
+				return;
 			}
 		}
-		else [[unlikely]]
+
 		{
-		unmanagedAllocatorFree:
-			m_UnmanagedHeap.Free(memory);
+			HeapZoneBase* const heapZoneWhichMadeAllocation = HeapZoneBase::FindHeapZoneForPtr(memory);
+			if (heapZoneWhichMadeAllocation)
+			{
+				heapZoneWhichMadeAllocation->Free(memory);
+				return;
+			}
+			else
+			{
+				goto unmanagedAllocatorFree;
+			}
 		}
+
+	unmanagedAllocatorFree:
+		m_UnmanagedHeap.Free(memory);
 	}
 
 	void MemoryCommand::PushHeapZoneScope(HeapZoneScope const& heapZoneScope)
@@ -186,7 +190,8 @@ namespace nabi_allocator
 	}
 } // namespace nabi_allocator
 
-#undef GET_WITH_FALLBACK
+#undef NA_GET_WITH_FALLBACK
+#undef NA_HEAP_ZONE_STORAGE
 
 /*
 	* Do we want something like this..?

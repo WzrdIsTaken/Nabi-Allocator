@@ -27,6 +27,8 @@ namespace nabi_allocator::tests
 #ifdef NA_TESTS
 #	define NA_FIXTURE_NAME NA_TEST_FIXTURE_NAME(MemoryCommandTests)
 
+	uInt constexpr c_HeapZoneSize = 64u;
+
 	TEST(NA_FIXTURE_NAME, CreateAndDestroy)
 	{
 		MemoryCommand memoryCommand = {};
@@ -59,27 +61,29 @@ namespace nabi_allocator::tests
 		EXPECT_FALSE(memoryCommand.GetTopHeapZoneScope());
 	}
 
-	TEST(NA_FIXTURE_NAME, ThreadLocalHeapZoneScopes)
-	{
-		if (std::thread::hardware_concurrency() >= 2u)
+#	ifdef NA_THREAD_LOCAL_HEAPS
+		TEST(NA_FIXTURE_NAME, ThreadLocalHeapZoneScopes)
 		{
-			// I know this looks a little bot, and its probs is, but this test does fail if you 
-			// change MemoryCommand->g_HeapZoneScopes to 'static' instead of 'threadlocal'
+			if (std::thread::hardware_concurrency() >= 2u)
+			{
+				// I know this looks a little bot, and its probs is, but this test does fail if you 
+				// change MemoryCommand->g_HeapZoneScopes to 'static' instead of 'threadlocal'
 
-			MemoryCommand memoryCommand = {};
-			auto const pushHeapZoneScope =
-				[&memoryCommand]() -> void
-				{
-					HeapZoneScope scope = { &c_UnmanagedHeap, std::nullopt, &memoryCommand };
-					EXPECT_EQ(memoryCommand.GetHeapZoneScopeCount(), 1u);
-				};
+				MemoryCommand memoryCommand = {};
+				auto const pushHeapZoneScope =
+					[&memoryCommand]() -> void
+					{
+						HeapZoneScope scope = { &c_UnmanagedHeap, std::nullopt, &memoryCommand };
+						EXPECT_EQ(memoryCommand.GetHeapZoneScopeCount(), 1u);
+					};
 
-			HeapZoneScope scope = { &c_UnmanagedHeap, std::nullopt, &memoryCommand };
-			std::thread thread(pushHeapZoneScope);
-			EXPECT_EQ(memoryCommand.GetHeapZoneScopeCount(), 1u);
-			thread.join();
+				HeapZoneScope scope = { &c_UnmanagedHeap, std::nullopt, &memoryCommand };
+				std::thread thread(pushHeapZoneScope);
+				EXPECT_EQ(memoryCommand.GetHeapZoneScopeCount(), 1u);
+				thread.join();
+			}
 		}
-	}
+#	endif // ifdef NA_THREAD_LOCAL_HEAPS
 
 	TEST(NA_FIXTURE_NAME, TooLargeAllocation)
 	{
@@ -89,13 +93,11 @@ namespace nabi_allocator::tests
 		return;
 #	endif
 
-		uInt constexpr heapZoneSize = 64u;
-
 		MemoryCommand memoryCommand = {};
-		HeapZone<DefaultFreeListAllocator> heapZone = { HeapZoneBase::c_NoParent, heapZoneSize, "TestHeapZone" };
+		HeapZone<DefaultFreeListAllocator> heapZone = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
 		HeapZoneScope scope = { &heapZone, std::nullopt, &memoryCommand };
 
-		void* ptr = memoryCommand.Allocate(heapZoneSize + 4u);
+		void* ptr = memoryCommand.Allocate(c_HeapZoneSize + 4u);
 		bool const ptrIsNull = (ptr == nullptr); // gTest doesn't like checking pointers in EXPECT_[TRUE/FALSE]?
 #	ifdef NA_MALLOC_IF_OUT_OF_MEMORY
 			EXPECT_FALSE(ptrIsNull);
@@ -107,6 +109,24 @@ namespace nabi_allocator::tests
 				memoryCommand.Free(ptr);
 			}
 #	endif // ifdef NA_MALLOC_IF_OUT_OF_MEMORY
+	}
+
+	TEST(NA_FIXTURE_NAME, OutOfScopeFree)
+	{
+		MemoryCommand memoryCommand = {};
+		HeapZone<DefaultFreeListAllocator> heapZone = { HeapZoneBase::c_NoParent, c_HeapZoneSize, "TestHeapZone" };
+
+		void* ptr = nullptr;
+		{
+			HeapZoneScope scope = { &heapZone, std::nullopt, &memoryCommand };
+			ptr = memoryCommand.Allocate(4u);
+		}
+
+		memoryCommand.Free(ptr);
+#ifdef NA_TRACK_ALLOCATIONS
+		EXPECT_EQ(heapZone.GetAllocator().GetStats().m_ActiveAllocationCount, 0u);
+		// idk how to test this without allocation tracking ):
+#endif // ifdef NA_TRACK_ALLOCATIONS
 	}
 
 #	undef NA_FIXTURE_NAME

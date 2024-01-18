@@ -12,6 +12,14 @@
 // Development / Usage
 #define NA_OVERRIDE_NEW_DELETE // Routes all new/delete calls through NabiAllocator's MemoryCommand
 #define NA_DEBUG // Enables asserts, logging, etc
+//#define NA_THREAD_LOCAL_HEAPS // Heap zones and memory tags will be thread local. However if memory is allocated on one thread and freed from another, it still won't crash.
+
+//#define NA_NON_STANDARD_CPP // Use non standard C++ like __forceinline
+#ifdef NA_NON_STANDARD_CPP
+#	define NA_FORCE_INLINE __forceinline
+#else
+#	define NA_FORCE_INLINE inline
+#endif // ifdef NA_NON_STANDARD_CPP
 
 //#define NA_DEFINE_SHORT_NAMESPACE // Adds the option to use a shorter namespace, rather than typing out nabi_allocator every time...
 #ifdef NA_DEFINE_SHORT_NAMESPACE
@@ -27,7 +35,7 @@
 #define NA_THREAD_SAFE_HEAP_ZONE // Adds a mutex/lock in HeapZone::Allocate and Free (default std::malloc/std::free are already thread safe)
 
 // Allocator
-//#define NA_TRACK_ALLOCATIONS // Memory allocators will track the count and total size of active and all time allocated objects 
+#define NA_TRACK_ALLOCATIONS // Memory allocators will track the count and total size of active and all time allocated objects 
 //#define NA_MEMORY_TAGGING // Adds metadata to all blocks. Note: this increases the size of each blocks by sizeof(nabi_allocator::memoryTag (in MemoryConstants.h))
 
 // Tests
@@ -1242,15 +1250,15 @@ namespace nabi_allocator
 namespace nabi_allocator::bit_operations
 {
 	template<is_integral T>
-	[[nodiscard]] __forceinline constexpr T FlipBit(T const value, u32 const bitPosition) noexcept;
+	[[nodiscard]] NA_FORCE_INLINE constexpr T FlipBit(T const value, u32 const bitPosition) noexcept;
 	template<is_integral T>
-	[[nodiscard]] __forceinline constexpr bool GetBit(T const value, u32 const bitPosition) noexcept;
+	[[nodiscard]] NA_FORCE_INLINE constexpr bool GetBit(T const value, u32 const bitPosition) noexcept;
 	template<is_integral T>
-	[[nodiscard]] __forceinline constexpr T SetBit(T const value, u32 const bitPosition, bool const bitState) noexcept;
+	[[nodiscard]] NA_FORCE_INLINE constexpr T SetBit(T const value, u32 const bitPosition, bool const bitState) noexcept;
 	template<is_integral T>
-	[[nodiscard]] __forceinline constexpr T LeftShiftBit(T const value, u32 const shiftAmount) noexcept;
+	[[nodiscard]] NA_FORCE_INLINE constexpr T LeftShiftBit(T const value, u32 const shiftAmount) noexcept;
 	template<is_integral T>
-	[[nodiscard]] __forceinline constexpr T RightShiftBit(T const value, u32 const shiftAmount) noexcept;
+	[[nodiscard]] NA_FORCE_INLINE constexpr T RightShiftBit(T const value, u32 const shiftAmount) noexcept;
 
 	template<is_integral T>
 	[[nodiscard]] std::string ToBinaryString(T const value, u32 const split = 8u) noexcept;
@@ -2178,32 +2186,32 @@ namespace nabi_allocator
 namespace nabi_allocator::bit_operations
 {
 	template<is_integral T>
-	__forceinline constexpr T FlipBit(T const value, u32 const bitPosition) noexcept
+	NA_FORCE_INLINE constexpr T FlipBit(T const value, u32 const bitPosition) noexcept
 	{
 		return value ^ (static_cast<T>(1) << bitPosition);
 	}
 
 	template<is_integral T>
-	__forceinline constexpr bool GetBit(T const value, u32 const bitPosition) noexcept
+	NA_FORCE_INLINE constexpr bool GetBit(T const value, u32 const bitPosition) noexcept
 	{
 		return static_cast<bool>(value & (static_cast<T>(1) << bitPosition));
 	}
 
 	template<is_integral T>
-	__forceinline constexpr T SetBit(T const value, u32 const bitPosition, bool const bitState) noexcept
+	NA_FORCE_INLINE constexpr T SetBit(T const value, u32 const bitPosition, bool const bitState) noexcept
 	{
 		bool const bitValue = GetBit(value, bitPosition);
 		return bitValue != bitState ? FlipBit(value, bitPosition) : value;
 	}
 
 	template<is_integral T>
-	__forceinline constexpr T LeftShiftBit(T const value, u32 const shiftAmount) noexcept
+	NA_FORCE_INLINE constexpr T LeftShiftBit(T const value, u32 const shiftAmount) noexcept
 	{
 		return value << shiftAmount;
 	}
 
 	template<is_integral T>
-	__forceinline constexpr T RightShiftBit(T const value, u32 const shiftAmount) noexcept
+	NA_FORCE_INLINE constexpr T RightShiftBit(T const value, u32 const shiftAmount) noexcept
 	{
 		return value >> shiftAmount;
 	}
@@ -2703,11 +2711,18 @@ namespace nabi_allocator::file_utils
 		} \
 	}
 
+#ifdef NA_THREAD_LOCAL_HEAPS
+#	define NA_HEAP_ZONE_STORAGE thread_local
+#else
+	// If this is defined, then HeapZoneScopes, LastHeapZone and LastMemoryTag kinda should be s_... ):
+#	define NA_HEAP_ZONE_STORAGE static
+#endif // ifdef NA_THREAD_LOCAL_HEAPS
+
 namespace nabi_allocator
 {
-	thread_local std::stack<std::reference_wrapper<HeapZoneScope const>> g_HeapZoneScopes = {};
-	thread_local HeapZoneBase* g_LastHeapZone = nullptr;
-	thread_local memoryTag g_LastMemoryTag = c_NullMemoryTag;
+	NA_HEAP_ZONE_STORAGE std::stack<std::reference_wrapper<HeapZoneScope const>> g_HeapZoneScopes = {};
+	NA_HEAP_ZONE_STORAGE HeapZoneBase* g_LastHeapZone = nullptr;
+	NA_HEAP_ZONE_STORAGE memoryTag g_LastMemoryTag = c_NullMemoryTag;
 
 	MemoryCommand::MemoryCommand()
 		: m_UnmanagedHeap{}
@@ -2779,37 +2794,34 @@ namespace nabi_allocator
 		}
 #endif // ifdef NA_SAFE_ALLOC_FREE_EARLY_OUT
 
-		if (g_LastHeapZone) [[likely]]
+		if (g_LastHeapZone)
 		{
 			if (g_LastHeapZone == &c_UnmanagedHeap)
 			{
 				goto unmanagedAllocatorFree;
 			}
-			else
+			else if (g_LastHeapZone->ContainsPtr(memory))
 			{
-				if (g_LastHeapZone->ContainsPtr(memory))
-				{
-					g_LastHeapZone->Free(memory);
-				}
-				else
-				{
-					HeapZoneBase* const heapZoneWhichMadeAllocation = HeapZoneBase::FindHeapZoneForPtr(memory);
-					if (heapZoneWhichMadeAllocation)
-					{
-						heapZoneWhichMadeAllocation->Free(memory);
-					}
-					else
-					{
-						goto unmanagedAllocatorFree;
-					}
-				}
+				g_LastHeapZone->Free(memory);
+				return;
 			}
 		}
-		else [[unlikely]]
+
 		{
-		unmanagedAllocatorFree:
-			m_UnmanagedHeap.Free(memory);
+			HeapZoneBase* const heapZoneWhichMadeAllocation = HeapZoneBase::FindHeapZoneForPtr(memory);
+			if (heapZoneWhichMadeAllocation)
+			{
+				heapZoneWhichMadeAllocation->Free(memory);
+				return;
+			}
+			else
+			{
+				goto unmanagedAllocatorFree;
+			}
 		}
+
+	unmanagedAllocatorFree:
+		m_UnmanagedHeap.Free(memory);
 	}
 
 	void MemoryCommand::PushHeapZoneScope(HeapZoneScope const& heapZoneScope)
@@ -2860,7 +2872,8 @@ namespace nabi_allocator
 	}
 } // namespace nabi_allocator
 
-#undef GET_WITH_FALLBACK
+#undef NA_GET_WITH_FALLBACK
+#undef NA_HEAP_ZONE_STORAGE
 
 // --- NewDeleteOverrides.cpp ---
 
@@ -4184,6 +4197,8 @@ namespace nabi_allocator::tests
 #ifdef NA_TESTS
 #	define NA_FIXTURE_NAME NA_TEST_FIXTURE_NAME(MemoryCommandTests)
 
+	uInt constexpr c_HeapZoneSizeMCT = 64u;
+
 	TEST(NA_FIXTURE_NAME, CreateAndDestroy)
 	{
 		MemoryCommand memoryCommand = {};
@@ -4216,27 +4231,29 @@ namespace nabi_allocator::tests
 		EXPECT_FALSE(memoryCommand.GetTopHeapZoneScope());
 	}
 
-	TEST(NA_FIXTURE_NAME, ThreadLocalHeapZoneScopes)
-	{
-		if (std::thread::hardware_concurrency() >= 2u)
+#	ifdef NA_THREAD_LOCAL_HEAPS
+		TEST(NA_FIXTURE_NAME, ThreadLocalHeapZoneScopes)
 		{
-			// I know this looks a little bot, and its probs is, but this test does fail if you 
-			// change MemoryCommand->g_HeapZoneScopes to 'static' instead of 'threadlocal'
-
-			MemoryCommand memoryCommand = {};
-			auto const pushHeapZoneScope =
-				[&memoryCommand]() -> void
+			if (std::thread::hardware_concurrency() >= 2u)
 			{
-				HeapZoneScope scope = { &c_UnmanagedHeap, std::nullopt, &memoryCommand };
-				EXPECT_EQ(memoryCommand.GetHeapZoneScopeCount(), 1u);
-			};
+				// I know this looks a little bot, and its probs is, but this test does fail if you 
+				// change MemoryCommand->g_HeapZoneScopes to 'static' instead of 'threadlocal'
 
-			HeapZoneScope scope = { &c_UnmanagedHeap, std::nullopt, &memoryCommand };
-			std::thread thread(pushHeapZoneScope);
-			EXPECT_EQ(memoryCommand.GetHeapZoneScopeCount(), 1u);
-			thread.join();
+				MemoryCommand memoryCommand = {};
+				auto const pushHeapZoneScope =
+					[&memoryCommand]() -> void
+				{
+					HeapZoneScope scope = { &c_UnmanagedHeap, std::nullopt, &memoryCommand };
+					EXPECT_EQ(memoryCommand.GetHeapZoneScopeCount(), 1u);
+				};
+
+				HeapZoneScope scope = { &c_UnmanagedHeap, std::nullopt, &memoryCommand };
+				std::thread thread(pushHeapZoneScope);
+				EXPECT_EQ(memoryCommand.GetHeapZoneScopeCount(), 1u);
+				thread.join();
+			}
 		}
-	}
+#	endif // ifdef NA_THREAD_LOCAL_HEAPS
 
 	TEST(NA_FIXTURE_NAME, TooLargeAllocation)
 	{
@@ -4246,13 +4263,11 @@ namespace nabi_allocator::tests
 		return;
 #	endif
 
-		uInt constexpr heapZoneSize = 64u;
-
 		MemoryCommand memoryCommand = {};
-		HeapZone<DefaultFreeListAllocator> heapZone = { HeapZoneBase::c_NoParent, heapZoneSize, "TestHeapZone" };
+		HeapZone<DefaultFreeListAllocator> heapZone = { HeapZoneBase::c_NoParent, c_HeapZoneSizeMCT, "TestHeapZone" };
 		HeapZoneScope scope = { &heapZone, std::nullopt, &memoryCommand };
 
-		void* ptr = memoryCommand.Allocate(heapZoneSize + 4u);
+		void* ptr = memoryCommand.Allocate(c_HeapZoneSizeMCT + 4u);
 		bool const ptrIsNull = (ptr == nullptr); // gTest doesn't like checking pointers in EXPECT_[TRUE/FALSE]?
 #	ifdef NA_MALLOC_IF_OUT_OF_MEMORY
 		EXPECT_FALSE(ptrIsNull);
@@ -4264,6 +4279,24 @@ namespace nabi_allocator::tests
 			memoryCommand.Free(ptr);
 		}
 #	endif // ifdef NA_MALLOC_IF_OUT_OF_MEMORY
+	}
+
+	TEST(NA_FIXTURE_NAME, OutOfScopeFree)
+	{
+		MemoryCommand memoryCommand = {};
+		HeapZone<DefaultFreeListAllocator> heapZone = { HeapZoneBase::c_NoParent, c_HeapZoneSizeMCT, "TestHeapZone" };
+
+		void* ptr = nullptr;
+		{
+			HeapZoneScope scope = { &heapZone, std::nullopt, &memoryCommand };
+			ptr = memoryCommand.Allocate(4u);
+		}
+
+		memoryCommand.Free(ptr);
+#ifdef NA_TRACK_ALLOCATIONS
+		EXPECT_EQ(heapZone.GetAllocator().GetStats().m_ActiveAllocationCount, 0u);
+		// idk how to test this without allocation tracking ):
+#endif // ifdef NA_TRACK_ALLOCATIONS
 	}
 
 #	undef NA_FIXTURE_NAME
