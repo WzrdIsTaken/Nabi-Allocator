@@ -9,7 +9,7 @@
  * These defines can be used to toggle on/off featues of NabiAllocator.
 */
 
-// Development / Usage
+// --- Development / Usage ---
 #define NA_OVERRIDE_NEW_DELETE // Routes all new/delete calls through NabiAllocator's MemoryCommand
 #define NA_DEBUG // Enables asserts, logging, etc
 //#define NA_THREAD_LOCAL_HEAPS // Heap zones and memory tags will be thread local. However if memory is allocated on one thread and freed from another, it still won't crash.
@@ -27,18 +27,21 @@
 	namespace na = nabi_allocator;
 #endif // ifdef NA_DEFINE_SHORT_NAMESPACE
 
-// Memory Command
+#define NA_ASSERT_DEFINTION(message) _RPTF0(_CRT_ASSERT, message) // NabiAllocator will call this macro to assert. Note: If you override this, make sure that the assert will always fire (eg: assert(false))
+#define NA_LOG_DEFINTION(message) std::cout << message // NabiAllocator will call this macro to log
+
+// --- Memory Command ---
 #define NA_MALLOC_IF_OUT_OF_MEMORY // If an heapzone is out of memory, rather than asserting and failing to allocate just try and malloc the memory
 //#define NA_SAFE_ALLOC_FREE_EARLY_OUT // If an allocation or free is going to fail (eg: freeing nullptr), then don't attempt it. Note: an assert will still fire
 
-// Heap Zone
+// --- Heap Zone ---
 #define NA_THREAD_SAFE_HEAP_ZONE // Adds a mutex/lock in HeapZone::Allocate and Free (default std::malloc/std::free are already thread safe)
 
-// Allocator
+// --- Allocator ---
 #define NA_TRACK_ALLOCATIONS // Memory allocators will track the count and total size of active and all time allocated objects 
 //#define NA_MEMORY_TAGGING // Adds metadata to all blocks. Note: this increases the size of each blocks by sizeof(nabi_allocator::memoryTag (in MemoryConstants.h))
 
-// Tests
+// --- Tests ---
 //#define NA_TESTS // Run unit tests
 //#define NA_BENCHMARKS // Run benchmark tests
 //#define NA_WORKFLOWS // Run workflow tests
@@ -318,7 +321,7 @@ namespace nabi_allocator::debug_utils
 					NA_ASSERT_PREP << NA_LOG_DIVIDER << message << NA_LOG_END) \
 				\
 				NA_LOG(NA_LOG_PREP, NA_LOG_ERROR, NA_LOG_CATEGORY_ASSERT, message, NA_LOG_END); \
-				_RPTF0(_CRT_ASSERT, assertString.c_str()); \
+				NA_ASSERT_DEFINTION(assertString.c_str()); \
 			} \
 		} \
 		while (false)
@@ -337,7 +340,7 @@ namespace nabi_allocator::debug_utils
 		NA_MAKE_STRING_FROM_STREAM(std::string const logString, \
 			prep << severity << NA_LOG_DIVIDER << category << message << end) \
 		\
-		std::cout << logString; \
+		NA_LOG_DEFINTION(logString); \
 	} \
 	while (false)
 

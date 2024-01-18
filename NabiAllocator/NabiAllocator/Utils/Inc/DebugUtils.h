@@ -72,7 +72,7 @@ namespace nabi_allocator::debug_utils
 					NA_ASSERT_PREP << NA_LOG_DIVIDER << message << NA_LOG_END) \
 				\
 				NA_LOG(NA_LOG_PREP, NA_LOG_ERROR, NA_LOG_CATEGORY_ASSERT, message, NA_LOG_END); \
-				_RPTF0(_CRT_ASSERT, assertString.c_str()); \
+				NA_ASSERT_DEFINTION(assertString.c_str()); \
 			} \
 		} \
 		while (false)
@@ -91,7 +91,7 @@ namespace nabi_allocator::debug_utils
 		NA_MAKE_STRING_FROM_STREAM(std::string const logString, \
 			prep << severity << NA_LOG_DIVIDER << category << message << end) \
 		\
-		std::cout << logString; \
+		NA_LOG_DEFINTION(logString); \
 	} \
 	while (false)
 

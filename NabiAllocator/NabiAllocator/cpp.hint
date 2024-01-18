@@ -7,11 +7,13 @@
 #define NA_BENCHMARK(benchmarkFixtureName, benchmarkCaseName) TEST(benchmarkFixtureName, benchmarkCaseName)
 
 // Config.h
+#define NA_ASSERT_DEFINTION(message) _RPTF0(_CRT_ASSERT, message)
 #define NA_BENCHMARKS
 #define NA_BENCHMARK_RUN_COUNT 1
 #define NA_DEBUG
 #define NA_DEFINE_SHORT_NAMESPACE
 #define NA_FORCE_INLINE
+#define NA_LOG_DEFINTION(message) std::cout << message
 #define NA_MALLOC_IF_OUT_OF_MEMORY
 #define NA_MEMORY_TAGGING
 #define NA_NON_STANDARD_CPP
