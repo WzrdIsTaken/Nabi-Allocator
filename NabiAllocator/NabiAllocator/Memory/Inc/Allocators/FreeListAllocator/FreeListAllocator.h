@@ -47,7 +47,7 @@ namespace nabi_allocator
 	{
 	public:
 		explicit FreeListAllocator(HeapZoneInfo const& heapZoneInfo);
-		~FreeListAllocator() override;
+		~FreeListAllocator() override = default;
 
 		[[nodiscard]] void* Allocate(AllocationInfo const& allocationInfo, HeapZoneInfo const& heapZoneInfo) override;
 		void Free(void* memory, HeapZoneInfo const& heapZoneInfo) override;

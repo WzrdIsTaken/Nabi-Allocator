@@ -33,15 +33,6 @@ namespace nabi_allocator
 	}
 
 	template<StackAllocatorSettings Settings>
-	StackAllocator<Settings>::~StackAllocator()
-	{
-#ifdef NA_TRACK_ALLOCATIONS
-		NA_ASSERT(m_AllocatorStats.m_ActiveAllocationCount == 0u && m_AllocatorStats.m_ActiveBytesAllocated == 0u,
-			NA_NAMEOF_LITERAL(StackAllocator) << "'s destructor was called, but objects it allocated are still active");
-#endif // ifdef NA_TRACK_ALLOCATIONS
-	}
-
-	template<StackAllocatorSettings Settings>
 	void* StackAllocator<Settings>::Allocate(AllocationInfo const& allocationInfo, HeapZoneInfo const& heapZoneInfo)
 	{
 		NA_ASSERT(allocationInfo.m_NumBytes > 0u, "Allocating 0 bytes");

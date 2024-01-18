@@ -46,7 +46,7 @@ namespace nabi_allocator
 	{
 	public:
 		explicit StackAllocator(HeapZoneInfo const& heapZoneInfo);
-		~StackAllocator() override;
+		~StackAllocator() override = default;
 
 		[[nodiscard]] void* Allocate(AllocationInfo const& allocationInfo, HeapZoneInfo const& heapZoneInfo) override;
 		void Free(void* memory, HeapZoneInfo const& heapZoneInfo) override;

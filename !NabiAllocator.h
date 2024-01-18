@@ -656,7 +656,7 @@ namespace nabi_allocator
 	{
 	public:
 		inline AllocatorBase();
-		virtual ~AllocatorBase() = default;
+		virtual ~AllocatorBase();
 
 		[[nodiscard]] virtual void* Allocate(AllocationInfo const& allocationInfo, HeapZoneInfo const& heapZoneInfo) = 0;
 		virtual void Free(void* memory, HeapZoneInfo const& heapZoneInfo) = 0;
@@ -935,7 +935,7 @@ namespace nabi_allocator
 	{
 	public:
 		explicit FreeListAllocator(HeapZoneInfo const& heapZoneInfo);
-		~FreeListAllocator() override;
+		~FreeListAllocator() override = default;
 
 		[[nodiscard]] void* Allocate(AllocationInfo const& allocationInfo, HeapZoneInfo const& heapZoneInfo) override;
 		void Free(void* memory, HeapZoneInfo const& heapZoneInfo) override;
@@ -1049,7 +1049,7 @@ namespace nabi_allocator
 	{
 	public:
 		explicit StackAllocator(HeapZoneInfo const& heapZoneInfo);
-		~StackAllocator() override;
+		~StackAllocator() override = default;
 
 		[[nodiscard]] void* Allocate(AllocationInfo const& allocationInfo, HeapZoneInfo const& heapZoneInfo) override;
 		void Free(void* memory, HeapZoneInfo const& heapZoneInfo) override;
@@ -1492,6 +1492,14 @@ namespace nabi_allocator
 	{
 	}
 
+	inline AllocatorBase::~AllocatorBase()
+	{
+#ifdef NA_TRACK_ALLOCATIONS
+		NA_ASSERT(m_AllocatorStats.m_ActiveAllocationCount == 0u && m_AllocatorStats.m_ActiveBytesAllocated == 0u,
+			"An allocator's destructor was called, but objects it allocated are still active! Attempting to free those objects now may cause a crash.");
+#endif // ifdef NA_TRACK_ALLOCATIONS
+	}
+
 #ifdef NA_TRACK_ALLOCATIONS
 	inline AllocatorStats const& AllocatorBase::GetStats() const noexcept
 	{
@@ -1517,15 +1525,6 @@ namespace nabi_allocator
 		, m_FreeList(nullptr)
 	{
 		InitMemory(heapZoneInfo);
-	}
-
-	template<FreeListAllocatorSettings Settings>
-	FreeListAllocator<Settings>::~FreeListAllocator()
-	{
-#ifdef NA_TRACK_ALLOCATIONS
-		NA_ASSERT(m_AllocatorStats.m_ActiveAllocationCount == 0u && m_AllocatorStats.m_ActiveBytesAllocated == 0u,
-			NA_NAMEOF_LITERAL(FreeListAllocator) << "'s destructor was called, but objects it allocated are still active");
-#endif // ifdef NA_TRACK_ALLOCATIONS
 	}
 
 	template<FreeListAllocatorSettings Settings>
@@ -1835,15 +1834,6 @@ namespace nabi_allocator
 #endif // ifdef NA_DEBUG
 	{
 		InitMemory(heapZoneInfo);
-	}
-
-	template<StackAllocatorSettings Settings>
-	StackAllocator<Settings>::~StackAllocator()
-	{
-#ifdef NA_TRACK_ALLOCATIONS
-		NA_ASSERT(m_AllocatorStats.m_ActiveAllocationCount == 0u && m_AllocatorStats.m_ActiveBytesAllocated == 0u,
-			NA_NAMEOF_LITERAL(StackAllocator) << "'s destructor was called, but objects it allocated are still active");
-#endif // ifdef NA_TRACK_ALLOCATIONS
 	}
 
 	template<StackAllocatorSettings Settings>

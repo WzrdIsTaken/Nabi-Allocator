@@ -35,15 +35,6 @@ namespace nabi_allocator
 	}
 
 	template<FreeListAllocatorSettings Settings>
-	FreeListAllocator<Settings>::~FreeListAllocator()
-	{
-#ifdef NA_TRACK_ALLOCATIONS
-		NA_ASSERT(m_AllocatorStats.m_ActiveAllocationCount == 0u && m_AllocatorStats.m_ActiveBytesAllocated == 0u,
-			NA_NAMEOF_LITERAL(FreeListAllocator) << "'s destructor was called, but objects it allocated are still active");
-#endif // ifdef NA_TRACK_ALLOCATIONS
-	}
-
-	template<FreeListAllocatorSettings Settings>
 	void* FreeListAllocator<Settings>::Allocate(AllocationInfo const& allocationInfo, HeapZoneInfo const& heapZoneInfo)
 	{
 		NA_ASSERT(allocationInfo.m_NumBytes > 0u, "Allocating 0 bytes");

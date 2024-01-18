@@ -42,7 +42,7 @@ namespace nabi_allocator
 	{
 	public:
 		inline AllocatorBase();
-		virtual ~AllocatorBase() = default;
+		virtual ~AllocatorBase();
 
 		[[nodiscard]] virtual void* Allocate(AllocationInfo const& allocationInfo, HeapZoneInfo const& heapZoneInfo) = 0;
 		virtual void Free(void* memory, HeapZoneInfo const& heapZoneInfo) = 0;
