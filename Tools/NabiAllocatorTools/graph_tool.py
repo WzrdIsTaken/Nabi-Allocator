@@ -17,7 +17,14 @@ FREE_COLOUR = "greenyellow"
 INDIVIDUAL_BAR_WIDTH = 0.27
 
 def graph_memory_layout(memory_layout):
-    # Format: F(ree)/A(llocated)[number of bytes]P(adding)[number of bytes] [space] [next entry] | Eg: A10P5 A10P5 F10 A20P0 A5P1 A15P3 A14P0 F15
+    # Format: F(ree)/A(llocated)[number of bytes]P(adding)[number of bytes] [space] [next entry] | Eg: A10P5 A10P5 F10P0 A20P0 A5P1 A15P3 A14P0 F15P0
+
+    def find_padded_flag(memory):
+        padded_flag = None
+        for i, char in enumerate(memory[1:]):
+            if char == 'P':
+                padded_flag = i + 1
+        return padded_flag
 
     # Extract infomation
     layout = memory_layout.split()
@@ -29,11 +36,7 @@ def graph_memory_layout(memory_layout):
         if (first_char == 'A'):
             allocated_bytes = 0
             padded_bytes = 0
-            padded_flag = None
-
-            for i, char in enumerate(memory[1:]):
-                if char == 'P':
-                    padded_flag = i + 1
+            padded_flag = find_padded_flag(memory)
 
             allocated_bytes = int(memory[1:padded_flag])
             padded_bytes = int(memory[padded_flag + 1:])
@@ -46,7 +49,7 @@ def graph_memory_layout(memory_layout):
                 sizes.append(padded_bytes)
                 colours.append(PADDED_COLOUR)
         else:
-            sizes.append(memory[1:])
+            sizes.append(memory[1:find_padded_flag(memory)])
             colours.append(FREE_COLOUR)
 
     # Create pie chart 
