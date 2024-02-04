@@ -64,7 +64,7 @@
  * (if I ever update this project once its 'released'...)
 */
 
-#define NA_VERSION_MAJOR 0
+#define NA_VERSION_MAJOR 1
 #define NA_VERSION_MINOR 0
 #define NA_VERSION_PATCH 0
 
@@ -4667,9 +4667,9 @@ namespace nabi_allocator::tests
 			localZone.Free(allocation);
 		}
 
-#ifdef NA_TRACK_ALLOCATIONS
+#if defined NA_TRACK_ALLOCATIONS && defined NA_DEBUG
 		EXPECT_EQ(reinterpret_cast<HeapZone<DefaultFreeListAllocator>*>(topHeapZone)->GetAllocator().GetStats().m_ActiveAllocationCount, 0u);
-#endif // ifdef NA_TRACK_ALLOCATIONS
+#endif // ifdef NA_TRACK_ALLOCATIONS && NA_DEBUG
 	}
 
 #	undef NA_FIXTURE_NAME

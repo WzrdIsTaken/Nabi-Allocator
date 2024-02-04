@@ -194,9 +194,9 @@ namespace nabi_allocator::tests
 			localZone.Free(allocation);
 		}
 
-#ifdef NA_TRACK_ALLOCATIONS
+#if defined NA_TRACK_ALLOCATIONS && defined NA_DEBUG
 		EXPECT_EQ(reinterpret_cast<HeapZone<DefaultFreeListAllocator>*>(topHeapZone)->GetAllocator().GetStats().m_ActiveAllocationCount, 0u);
-#endif // ifdef NA_TRACK_ALLOCATIONS
+#endif // ifdef NA_TRACK_ALLOCATIONS && NA_DEBUG
 	}
 
 #	undef NA_FIXTURE_NAME

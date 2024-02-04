@@ -33,6 +33,10 @@ Notes:
 Tasks:
 
 *Long Term
+
+*General
+
+Archive:
 - Make NabiAllocator a single header (or single .h+.inl+.cpp...) library once it's finished. This will make it easier to export / other people to benchmark.
 - Bump the version to 1.0! (Core/Inc/Version.h) (in the single header as well!)
 
@@ -57,8 +61,6 @@ Tasks:
 - Will be interesting to profile with NA_THREAD_SAFE_HEAP_ZONE on and off
 - Will be good to profile FirstFit vs BestFit, and compair the memory layouts they produce
 - Could profile using [[likely]]/[[unlikely]] if we have a good usecase? X [see profiling google doc]
-
-*General
 - Then we need to learn how to profile and optimise what we have as much as we can! [AS OF 04/12/23 WE HAVE DONE ENOUGH. JUST POSTER STUFF NOW]
 	- Apperently the TryCoalesceBlock function is the slowest now. It has some futher function calls in it though, and I can't see exactly what I can push futher right now.
 	- The memory command is also kinda slow...
@@ -71,13 +73,11 @@ Tasks:
 				- But all this will only remove one branch in Allocate anyway i think :p
 			- UPDATE 2 - I tried to make a direct heap zone thing but had some problems. Anyway, I think that everything is more than fast enough
 			  for a solid submission. I've scratched my optimisation itch, now just work on the poster up until that deadline. Also got other assignments to do...
-
+	- As of 04/02/24 We can optimise more if needed, and I have some ideas about what I can change, but tbh I think we've done enough and any of our other 
+	  ideas can just go in the future work section...
 - Probs the thing to do now is start writing the docs for the user study. The interface of the allocator won't change right <--this!
 	- Remeber to document that you can use the short namespace. NA_DEFINE_SHORT_NAMESPACE
 	- Tbh, well document all of the defines and there usages / what will and will not be considered if you toggle them on / the define dependencies
-
-Archive:
-NEXT TIME WE CODE (WED?)
 - Check over what we have done.  DONE
 - Perhaps its good to have a AllocateTooLarge test in DefaultAllocatorTests? Should just check nullptr is returned, can do the same IF_DEBUG return thing DONE
 - Then mirror what we have done in the single header and commit DONE
