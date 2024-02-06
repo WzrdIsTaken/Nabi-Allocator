@@ -38,7 +38,7 @@ namespace nabi_allocator
 	template<typename T>
 	concept is_allocator = std::is_base_of_v<AllocatorBase, T>;
 
-	class AllocatorBase abstract
+	class AllocatorBase NA_ABSTRACT
 	{
 	public:
 		inline AllocatorBase();

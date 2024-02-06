@@ -18,7 +18,7 @@
 
 namespace nabi_allocator
 {
-	struct BlockBase abstract
+	struct BlockBase NA_ABSTRACT
 	{
 		uInt m_BlockInfo;
 	};

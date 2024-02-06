@@ -30,7 +30,7 @@ namespace nabi_allocator
 	template<typename T>
 	concept is_heap_zone = std::is_base_of_v<HeapZoneBase, T>;
 
-	class HeapZoneBase abstract
+	class HeapZoneBase NA_ABSTRACT
 	{
 	public:
 		static HeapZoneBase constexpr* const c_NoParent = nullptr;

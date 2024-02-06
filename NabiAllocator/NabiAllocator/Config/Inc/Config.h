@@ -12,8 +12,10 @@
 #define NA_NON_STANDARD_CPP // Use non standard C++ like __forceinline
 #ifdef NA_NON_STANDARD_CPP
 #	define NA_FORCE_INLINE __forceinline
+#	define NA_ABSTRACT abstract
 #else
 #	define NA_FORCE_INLINE inline
+#	define NA_ABSTRACT
 #endif // ifdef NA_NON_STANDARD_CPP
 
 //#define NA_DEFINE_SHORT_NAMESPACE // Adds the option to use a shorter namespace, rather than typing out nabi_allocator every time...
